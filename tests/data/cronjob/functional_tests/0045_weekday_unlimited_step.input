@@ -1,0 +1,8 @@
+<?php
+
+return array(
+/*  Minute Hour Day Month Weekday  */
+	'*',    '*',  '*', '*',   '*/3'
+);
+
+?>
