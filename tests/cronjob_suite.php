@@ -22,6 +22,7 @@ if ( !defined( 'PERIODIC_TEST' ) )
  * Cronjob tests
  */
 require 'cronjob/iterator.php';
+require 'cronjob/cronjob.php';
 
 /**
 * Test suite for Periodic cronjob
@@ -39,6 +40,7 @@ class periodicCronjobTestSuite extends PHPUnit_Framework_TestSuite
         $this->setName( 'Cronjob suite' );
 
         $this->addTest( periodicCronjobIteratorTests::suite() );
+        $this->addTest( periodicCronjobTests::suite() );
     }
 
     /**
