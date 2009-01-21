@@ -24,8 +24,6 @@
 require_once 'tests/data/logger.php';
 require_once 'tests/data/executor/public.php';
 
-ini_set( 'track_errors', true );
-
 class periodicExecutorTests extends PHPUnit_Framework_TestCase
 {
     protected $tmpDir;
