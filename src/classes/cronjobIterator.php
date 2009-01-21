@@ -430,7 +430,7 @@ class periodicCronjobIterator implements Iterator
         // Remove the stepping part if it is available
         if ( ( $position = strpos( $definition, '/' ) ) !== false ) 
         {
-            $definition = substr( $definition, 0, $position - 1 );
+            $definition = substr( $definition, 0, $position );
         }
 
         // Split the definition into list elements. At least one elements needs
@@ -441,17 +441,16 @@ class periodicCronjobIterator implements Iterator
         {
             // There might be a '-' sign which indicates a real range, split it accordingly.
             $entries = explode( '-', $range );
-
             // If there is only one entry just add it to the result array
-            if ( count( $entries === 1 ) ) 
+            if ( count( $entries ) === 1 ) 
             {
-                $resultSet[] = $entries[0];
+                $resultSet[] = (int)$entries[0];
             }
             // If a range is defined it needs to be calculated
             else 
             {
-                $high = max( $entries );
-                $low  = min( $entries );
+                $high = (int)max( $entries );
+                $low  = (int)min( $entries );
 
                 for( $i=$low; $i<=$high; ++$i ) 
                 {
@@ -493,13 +492,15 @@ class periodicCronjobIterator implements Iterator
             return $range;
         }
 
-        return array_filter( 
-            $range, 
-            function( $v )
-                use( $step ) 
-            {
-                return ( ( $v % $step ) === 0 );
-            }
+        return array_keys( 
+            array_filter( 
+                array_flip( $range ), 
+                function( $v )
+                    use( $step ) 
+                {
+                    return ( ( $v % $step ) === 0 );
+                }
+            )
         );
     }
 
