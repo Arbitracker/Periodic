@@ -1,34 +1,30 @@
 <?php
 /**
- * This file is part of Periodic.
+ * Autoload file
  *
- * Periodic is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation; version 3 of the License.
+ * This file is part of periodic
  *
- * Periodic is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
- * License for * more details.
+ * periodic is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; version 3 of the License.
  *
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Periodic; if not, write to the Free Software Foundation, Inc., 51
+ * periodic is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with periodic; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @package Periodic
- * @subpackage Cronjob
- * @version $Revision$
- * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
+ * @package Core
+ * @version $Revision: 977 $
+ * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
 /**
  * Class providing easy means to access event times based on a given cron
  * string as defined by the vixie-cron daemon.
- * 
- * @version $Revision$
- * @copyright Copyright (C) 2009 Jakob Westhoff. All rights reserved.
- * @author Jakob Westhoff <jakob@php.net> 
- * @license GPLv3
  */
 class periodicCronjobIterator implements Iterator 
 {   
@@ -752,4 +748,3 @@ class periodicCronjobIterator implements Iterator
     }
 }
 
-?>

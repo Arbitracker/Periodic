@@ -22,16 +22,18 @@
  */
 
 /**
+ * Periodic bas exception
+ */
+abstract class periodicException extends Exception
+{
+}
+
+/**
  * periodicAttributeException 
  * 
  * Thrown if an attribute is accessed in a way which is not allowed.
- * 
- * @version $Revision$
- * @copyright Copyright (C) 2009 Jakob Westhoff. All rights reserved.
- * @author Jakob Westhoff <jakob@php.net> 
- * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
-class periodicAttributeException extends Exception 
+class periodicAttributeException extends periodicException 
 {
     /**
      * The accesed attribute is does not exist 
@@ -48,6 +50,13 @@ class periodicAttributeException extends Exception
      */
     const WRITE         = 2;
 
+    /**
+     * Create exception from readability type and attribute name.
+     * 
+     * @param int $type 
+     * @param string $attribute 
+     * @return void
+     */
     public function __construct( $type, $attribute ) 
     {
         $message = 'The accesed attribute "' . $attribute . '" ';
@@ -72,10 +81,6 @@ class periodicAttributeException extends Exception
 /**
  * Thrown if a the cronjob iterator is initialized with an invalid cron
  * definition 
- * 
- * @version $Revision$
- * @copyright Copyright (C) 2009 Jakob Westhoff. All rights reserved.
- * @author Jakob Westhoff <jakob@php.net> 
- * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
-class periodicInvalidCronjobException extends Exception {}
+class periodicInvalidCronjobException extends periodicException {}
+
