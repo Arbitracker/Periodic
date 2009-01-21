@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+// List of special test modules.
+$modules = array(
+	'cronjob'    => array( 'periodicCronjobIteratorTestSuite', 'tests/cronjob_suite.php' ),
+);
+
+// Check if the test should only be run for a specified module.
+if ( isset( $modules[end( $argv )] ) )
+{
+    $module = array_pop( $argv );
+    $_SERVER['argv'] = array_merge( $argv, $modules[$module] );
+}
+elseif ( $argc < 2 )
+{
+    $_SERVER['argv'] = array_merge( $argv, array( 'periodicTestSuite', 'tests/suite.php' ) );
+}
+
+require dirname( __FILE__ ) . '/tests/runner/command.php';
+arbitTextUiCommand::main();
