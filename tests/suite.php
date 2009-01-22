@@ -25,6 +25,7 @@ foreach ( $files as $class => $file )
  * Test suites
  */
 require 'cronjob_suite.php';
+require 'executor_suite.php';
 
 /**
 * Test suite for Periodic
@@ -42,6 +43,7 @@ class periodicTestSuite extends PHPUnit_Framework_TestSuite
         $this->setName( 'periodic - A PHP periodic task scheduler' );
 
         $this->addTestSuite( periodicCronjobTestSuite::suite() );
+        $this->addTestSuite( periodicExecutorTestSuite::suite() );
     }
 
     /**
