@@ -214,8 +214,8 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
 
         $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
         $this->assertEquals( 1, count( $jobs ) );
-        $firstJob = reset( $jobs );
-        $this->assertEquals( "job1", $firstJob->task );
+        $first = reset( $jobs );
+        $this->assertEquals( "job1", $first[0]->task );
     }
 
     public function testGetMultipleJobs()
@@ -227,8 +227,8 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
 
         $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
         $this->assertEquals( 2, count( $jobs ) );
-        $firstJob = reset( $jobs );
-        $this->assertEquals( "job1", $firstJob->task );
+        $first = reset( $jobs );
+        $this->assertEquals( "job1", $first[0]->task );
     }
 
     public function testGetNoJobsInTimeframe()
@@ -315,6 +315,99 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
                 '(i) [dummy-1223] [test.dummy] Run test command.',
                 '(i) [dummy-1223] Finished command execution.',
                 '(i) [dummy-1223] Finished task execution.',
+                '(i) Released lock.',
+            ),
+            $logger->logMessages
+        );
+    }
+
+    public function testRunTwoCommandsWithSameCronEntry()
+    {
+        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $executor = new periodicTestAllPublicExecutor(
+            "* * * * * dummy\n* * * * * dummy",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        // Set a manual last run date, to keep tests deterministic
+        file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
+        $executor->run();
+
+        $this->assertEquals(
+            array(
+                '(i) Aquired lock.',
+                '(i) Stored last run time.',
+                '(i) Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:23:00 +0100\'.',
+                '(i) [dummy-1223] Start task execution.',
+                '(i) [dummy-1223] Create command \'test.dummy\'.',
+                '(i) [dummy-1223] Execute command \'test.dummy\'.',
+                '(i) [dummy-1223] [test.dummy] Run test command.',
+                '(i) [dummy-1223] Finished command execution.',
+                '(i) [dummy-1223] Finished task execution.',
+                '(i) Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:23:00 +0100\'.',
+                '(i) [dummy-1223] Start task execution.',
+                '(i) [dummy-1223] Create command \'test.dummy\'.',
+                '(i) [dummy-1223] Execute command \'test.dummy\'.',
+                '(i) [dummy-1223] [test.dummy] Run test command.',
+                '(i) [dummy-1223] Finished command execution.',
+                '(i) [dummy-1223] Finished task execution.',
+                '(i) Released lock.',
+            ),
+            $logger->logMessages
+        );
+    }
+
+    /**
+     * This test will fail when run between 0:00.0 and 0:00.30 on new years eve.
+     */
+    public function testRescheduleTask()
+    {
+        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        periodicCommandRegistry::registerCommand( 'test.reschedule', 'periodicTestRescheduleCommand' );
+
+        $executor = new periodicTestAllPublicExecutor(
+            "0 0 1 1 * reschedule",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        // Set a manual last run date, to keep tests deterministic
+        file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
+
+        // First run, should reschedule the test
+        $executor->run();
+
+        // Second run - should run rescheduled test only.
+        $executor->run();
+
+        $this->assertEquals(
+            array(
+                '(i) Aquired lock.',
+                '(i) Stored last run time.',
+                '(i) Create task \'reschedule\' for scheduled date \'Mon, 01 Jan 2001 00:00:00 +0100\'.',
+                '(i) [reschedule-0000] Start task execution.',
+                '(i) [reschedule-0000] Create command \'test.dummy\'.',
+                '(i) [reschedule-0000] Execute command \'test.dummy\'.',
+                '(i) [reschedule-0000] [test.dummy] Run test command.',
+                '(i) [reschedule-0000] Finished command execution.',
+                '(i) [reschedule-0000] Create command \'test.reschedule\'.',
+                '(i) [reschedule-0000] Execute command \'test.reschedule\'.',
+                '(W) [reschedule-0000] [test.reschedule] Run test reschedule command.',
+                '(i) [reschedule-0000] Command requested rescheduled execution.',
+                '(i) [reschedule-0000] Task will be rescheduled for 30 seconds.',
+                '(i) Released lock.',
+                '(i) Aquired lock.',
+                '(i) Stored last run time.',
+                '(i) Create task \'reschedule\' for scheduled date \'Mon, 01 Jan 2001 00:00:30 +0100\'.',
+                '(i) [reschedule-0000] Start task execution.',
+                '(i) [reschedule-0000] Create command \'test.dummy\'.',
+                '(i) [reschedule-0000] Execute command \'test.dummy\'.',
+                '(i) [reschedule-0000] [test.dummy] Run test command.',
+                '(i) [reschedule-0000] Finished command execution.',
+                '(i) [reschedule-0000] Create command \'test.reschedule\'.',
+                '(i) [reschedule-0000] Execute command \'test.reschedule\'.',
+                '(W) [reschedule-0000] [test.reschedule] Run test reschedule command.',
+                '(i) [reschedule-0000] Command requested rescheduled execution.',
+                '(i) [reschedule-0000] Task will be rescheduled for 30 seconds.',
                 '(i) Released lock.',
             ),
             $logger->logMessages

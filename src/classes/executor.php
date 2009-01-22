@@ -38,6 +38,13 @@ class periodicExecutor
     protected $crontab;
 
     /**
+     * Rescheduled tasks
+     * 
+     * @var array
+     */
+    protected $rescheduled = array();
+
+    /**
      * Logger class, which receives all log messages
      * 
      * @var periodicLogger
@@ -176,13 +183,25 @@ class periodicExecutor
     {
         $now  = time();
         $jobs = array();
+
+        // Find rescheduled tasks
+        foreach ( $this->rescheduled as $scheduled => $cronjob )
+        {
+            if ( $scheduled <= $now )
+            {
+                $jobs[$scheduled][] = $cronjob;
+                unset( $this->rescheduled[$scheduled] );
+            }
+        }
+
+        // Find new jobs defined by their crontable entries
         foreach ( $this->crontab as $cronjob )
         {
             $cronjob->iterator->startTime = $time;
 
             if ( ( $scheduled = $cronjob->iterator->current() ) < $now )
             {
-                $jobs[$scheduled] = $cronjob;
+                $jobs[$scheduled][] = $cronjob;
             }
         }
 
@@ -207,15 +226,35 @@ class periodicExecutor
      */
     protected function executeTasks( array $tasks )
     {
-        foreach ( $tasks as $scheduled => $cronjob )
+        foreach ( $tasks as $scheduled => $taskList )
         {
-            if ( ( $task = $this->taskFactory->factory( $cronjob->task, $scheduled, $this->logger ) ) !== false )
+            foreach ( $taskList as $cronjob )
             {
-                $this->logger->setTask( $task->getId() );
-                $this->logger->log( 'Start task execution.' );
-                $task->execute();
-                $this->logger->log( 'Finished task execution.' );
-                $this->logger->setTask();
+                if ( ( $task = $this->taskFactory->factory( $cronjob->task, $scheduled, $this->logger ) ) !== false )
+                {
+                    $this->logger->setTask( $task->getId() );
+                    $this->logger->log( 'Start task execution.' );
+                    $status = $task->execute();
+
+                    switch ( $status )
+                    {
+                        case periodicExecutor::SUCCESS:
+                            $this->logger->log( 'Finished task execution.' );
+                            break;
+                        case periodicExecutor::ERROR:
+                            $this->logger->log( 'Error occured during task execution.', periodicLogger::WARNING );
+                            break;
+                        case periodicExecutor::RESCHEDULE:
+                            $this->logger->log( 'Task will be rescheduled for ' . $task->reScheduleTime . ' seconds.' );
+                            $this->rescheduled[$scheduled + $task->reScheduleTime] = $cronjob;
+                            break;
+                        default:
+                            $this->logger->log( 'Invalid status returned by task.', periodicLogger::ERROR );
+                            break;
+                    }
+
+                    $this->logger->setTask();
+                }
             }
         }
     }
