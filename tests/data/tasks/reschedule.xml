@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <task>
+	<config>
+		<reScheduleTime>30</reScheduleTime>
+		<timeout>1200</timeout>
+	</config>
 	<command type="test.dummy"/>
 	<command type="test.reschedule"/>
 	<command type="test.dummy"/>

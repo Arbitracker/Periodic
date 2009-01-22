@@ -85,11 +85,12 @@ class periodicTask
         $this->logger        = $logger;
 
         // Configure task
-        if ( $this->configuration->config )
+        foreach ( $this->properties as $key => $default )
         {
-            foreach ( $this->configuration->config as $key => $value )
+            if ( $this->configuration->config &&
+                 $this->configuration->config->$key )
             {
-                $this->$key = $value;
+                $this->properties[$key] = (int) (string) $this->configuration->config->$key;
             }
         }
     }
@@ -159,6 +160,39 @@ class periodicTask
         }
 
         return periodicExecutor::SUCCESS;
+    }
+
+    /**
+     * Interceptor for task options
+     * 
+     * @param string $property 
+     * @return mixed
+     */
+    public function __get( $property )
+    {
+        if ( !array_key_exists( $property, $this->properties ) )
+        {
+            throw new periodicAttributeException( periodicAttributeException::NON_EXISTANT, $property );
+        }
+
+        return $this->properties[$property];
+    }
+
+    /**
+     * Interceptor for task options
+     * 
+     * @param string $property 
+     * @param mixed $value 
+     * @return void
+     */
+    public function __set( $property, $value )
+    {
+        if ( !array_key_exists( $property, $this->properties ) )
+        {
+            throw new periodicAttributeException( periodicAttributeException::NON_EXISTANT, $property );
+        }
+
+        throw new periodicAttributeException( periodicAttributeException::WRITE, $property );
     }
 }
 

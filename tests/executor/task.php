@@ -40,6 +40,95 @@ class periodicTaskTests extends PHPUnit_Framework_TestCase
         periodicCommandRegistry::registerCommand( 'test.errorneous', 'periodicTestErrorneousCommand' );
     }
 
+    public function testTaskConfigurationDefaultValues()
+    {
+        $task = new periodicTask(
+            'test', 0,
+            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            $logger = new periodicTestLogger()
+        );
+
+        $this->assertSame(
+            300,
+            $task->reScheduleTime
+        );
+
+        $this->assertSame(
+            3600,
+            $task->timeout
+        );
+    }
+
+    public function testTaskConfigurationReadUnknownValue()
+    {
+        $task = new periodicTask(
+            'test', 0,
+            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            $logger = new periodicTestLogger()
+        );
+
+        try
+        {
+            $task->unknown;
+            $this->fail( 'Expected periodicAttributeException.' );
+        }
+        catch ( periodicAttributeException $e )
+        { /* Expected */ }
+    }
+
+    public function testTaskConfigurationWriteUnknownValue()
+    {
+        $task = new periodicTask(
+            'test', 0,
+            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            $logger = new periodicTestLogger()
+        );
+
+        try
+        {
+            $task->unknown = 42;
+            $this->fail( 'Expected periodicAttributeException.' );
+        }
+        catch ( periodicAttributeException $e )
+        { /* Expected */ }
+    }
+
+    public function testTaskConfigurationWriteValue()
+    {
+        $task = new periodicTask(
+            'test', 0,
+            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            $logger = new periodicTestLogger()
+        );
+
+        try
+        {
+            $task->timeout = 42;
+            $this->fail( 'Expected periodicAttributeException.' );
+        }
+        catch ( periodicAttributeException $e )
+        { /* Expected */ }
+    }
+
+    public function testTaskConfigurationReconfiguredValues()
+    {
+        $task = new periodicTask(
+            'test', 0,
+            arbitXml::loadFile( __DIR__ . "/../data/tasks/reschedule.xml" ),
+            $logger = new periodicTestLogger()
+        );
+
+        $this->assertSame(
+            30,
+            $task->reScheduleTime
+        );
+
+        $this->assertSame(
+            1200,
+            $task->timeout
+        );
+    }
+
     public static function getTaskHandlingLogs()
     {
         return array(
