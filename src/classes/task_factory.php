@@ -92,7 +92,7 @@ class periodicTaskFactory
             "Create task '$task' for scheduled date '" . date( 'r', $date ) . "'.",
             periodicLogger::INFO
         );
-        return new periodicTask( $taskDefinition, $logger );
+        return new periodicTask( $task, $date, $taskDefinition, $logger );
     }
 }
 

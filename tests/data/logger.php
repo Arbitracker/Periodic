@@ -3,6 +3,8 @@
 class periodicTestLogger implements periodicLogger
 {
     public $logMessages = array();
+    public $task        = null;
+    public $command     = null;
 
     public function log( $message, $severity = periodicLogger::INFO )
     {
@@ -11,15 +13,22 @@ class periodicTestLogger implements periodicLogger
             periodicLogger::WARNING => "W",
             periodicLogger::ERROR   => "E",
         );
-        $this->logMessages[] = '(' . $mapping[$severity] . ') ' . $message;
+        $msg = '(' . $mapping[$severity] . ') ';
+
+        if ( $this->task )    $msg .= "[{$this->task}] ";
+        if ( $this->command ) $msg .= "[{$this->command}] ";
+
+        $this->logMessages[] = $msg . $message;
     }
 
-    public function setTask( periodicTask $task )
+    public function setTask( $task = null )
     {
+        $this->task = $task;
     }
 
-    public function setCommand( periodicCommand $command )
+    public function setCommand( $command = null )
     {
+        $this->command = $command;
     }
 }
 

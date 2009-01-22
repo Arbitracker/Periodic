@@ -291,4 +291,33 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
             strpos( $logger->logMessages[2], '(E) Error parsing definition file for task \'invalid\':' )
         );
     }
+
+    public function testRunDummyTestCommand()
+    {
+        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $executor = new periodicTestAllPublicExecutor(
+            "* * * * * dummy",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        // Set a manual last run date, to keep tests deterministic
+        file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
+        $executor->run();
+
+        $this->assertEquals(
+            array(
+                '(i) Aquired lock.',
+                '(i) Stored last run time.',
+                '(i) Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:23:00 +0100\'.',
+                '(i) [dummy-946725780] Start task execution.',
+                '(i) [dummy-946725780] Create command \'test.dummy\'.',
+                '(i) [dummy-946725780] Execute command \'test.dummy\'.',
+                '(i) [dummy-946725780] [test.dummy] Run test command.',
+                '(i) [dummy-946725780] Finished command execution.',
+                '(i) [dummy-946725780] Finished task execution.',
+                '(i) Released lock.',
+            ),
+            $logger->logMessages
+        );
+    }
 }

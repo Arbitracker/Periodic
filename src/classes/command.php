@@ -64,8 +64,11 @@ abstract class periodicCommand
      * Run command
      *
      * Execute the actual bits.
+     *
+     * Should return one of the status constant values, defined as class
+     * constants in periodicCommand.
      * 
-     * @return void
+     * @return int
      */
     abstract public function run();
 }

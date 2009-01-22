@@ -28,7 +28,7 @@
  * A simple static-only command registry, where commands can be registered with
  * their associated implementations.
  */
-class periodicCommandRegistry
+final class periodicCommandRegistry
 {
     /**
      * List of commands with their associated class names of their

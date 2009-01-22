@@ -59,6 +59,28 @@ class periodicExecutor
     protected $taskFactory;
 
     /**
+     * Constant indicating success of command run 
+     */
+    const SUCCESS    = 1;
+                  
+    /**
+     * Constant indicating, that the task should be aborted because of the
+     * current command.
+     */
+    const ABORT      = 2;
+                  
+    /**
+     * Constant indicating that the current command caused an error.
+     */
+    const ERROR      = 4;
+                  
+    /**
+     * Constant indicating a temporary failure, so that the task should be
+     * rescheduled.
+     */
+    const RESCHEDULE = 8;
+
+    /**
      * Construct the executor
      *
      * Construct the executor from the given cron table and a logger
@@ -189,7 +211,11 @@ class periodicExecutor
         {
             if ( ( $task = $this->taskFactory->factory( $cronjob->task, $scheduled, $this->logger ) ) !== false )
             {
+                $this->logger->setTask( $task->getId() );
+                $this->logger->log( 'Start task execution.' );
                 $task->execute();
+                $this->logger->log( 'Finished task execution.' );
+                $this->logger->setTask();
             }
         }
     }

@@ -47,6 +47,7 @@ return array(
     'arbitValueException'             => 'external/xml/exceptions.php',
     'arbitXmlNodeList'                => 'external/xml/node_list.php',
     'periodicLogger'                  => 'logger.php',
+    'periodicTask'                    => 'task.php',
     'periodicTaskFactory'             => 'task_factory.php',
 );
 

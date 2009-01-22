@@ -59,21 +59,23 @@ interface periodicLogger
     /**
      * Set current task
      *
-     * Set the currently active task.
+     * Set the currently active task. To reset, just call woithout any
+     * parameters.
      * 
-     * @param periodicTask $task 
+     * @param string $task 
      * @return void
      */
-    public function setTask( periodicTask $task );
+    public function setTask( $task = null );
 
     /**
      * Set current command
      *
-     * Set the currently active command.
+     * Set the currently active command. To reset, just call woithout any
+     * parameters.
      *
-     * @param periodicCommand $command 
+     * @param string $command 
      * @return void
      */
-    public function setCommand( periodicCommand $command );
+    public function setCommand( $command = null );
 }
 
