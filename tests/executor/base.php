@@ -35,7 +35,8 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->tmpDir = __DIR__ . '/../tmp/';
+        $this->tmpDir      = __DIR__ . '/../tmp/';
+        $this->taskFactory = new periodicTaskFactory( __DIR__ . '/../data/tasks/' );
     }
 
     public function tearDown()
@@ -50,6 +51,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     {
         $executor = new periodicExecutor(
             "",
+            $this->taskFactory,
             $logger = new periodicTestLogger(),
             $this->tmpDir
         );
@@ -64,6 +66,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     {
         $executor = new periodicTestAllPublicExecutor(
             "# Comment\n;Comment\r# Comment",
+            $this->taskFactory,
             $logger = new periodicTestLogger(),
             $this->tmpDir
         );
@@ -78,6 +81,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     {
         $executor = new periodicTestAllPublicExecutor(
             "* * * * * test",
+            $this->taskFactory,
             $logger = new periodicTestLogger(),
             $this->tmpDir
         );
@@ -92,6 +96,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     {
         $executor = new periodicTestAllPublicExecutor(
             "\n# Line 1:\r\n* * * * * test\r; And a second one:\n* * * * * Foo\n",
+            $this->taskFactory,
             $logger = new periodicTestLogger(),
             $this->tmpDir
         );
@@ -105,7 +110,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     public function testGetInitialLastRunDate()
     {
         $executor = new periodicTestAllPublicExecutor(
-            "", $logger = new periodicTestLogger(), $this->tmpDir
+            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
         );
 
         $this->assertSame( false, $executor->getLastRun() );
@@ -119,7 +124,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     public function testLastRunDateAfterStoreDate()
     {
         $executor = new periodicTestAllPublicExecutor(
-            "", $logger = new periodicTestLogger(), $this->tmpDir
+            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
         );
 
         $executor->storeLastRun();
@@ -134,7 +139,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     public function testLastRunDateStorageFailure()
     {
         $executor = new periodicTestAllPublicExecutor(
-            "", $logger = new periodicTestLogger(), $this->tmpDir
+            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
         );
 
         $oldPerms = fileperms( $this->tmpDir );
@@ -153,7 +158,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     public function testAquireAndReleaseLock()
     {
         $executor = new periodicTestAllPublicExecutor(
-            "", $logger = new periodicTestLogger(), $this->tmpDir
+            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
         );
 
         $this->assertTrue( $executor->aquireLock() );
@@ -168,7 +173,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     public function testReAquireLock()
     {
         $executor = new periodicTestAllPublicExecutor(
-            "", $logger = new periodicTestLogger(), $this->tmpDir
+            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
         );
 
         $this->assertTrue( $executor->aquireLock() );
@@ -184,13 +189,100 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
     public function testReleaseLockFailure()
     {
         $executor = new periodicTestAllPublicExecutor(
-            "", $logger = new periodicTestLogger(), $this->tmpDir
+            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
         );
 
         $executor->releaseLock();
         $this->assertSame(
             0,
             strpos( $logger->logMessages[0], 'Failure releasing lock' )
+        );
+    }
+
+    public function testGetSingularJob()
+    {
+        $executor = new periodicTestAllPublicExecutor(
+            "* * * * * job1",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
+        $this->assertEquals( 1, count( $jobs ) );
+        $firstJob = reset( $jobs );
+        $this->assertEquals( "job1", $firstJob->task );
+    }
+
+    public function testGetMultipleJobs()
+    {
+        $executor = new periodicTestAllPublicExecutor(
+            "*/15 * * * * *job2\n* * * * * job1",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
+        $this->assertEquals( 2, count( $jobs ) );
+        $firstJob = reset( $jobs );
+        $this->assertEquals( "job1", $firstJob->task );
+    }
+
+    public function testGetNoJobsInTimeframe()
+    {
+        $executor = new periodicTestAllPublicExecutor(
+            "* * * * * job1",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        $jobs = $executor->getJobsSince( time() + 3600 );
+        $this->assertEquals( 0, count( $jobs ) );
+    }
+
+    public function testDoNothingOnFirstRun()
+    {
+        $executor = new periodicTestAllPublicExecutor(
+            "* * * * * unknown",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        $executor->run();
+        $this->assertFileExists( $this->tmpDir . '/lastRun' );
+    }
+
+    public function testUnknownTaskDefinitionFile()
+    {
+        $executor = new periodicTestAllPublicExecutor(
+            "* * * * * unknown",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        // Set a manual last run date, to keep tests deterministic
+        file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
+        $executor->run();
+
+        $this->assertEquals(
+            array(
+                'Aquired lock.',
+                'Stored last run time.',
+                'Error reading definition file for task \'unknown\'',
+                'Released lock.',
+            ),
+            $logger->logMessages
+        );
+    }
+
+    public function testInvalidTaskDefinitionFile()
+    {
+        $executor = new periodicTestAllPublicExecutor(
+            "* * * * * invalid",
+            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        );
+
+        // Set a manual last run date, to keep tests deterministic
+        file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
+        $executor->run();
+
+        $this->assertSame(
+            0,
+            strpos( $logger->logMessages[2], 'Error parsing definition file for task \'invalid\':' )
         );
     }
 }

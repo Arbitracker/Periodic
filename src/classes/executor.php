@@ -1,6 +1,6 @@
 <?php
 /**
- * Autoload file
+ * Peridoc executor
  *
  * This file is part of periodic
  *
@@ -52,6 +52,13 @@ class periodicExecutor
     protected $lockDir;
 
     /**
+     * Task factory
+     * 
+     * @var periodicTaskFactory
+     */
+    protected $taskFactory;
+
+    /**
      * Construct the executor
      *
      * Construct the executor from the given cron table and a logger
@@ -62,11 +69,12 @@ class periodicExecutor
      * @param string $lockDir
      * @return void
      */
-    public function __construct( $crontab, periodicLogger $logger, $lockDir )
+    public function __construct( $crontab, periodicTaskFactory $taskFactory, periodicLogger $logger, $lockDir )
     {
         $this->parseCrontab( $crontab );
-        $this->logger  = $logger;
-        $this->lockDir = $lockDir;
+        $this->taskFactory = $taskFactory;
+        $this->logger      = $logger;
+        $this->lockDir     = $lockDir;
     }
 
     /**
@@ -112,14 +120,77 @@ class periodicExecutor
      */
     public function run()
     {
-        $tasks = $this->getTasksSince( $this->getLastRun() );
+        // If this is the first run at all, do not do anything.
+        if ( ( $lastRun = $this->getLastRun() ) === false )
+        {
+            $this->storeLastRun();
+            return;
+        }
 
+        $tasks = $this->getJobsSince( $lastRun );
         if ( count( $tasks ) &&
              $this->aquireLock() )
         {
             $this->storeLastRun();
             $this->executeTasks( $tasks );
             $this->releaseLock();
+        }
+    }
+
+    /**
+     * Get jobs since date
+     *
+     * Return an array with jobs which have been scheduled between the given
+     * date and the current time.
+     *
+     * Each job is only returned once, even it occured multiple times in the
+     * given timeframe. The jobs are returned in order of their first
+     * scheduled execution.
+     * 
+     * @param int $time 
+     * @return array
+     */
+    protected function getJobsSince( $time )
+    {
+        $now  = time();
+        $jobs = array();
+        foreach ( $this->crontab as $cronjob )
+        {
+            $cronjob->iterator->startTime = $time;
+
+            if ( ( $scheduled = $cronjob->iterator->current() ) < $now )
+            {
+                $jobs[$scheduled] = $cronjob;
+            }
+        }
+
+        ksort( $jobs );
+        return $jobs;
+    }
+
+    /**
+     * Execute scheduled tasks
+     *
+     * Execute the given tasks.
+     *
+     * If a task has a group assigned, it may not be executed in parallel with
+     * tasks from the same group.
+     *
+     * This basic task executor does not execute any tasks in parallel,
+     * because it should not depend on any non-default extensions like
+     * ext/pcntl.
+     * 
+     * @param array $tasks 
+     * @return void
+     */
+    protected function executeTasks( array $tasks )
+    {
+        foreach ( $tasks as $scheduled => $cronjob )
+        {
+            if ( ( $task = $this->taskFactory->factory( $cronjob->task, $scheduled, $this->logger ) ) !== false )
+            {
+                $task->execute();
+            }
         }
     }
 

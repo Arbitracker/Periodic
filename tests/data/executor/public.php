@@ -4,6 +4,11 @@ class periodicTestAllPublicExecutor extends periodicExecutor
 {
     public $crontab;
 
+    public function getJobsSince( $time )
+    {
+        return parent::getJobsSince( $time );
+    }
+
     public function getLastRun()
     {
         return parent::getLastRun();
