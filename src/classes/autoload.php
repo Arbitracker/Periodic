@@ -29,6 +29,8 @@
  * # scripts/gen_autoload_files.php
  */
 return array(
+    'periodicCommand'                 => 'command.php',
+    'periodicCommandRegistry'         => 'command_registry.php',
     'periodicCronjob'                 => 'cronjob.php',
     'periodicCronjobIterator'         => 'cronjob_iterator.php',
     'periodicException'               => 'exceptions.php',

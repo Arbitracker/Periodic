@@ -22,6 +22,7 @@ if ( !defined( 'PERIODIC_TEST' ) )
  * Executor tests
  */
 require 'executor/base.php';
+require 'executor/command.php';
 
 /**
 * Test suite for Periodic cronjob
@@ -39,6 +40,7 @@ class periodicExecutorTestSuite extends PHPUnit_Framework_TestSuite
         $this->setName( 'Executor suite' );
 
         $this->addTest( periodicExecutorTests::suite() );
+        $this->addTest( periodicCommandFactoryTests::suite() );
     }
 
     /**
