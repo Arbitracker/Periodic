@@ -2,7 +2,7 @@
 /**
  * Periodic main test suite
  *
- * @version $Revision: 962 $
+ * @version $Revision$
  * @license LGPLv3
  */
 
