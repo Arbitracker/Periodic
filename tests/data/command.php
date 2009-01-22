@@ -36,3 +36,11 @@ class periodicTestErrorCommand extends periodicCommand
     }
 }
 
+class periodicTestErrorneousCommand extends periodicCommand
+{
+    public function run()
+    {
+        $this->logger->log( 'Run command returnin nothing.' );
+    }
+}
+

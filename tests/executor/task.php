@@ -37,6 +37,7 @@ class periodicTaskTests extends PHPUnit_Framework_TestCase
         periodicCommandRegistry::registerCommand( 'test.abort', 'periodicTestAbortCommand' );
         periodicCommandRegistry::registerCommand( 'test.reschedule', 'periodicTestRescheduleCommand' );
         periodicCommandRegistry::registerCommand( 'test.error', 'periodicTestErrorCommand' );
+        periodicCommandRegistry::registerCommand( 'test.errorneous', 'periodicTestErrorneousCommand' );
     }
 
     public static function getTaskHandlingLogs()
@@ -110,6 +111,20 @@ class periodicTaskTests extends PHPUnit_Framework_TestCase
                     '(i) Execute command \'test.error\'.',
                     '(E) [test.error] Run test error command.',
                     '(W) Command reported error.',
+                ),
+            ),
+            array(
+                'errorneous',
+                periodicExecutor::ERROR,
+                array(
+                    '(i) Create command \'test.dummy\'.',
+                    '(i) Execute command \'test.dummy\'.',
+                    '(i) [test.dummy] Run test command.',
+                    '(i) Finished command execution.',
+                    '(i) Create command \'test.errorneous\'.',
+                    '(i) Execute command \'test.errorneous\'.',
+                    '(i) [test.errorneous] Run command returnin nothing.',
+                    '(E) Command returned in unknown state.',
                 ),
             ),
         );

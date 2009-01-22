@@ -151,6 +151,10 @@ class periodicTask
                 case periodicExecutor::RESCHEDULE:
                     $this->logger->log( 'Command requested rescheduled execution.' );
                     return periodicExecutor::RESCHEDULE;
+
+                default:
+                    $this->logger->log( 'Command returned in unknown state.', periodicLogger::ERROR );
+                    return periodicExecutor::ERROR;
             }
         }
 
