@@ -101,7 +101,7 @@ class periodicTask
      */
     public function getId()
     {
-        return $this->name . '-' . $this->scheduled;
+        return $this->name . '-' . date( 'Hi', $this->scheduled );
     }
 
     /**
