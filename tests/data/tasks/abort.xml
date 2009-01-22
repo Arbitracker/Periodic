@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<task>
+	<command type="test.dummy"/>
+	<command type="test.abort"/>
+	<command type="test.dummy"/>
+</task>
