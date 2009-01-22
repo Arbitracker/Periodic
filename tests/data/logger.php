@@ -4,9 +4,14 @@ class periodicTestLogger implements periodicLogger
 {
     public $logMessages = array();
 
-    public function log( $message, $severity = self::INFO )
+    public function log( $message, $severity = periodicLogger::INFO )
     {
-        $this->logMessages[] = $message;
+        $mapping = array(
+            periodicLogger::INFO    => "i",
+            periodicLogger::WARNING => "W",
+            periodicLogger::ERROR   => "E",
+        );
+        $this->logMessages[] = '(' . $mapping[$severity] . ') ' . $message;
     }
 
     public function setTask( periodicTask $task )

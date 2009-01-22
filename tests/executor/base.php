@@ -129,7 +129,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
 
         $executor->storeLastRun();
         $this->assertEquals(
-            array( 'Stored last run time.' ),
+            array( '(i) Stored last run time.' ),
             $logger->logMessages
         );
 
@@ -148,7 +148,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
         $executor->storeLastRun();
         $this->assertSame(
             0,
-            strpos( $logger->logMessages[0], 'Failure storing last run time' )
+            strpos( $logger->logMessages[0], '(E) Failure storing last run time' )
         );
 
         $this->assertSame( false, $executor->getLastRun() );
@@ -165,7 +165,10 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
         $executor->releaseLock();
 
         $this->assertEquals(
-            array( 'Aquired lock.', 'Released lock.' ),
+            array(
+                '(i) Aquired lock.',
+                '(i) Released lock.'
+            ),
             $logger->logMessages
         );
     }
@@ -181,7 +184,10 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
         $executor->releaseLock();
 
         $this->assertEquals(
-            array( 'Aquired lock.', 'Released lock.' ),
+            array(
+                '(i) Aquired lock.',
+                '(i) Released lock.'
+            ),
             $logger->logMessages
         );
     }
@@ -195,7 +201,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
         $executor->releaseLock();
         $this->assertSame(
             0,
-            strpos( $logger->logMessages[0], 'Failure releasing lock' )
+            strpos( $logger->logMessages[0], '(E) Failure releasing lock' )
         );
     }
 
@@ -260,10 +266,10 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             array(
-                'Aquired lock.',
-                'Stored last run time.',
-                'Error reading definition file for task \'unknown\'',
-                'Released lock.',
+                '(i) Aquired lock.',
+                '(i) Stored last run time.',
+                '(E) Error reading definition file for task \'unknown\'',
+                '(i) Released lock.',
             ),
             $logger->logMessages
         );
@@ -282,7 +288,7 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
 
         $this->assertSame(
             0,
-            strpos( $logger->logMessages[2], 'Error parsing definition file for task \'invalid\':' )
+            strpos( $logger->logMessages[2], '(E) Error parsing definition file for task \'invalid\':' )
         );
     }
 }
