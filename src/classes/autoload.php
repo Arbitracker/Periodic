@@ -30,7 +30,7 @@
  */
 return array(
     'periodicCronjob'                 => 'cronjob.php',
-    'periodicCronjobIterator'         => 'cronjobIterator.php',
+    'periodicCronjobIterator'         => 'cronjob_iterator.php',
     'periodicException'               => 'exceptions.php',
     'periodicAttributeException'      => 'exceptions.php',
     'periodicInvalidCronjobException' => 'exceptions.php',
