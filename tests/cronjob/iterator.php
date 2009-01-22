@@ -161,7 +161,7 @@ class periodicCronjobIteratorTests extends PHPUnit_Framework_TestCase
     public function testValidCron( $input ) 
     {
         $iterator = new periodicTestRegexExposedCronjobIterator();
-        $this->assertTrue( true === $iterator->validateColumns( $input ) );
+        $this->assertSame( true, $iterator->validateColumns( $input ) );
     }
 
     /**
@@ -190,19 +190,19 @@ class periodicCronjobIteratorTests extends PHPUnit_Framework_TestCase
 
         // Generate the same ammount of timestamps that is available as output
         // data
-        $lines = count( $output );
-        $lines = 999;
+        $lines = count( $output ) - 1;
+//        $lines = 999;
         $comparison = array();
-        $comparison[] = date( 'Y-m-d H:i:s', $iterator->current() );
+        $comparison[] = date( 'Y-m-d H:i:s l', $iterator->current() );
         for( $i=0; $i<$lines; ++$i ) 
         {
             // For readability inside the output file formatted timestamps are
             // used instead of raw timestamps
-            $comparison[] = date( 'Y-m-d H:i:s', $iterator->next() );
+            $comparison[] = date( 'Y-m-d H:i:s l', $iterator->next() );
         }
 
         // Make sure our generated values match the expected ones
-//        $this->assertEquals( $output, $comparison );
-        file_put_contents( $outputfile, implode( "\n", $comparison ) );
+        $this->assertEquals( $output, $comparison );
+//        file_put_contents( $outputfile, implode( "\n", $comparison ) );
     }
 }

@@ -2,7 +2,7 @@
 
 return array(
 /*  Minute Hour Day Month Weekday  */
-	'*',    '*',  '*', '*',   '1-5/2'
+	'0',    '0',  '*', '*',   '1-5/2'
 );
 
 ?>
