@@ -2,7 +2,6 @@
 TODO for periodic
 =================
 
-- Handle rescheduled tasks in executor
 - Implement commands
 - Implement wrapper with apropriate loggers for custom calling environments
   - Web
