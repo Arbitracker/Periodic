@@ -713,9 +713,16 @@ class periodicCronjobIterator implements Iterator
         switch( $k ) 
         {
             case 'startTime':
+                // The crontable is minutes based therefore we need to ceil the
+                // seconds value to the next full minute if it is not zero
+                if ( ( ( $difference =  $v % 60 ) ) !== 0 ) 
+                {
+                    $v += 60 - $difference;
+                }
+
                 $this->attributes['startTime'] = (int)$v;
                 // Set the newly provided year
-                $this->year = (int)date( 'Y', $this->getCurrentTime() );
+                $this->year = (int)date( 'Y', $v );
                 // The timetable needs to be regenerated
                 $this->generateTimetable( 0 );
             break;

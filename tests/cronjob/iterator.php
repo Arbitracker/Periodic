@@ -186,7 +186,7 @@ class periodicCronjobIteratorTests extends PHPUnit_Framework_TestCase
 
         // Instantiate a new cronjobIterator with the read input data
         $iterator = new periodicCronjobIterator( $input );
-        $iterator->startTime = strtotime( '2009-01-01 00:00:00' );
+        $iterator->startTime = strtotime( '2009-01-01 00:00:01' );
 
         // Generate the same ammount of timestamps that is available as output
         // data
