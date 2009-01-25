@@ -21,8 +21,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'tests/data/logger.php';
-require_once 'tests/data/executor/public.php';
+require_once 'tests/helper/logger.php';
+require_once 'tests/helper/public.php';
 
 class periodicExecutorTests extends PHPUnit_Framework_TestCase
 {

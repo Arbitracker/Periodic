@@ -21,7 +21,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-include_once( dirname( __FILE__ ). '/../data/cronjob/regex_exposed_iterator.php' );
+require_once 'tests/helper/regex_exposed_iterator.php';
 
 class periodicCronjobIteratorTests extends PHPUnit_Framework_TestCase
 {
