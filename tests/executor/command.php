@@ -24,7 +24,7 @@
 require_once 'tests/helper/logger.php';
 require_once 'tests/helper/command.php';
 
-class periodicCommandFactoryTests extends PHPUnit_Framework_TestCase
+class periodicCommandFactoryTests extends periodicBaseTest
 {
     public static function suite()
     {

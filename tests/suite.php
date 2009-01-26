@@ -19,7 +19,10 @@ foreach ( $files as $class => $file )
     {
         PHPUnit_Util_Filter::addFileToWhitelist( $base . $file );
     }
+
 }
+
+require 'base_test.php';
 
 /**
  * Test suites

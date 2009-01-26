@@ -21,7 +21,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-class periodicCronjobTests extends PHPUnit_Framework_TestCase
+class periodicCronjobTests extends periodicBaseTest
 {
     public static function suite()
     {

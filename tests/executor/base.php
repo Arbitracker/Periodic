@@ -24,10 +24,8 @@
 require_once 'tests/helper/logger.php';
 require_once 'tests/helper/public.php';
 
-class periodicExecutorTests extends PHPUnit_Framework_TestCase
+class periodicExecutorTests extends periodicBaseTest
 {
-    protected $tmpDir;
-
     public static function suite()
     {
         return new PHPUnit_Framework_TestSuite( __CLASS__ );
@@ -35,16 +33,8 @@ class periodicExecutorTests extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->tmpDir      = __DIR__ . '/../tmp/';
+        parent::setUp();
         $this->taskFactory = new periodicTaskFactory( __DIR__ . '/../data/tasks/' );
-    }
-
-    public function tearDown()
-    {
-        foreach ( glob( $this->tmpDir . '*' ) as $file )
-        {
-            unlink( $file );
-        }
     }
 
     public function testEmptyCronTable()

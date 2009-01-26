@@ -23,7 +23,7 @@
 
 require_once 'tests/helper/regex_exposed_iterator.php';
 
-class periodicCronjobIteratorTests extends PHPUnit_Framework_TestCase
+class periodicCronjobIteratorTests extends periodicBaseTest
 {
     public static function suite()
     {

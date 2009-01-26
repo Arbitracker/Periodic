@@ -15,7 +15,15 @@ if ( !defined( 'PERIODIC_TEST' ) )
     foreach ( $files as $class => $file )
     {
         require_once $base . $file;
+
+        if ( strpos( $file, '/external/' ) === false )
+        {
+            PHPUnit_Util_Filter::addFileToWhitelist( $base . $file );
+        }
+
     }
+
+    require 'base_test.php';
 }
 
 /**
