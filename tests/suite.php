@@ -29,6 +29,7 @@ require 'base_test.php';
  */
 require 'cronjob_suite.php';
 require 'executor_suite.php';
+require 'command_suite.php';
 
 /**
 * Test suite for Periodic
@@ -47,6 +48,7 @@ class periodicTestSuite extends PHPUnit_Framework_TestSuite
 
         $this->addTestSuite( periodicCronjobTestSuite::suite() );
         $this->addTestSuite( periodicExecutorTestSuite::suite() );
+        $this->addTestSuite( periodicCommandTestSuite::suite() );
     }
 
     /**
