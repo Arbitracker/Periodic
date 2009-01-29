@@ -50,7 +50,7 @@ abstract class periodicBaseTest extends PHPUnit_Framework_TestCase
         {
             if ( is_dir( $file ) )
             {
-                $this->removeRecursively( $dir );
+                $this->removeRecursively( $file );
             }
             else
             {
