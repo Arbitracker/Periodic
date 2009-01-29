@@ -31,6 +31,7 @@ if ( !defined( 'PERIODIC_TEST' ) )
  * Command tests
  */
 require 'command/file_copy.php';
+require 'command/file_remove.php';
 
 /**
 * Test suite for Periodic cronjob
@@ -48,6 +49,7 @@ class periodicCommandTestSuite extends PHPUnit_Framework_TestSuite
         $this->setName( 'Command suite' );
 
         $this->addTest( periodicCommandFileCopyTests::suite() );
+        $this->addTest( periodicCommandFileRemoveTests::suite() );
     }
 
     /**

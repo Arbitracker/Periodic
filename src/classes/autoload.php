@@ -31,6 +31,7 @@
 return array(
     'periodicCommand'                 => 'command.php',
     'periodicFilesystemCopyCommand'   => 'command/filesystem/copy.php',
+    'periodicFilesystemRemoveCommand' => 'command/filesystem/remove.php',
     'periodicCommandRegistry'         => 'command_registry.php',
     'periodicCronjob'                 => 'cronjob.php',
     'periodicCronjobIterator'         => 'cronjob_iterator.php',
