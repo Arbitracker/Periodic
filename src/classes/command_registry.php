@@ -39,10 +39,10 @@ final class periodicCommandRegistry
     protected static $commands = array(
         // Standard file system operations
         'fs.copy'     => 'periodicFilesystemCopyCommand',
-        'fs.move'     => 'periodicFilesystemMoveCommand',
+//        'fs.move'     => 'periodicFilesystemMoveCommand',
         'fs.delete'   => 'periodicFilesystemDeleteCommand',
-        'fs.chown'    => 'periodicFilesystemChownCommand',
-        'fs.chmod'    => 'periodicFilesystemChmodCommand',
+//        'fs.chown'    => 'periodicFilesystemChownCommand',
+//        'fs.chmod'    => 'periodicFilesystemChmodCommand',
 
         // Generic system operations
         'system.exec' => 'periodicSystemExecCommand',
