@@ -3,7 +3,6 @@ TODO for periodic
 =================
 
 - Implement wrapper with apropriate loggers for custom calling environments
-  - Web
   - Deamon
 - Implement forked task executor
 - Implement deamon executor
