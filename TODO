@@ -2,7 +2,6 @@
 TODO for periodic
 =================
 
-- Implement commands
 - Implement wrapper with apropriate loggers for custom calling environments
   - Web
   - Cron
