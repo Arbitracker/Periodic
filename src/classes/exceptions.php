@@ -29,6 +29,13 @@ abstract class periodicException extends Exception
 }
 
 /**
+ * Periodic runtime exception
+ */
+class periodicRuntimeException extends periodicException
+{
+}
+
+/**
  * periodicAttributeException 
  * 
  * Thrown if an attribute is accessed in a way which is not allowed.

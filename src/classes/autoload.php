@@ -37,6 +37,7 @@ return array(
     'periodicCronjob'                 => 'cronjob.php',
     'periodicCronjobIterator'         => 'cronjob_iterator.php',
     'periodicException'               => 'exceptions.php',
+    'periodicRuntimeException'        => 'exceptions.php',
     'periodicAttributeException'      => 'exceptions.php',
     'periodicInvalidCronjobException' => 'exceptions.php',
     'periodicExecutor'                => 'executor.php',
@@ -50,6 +51,8 @@ return array(
     'arbitValueException'             => 'external/xml/exceptions.php',
     'arbitXmlNodeList'                => 'external/xml/node_list.php',
     'periodicLogger'                  => 'logger.php',
+    'periodicBaseLogger'              => 'logger/base.php',
+    'periodicCliLogger'               => 'logger/cli.php',
     'periodicTask'                    => 'task.php',
     'periodicTaskFactory'             => 'task_factory.php',
 );
