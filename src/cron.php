@@ -24,7 +24,7 @@
  */
 
 /**
- * This file contains the corn runner for periodic
+ * This file contains the cron runner for periodic
  *
  * It may be called in any interval, and will execute all jobs which are open
  * since the last call. It will output messages usable for cron deamons.
