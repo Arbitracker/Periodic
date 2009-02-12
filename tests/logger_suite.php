@@ -48,6 +48,7 @@ class periodicLoggerTestSuite extends PHPUnit_Framework_TestSuite
         parent::__construct();
         $this->setName( 'Logger suite' );
 
+        $this->addTest( periodicLoggerCliTests::suite() );
         $this->addTest( periodicLoggerHtmlTests::suite() );
     }
 

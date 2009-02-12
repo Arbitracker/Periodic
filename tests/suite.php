@@ -15,7 +15,7 @@ foreach ( $files as $class => $file )
 {
     require_once $base . $file;
 
-    if ( strpos( $file, '/external/' ) === false )
+    if ( strpos( $file, 'external/' ) === false )
     {
         PHPUnit_Util_Filter::addFileToWhitelist( $base . $file );
     }
@@ -30,6 +30,7 @@ require 'base_test.php';
 require 'cronjob_suite.php';
 require 'executor_suite.php';
 require 'command_suite.php';
+require 'logger_suite.php';
 
 /**
 * Test suite for Periodic
@@ -49,6 +50,7 @@ class periodicTestSuite extends PHPUnit_Framework_TestSuite
         $this->addTestSuite( periodicCronjobTestSuite::suite() );
         $this->addTestSuite( periodicExecutorTestSuite::suite() );
         $this->addTestSuite( periodicCommandTestSuite::suite() );
+        $this->addTestSuite( periodicLoggerTestSuite::suite() );
     }
 
     /**
