@@ -58,6 +58,23 @@ class periodicCliLogger extends periodicBaseLogger
     const STDERR = 2;
 
     /**
+     * Write text to stream
+     *
+     * Write given text to given stream. Simple wrapper function to make class
+     * testable.
+     *
+     * @param string $stream 
+     * @param string $text 
+     * @return void
+     */
+    protected function write( $stream, $text )
+    {
+        $fp = fopen( $stream, 'a' );
+        $fwrite( $fp, $text );
+        fclose( $fp );
+    }
+
+    /**
      * Log message
      *
      * Log a message, while the message must be convertable into a string.
@@ -81,11 +98,11 @@ class periodicCliLogger extends periodicBaseLogger
                 return;
 
             case self::STDOUT:
-                $fp = fopen( 'php://stdout', 'a' );
+                $stream = 'php://stdout';
                 break;
 
             case self::STDERR:
-                $fp = fopen( 'php://stderr', 'a' );
+                $stream = 'php://stderr';
                 break;
 
             default:
@@ -93,21 +110,19 @@ class periodicCliLogger extends periodicBaseLogger
         }
 
         // Generate and output error message
-        fwrite( $fp, sprintf( "[%s]%s %s: %s\n",
+        $this->write( $stream, sprintf( "[%s]%s %s: %s\n",
             date( 'Y/m/d-H:i.s' ),
             ( $this->task ? 
-                $this->task . ( 
+                ' (' . $this->task . ( 
                     $this->command ?
-                        '::' . $command :
+                        '::' . $this->command :
                         ''
-                . ' ' ) :
+                ) . ')' :
                 ''
             ),
             $this->names[$severity],
             $message
         ) );
-        fclose( $fp );
-        flush();
     }
 
     /**
