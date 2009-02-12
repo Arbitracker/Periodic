@@ -95,6 +95,11 @@ HTMLFOOTER;
      */
     public function log( $message, $severity = self::INFO )
     {
+        if ( !isset( $this->names[$severity] ) )
+        {
+            throw new periodicRuntimeException( "Unknown severity: " . $severity );
+        }
+
         printf( "        <li>
             <span style=\"color: #babdb6\">%s</span> %s
             <span style=\"color: %s; font-weight: bold;\">%s:</span> %s
@@ -103,7 +108,7 @@ HTMLFOOTER;
             ( $this->task ? 
                 $this->task . ( 
                     $this->command ?
-                        '::' . $command :
+                        '::' . $this->command :
                         ''
                 . ' ' ) :
                 ''

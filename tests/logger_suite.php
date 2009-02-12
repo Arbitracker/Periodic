@@ -31,6 +31,7 @@ if ( !defined( 'PERIODIC_TEST' ) )
  * Logger tests
  */
 require 'logger/cli.php';
+require 'logger/html.php';
 
 /**
 * Test suite for Periodic cronjob
@@ -47,7 +48,7 @@ class periodicLoggerTestSuite extends PHPUnit_Framework_TestSuite
         parent::__construct();
         $this->setName( 'Logger suite' );
 
-        $this->addTest( periodicLoggerCliTests::suite() );
+        $this->addTest( periodicLoggerHtmlTests::suite() );
     }
 
     /**
