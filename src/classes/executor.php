@@ -318,6 +318,7 @@ class periodicExecutor
         if ( $fp === false )
         {
             // Aquiring the lock failed.
+            $this->logger->log( 'Locked.', periodicLogger::INFO );
             return false;
         }
 
