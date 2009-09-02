@@ -29,50 +29,18 @@
  * warnings will be logged to STDERR, while info messages are printed to
  * STDOUT.
  */
-class periodicCliLogger extends periodicBaseLogger
+class periodicEzLogLogger extends periodicBaseLogger
 {
     /**
-     * Mapping of error levels to pipes
+     * Mapping of log severities
      * 
      * @var array
      */
-    protected $mapping = array(
-        periodicLogger::INFO    => self::STDOUT,
-        periodicLogger::WARNING => self::STDERR,
-        periodicLogger::ERROR   => self::STDERR,
+    protected $severityMapping = array(
+        periodicLogger::INFO    => ezcLog::INFO,
+        periodicLogger::WARNING => ezcLog::WARNING,
+        periodicLogger::ERROR   => ezcLog::ERROR,
     );
-
-    /**
-     * Do not print any message
-     */
-    const SILENCE = 0;
-
-    /**
-     * Print message to STDOUT
-     */
-    const STDOUT = 1;
-
-    /**
-     * Print message to STDERR
-     */
-    const STDERR = 2;
-
-    /**
-     * Write text to stream
-     *
-     * Write given text to given stream. Simple wrapper function to make class
-     * testable.
-     *
-     * @param string $stream 
-     * @param string $text 
-     * @return void
-     */
-    protected function write( $stream, $text )
-    {
-        $fp = fopen( $stream, 'a' );
-        fwrite( $fp, $text );
-        fclose( $fp );
-    }
 
     /**
      * Log message
@@ -86,81 +54,8 @@ class periodicCliLogger extends periodicBaseLogger
      */
     public function log( $message, $severity = self::INFO )
     {
-        if ( !isset( $this->mapping[$severity] ) )
-        {
-            throw new periodicRuntimeException( "Unknown severity: " . $severity );
-        }
-
-        switch ( $pipe = $this->mapping[$severity] )
-        {
-            case self::SILENCE:
-                // Ignore this message
-                return;
-
-            case self::STDOUT:
-                $stream = 'php://stdout';
-                break;
-
-            case self::STDERR:
-                $stream = 'php://stderr';
-                break;
-
-            default:
-                throw new periodicRuntimeException( "Unknown output pipe: " . $pipe );
-        }
-
-        // Generate and output error message
-        $this->write( $stream, sprintf( "[%s]%s %s: %s\n",
-            date( 'Y/m/d-H:i.s' ),
-            ( $this->task ? 
-                ' (' . $this->task . ( 
-                    $this->command ?
-                        '::' . $this->command :
-                        ''
-                ) . ')' :
-                ''
-            ),
-            $this->names[$severity],
-            $message
-        ) );
-    }
-
-    /**
-     * Set output pipe for severity
-     *
-     * Set the designated output pipe for log messages with the givene
-     * severity. The available severities are defined in the logger interface
-     * and are:
-     *
-     * - periodicLogger::INFO
-     * - periodicLogger::WARNING
-     * - periodicLogger::ERROR
-     *
-     * The available output pipes are:
-     *
-     * - periodicCliLogger::SILENCE, do not output anything
-     * - periodicCliLogger::STDOUT, echo messages to STDOUT
-     * - periodicCliLogger::STDERR, echo messages to STDERR
-     *
-     * @param int $severity 
-     * @param int $pipe 
-     * @return void
-     */
-    public function setMapping( $severity, $pipe )
-    {
-        if ( !isset( $this->mapping[$severity] ) )
-        {
-            throw new periodicRuntimeException( "Unknown severity: " . $severity );
-        }
-
-        if ( ( $pipe !== self::SILENCE ) &&
-             ( $pipe !== self::STDOUT ) &&
-             ( $pipe !== self::STDERR ) )
-        {
-            throw new periodicRuntimeException( "Unknown output pipe: " . $pipe );
-        }
-
-        $this->mapping[$severity] = $pipe;
+        $log = ezcLog::getInstance();
+        $log->log( $message, $this->severityMapping[$severity] );
     }
 }
 
