@@ -70,7 +70,7 @@ class periodicCliLogger extends periodicBaseLogger
     protected function write( $stream, $text )
     {
         $fp = fopen( $stream, 'a' );
-        $fwrite( $fp, $text );
+        fwrite( $fp, $text );
         fclose( $fp );
     }
 
