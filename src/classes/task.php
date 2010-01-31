@@ -32,35 +32,35 @@ class periodicTask
 {
     /**
      * Logger
-     * 
+     *
      * @var periodicLogger
      */
     protected $logger;
 
     /**
      * Command configuration
-     * 
+     *
      * @var arbitXmlNode
      */
     protected $configuration;
 
     /**
      * Name of current task
-     * 
+     *
      * @var string
      */
     protected $name;
 
     /**
      * Scheduled date of current task
-     * 
+     *
      * @var int
      */
     protected $scheduled;
 
     /**
      * Task configuration properties
-     * 
+     *
      * @var array
      */
     protected $properties = array(
@@ -72,9 +72,9 @@ class periodicTask
      * Construct command
      *
      * Construct command from its configuration and the currently used logger
-     * 
-     * @param arbitXmlNode $configuration 
-     * @param periodicLogger $logger 
+     *
+     * @param arbitXmlNode $configuration
+     * @param periodicLogger $logger
      * @return void
      */
     public function __construct( $name, $scheduled, arbitXmlNode $configuration, periodicLogger $logger )
@@ -97,7 +97,7 @@ class periodicTask
 
     /**
      * Return task ID
-     * 
+     *
      * @return string
      */
     public function getId()
@@ -109,12 +109,12 @@ class periodicTask
      * Run task
      *
      * Execute the contained commands
-     * 
+     *
      * Returns SUCCESS, if either all commands have been run successfully, or
      * one command intentionally aborted the execution. If one command reports
      * an error or requests reschuduling execution is aborted and this is
      * reported to the executor.
-     * 
+     *
      * @return int
      */
     public function execute()
@@ -164,8 +164,8 @@ class periodicTask
 
     /**
      * Interceptor for task options
-     * 
-     * @param string $property 
+     *
+     * @param string $property
      * @return mixed
      */
     public function __get( $property )
@@ -180,9 +180,9 @@ class periodicTask
 
     /**
      * Interceptor for task options
-     * 
-     * @param string $property 
-     * @param mixed $value 
+     *
+     * @param string $property
+     * @param mixed $value
      * @return void
      */
     public function __set( $property, $value )
