@@ -127,7 +127,7 @@ class periodicTask
                     "Failed to instantiate command '$type' - aborting task.",
                     periodicLogger::ERROR
                 );
-                return;
+                return periodicExecutor::ERROR;
             }
 
             $this->logger->log( "Execute command '$type'." );
