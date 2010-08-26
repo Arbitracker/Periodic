@@ -34,7 +34,7 @@ class periodicExecutorTests extends periodicBaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->taskFactory = new periodicTaskFactory( __DIR__ . '/../data/tasks/' );
+        $this->taskFactory = new periodicTaskFactory( dirname( __FILE__ ) . '/../data/tasks/' );
     }
 
     public function testEmptyCronTable()

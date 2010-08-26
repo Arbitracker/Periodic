@@ -44,7 +44,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
             $logger = new periodicTestLogger()
         );
 
@@ -63,7 +63,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
             $logger = new periodicTestLogger()
         );
 
@@ -80,7 +80,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
             $logger = new periodicTestLogger()
         );
 
@@ -97,7 +97,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( __DIR__ . "/../data/tasks/dummy.xml" ),
+            arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
             $logger = new periodicTestLogger()
         );
 
@@ -114,7 +114,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( __DIR__ . "/../data/tasks/reschedule.xml" ),
+            arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/reschedule.xml" ),
             $logger = new periodicTestLogger()
         );
 
@@ -226,7 +226,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( __DIR__ . "/../data/tasks/$name.xml" ),
+            arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/$name.xml" ),
             $logger = new periodicTestLogger()
         );
 

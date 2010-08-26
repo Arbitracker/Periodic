@@ -223,18 +223,13 @@ class periodicCronjobIterator implements Iterator
         // current one can be removed because it is definetly an event in the past
         if ( $this->yearOffset === 0 ) 
         {
-            $months = array_filter( 
-                $months,
-                function( $v )
-                    use( $currentMonth ) 
+            foreach ( $months as $nr => $month )
+            {
+                if ( $month < $currentMonth )
                 {
-                    if ( $v < $currentMonth ) 
-                    {
-                        return false;
-                    }
-                    return true;
+                    unset( $months[$nr] );
                 }
-            );
+            }
         }
 
         // Combine the months and days into a single array to be able to handle
@@ -492,16 +487,14 @@ class periodicCronjobIterator implements Iterator
             return $range;
         }
 
-        return array_keys( 
-            array_filter( 
-                array_flip( $range ), 
-                function( $v )
-                    use( $step ) 
-                {
-                    return ( ( $v % $step ) === 0 );
-                }
-            )
-        );
+        foreach ( $range as $value => $tmp )
+        {
+            if ( ( $value % $step ) !== 0 )
+            {
+                unset( $range[$value] );
+            }
+        }
+        return array_values( $range );
     }
 
     /**
