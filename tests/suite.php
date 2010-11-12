@@ -17,7 +17,8 @@ foreach ( $files as $class => $file )
 
     if ( strpos( $file, 'external/' ) === false )
     {
-        PHPUnit_Util_Filter::addFileToWhitelist( $base . $file );
+        // Stupid PHPUnit 3.5 removed this:
+        // PHPUnit_Util_Filter::addFileToWhitelist( $base . $file );
     }
 
 }
