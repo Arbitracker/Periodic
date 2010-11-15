@@ -53,6 +53,7 @@ return array(
     'periodicLogger'                  => 'logger.php',
     'periodicBaseLogger'              => 'logger/base.php',
     'periodicCliLogger'               => 'logger/cli.php',
+    'periodicEzLogLogger'             => 'logger/ezlog.php',
     'periodicHtmlLogger'              => 'logger/html.php',
     'periodicTask'                    => 'task.php',
     'periodicTaskFactory'             => 'task_factory.php',
