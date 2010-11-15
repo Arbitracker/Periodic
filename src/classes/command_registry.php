@@ -28,7 +28,7 @@
  * A simple static-only command registry, where commands can be registered with
  * their associated implementations.
  */
-final class periodicCommandRegistry
+class periodicCommandRegistry
 {
     /**
      * List of commands with their associated class names of their
@@ -36,7 +36,7 @@ final class periodicCommandRegistry
      *
      * @var array
      */
-    protected static $commands = array(
+    protected $commands = array(
         // Standard file system operations
         'fs.copy'     => 'periodicFilesystemCopyCommand',
         'fs.remove'   => 'periodicFilesystemRemoveCommand',
@@ -55,9 +55,9 @@ final class periodicCommandRegistry
      * @param string $class 
      * @return void
      */
-    public static function registerCommand( $command, $class )
+    public function registerCommand( $command, $class )
     {
-        self::$commands[$command] = $class;
+        $this->commands[$command] = $class;
     }
 
     /**
@@ -74,9 +74,9 @@ final class periodicCommandRegistry
      * @param periodicLogger $logger 
      * @return periodicCommand
      */
-    public static function factory( $command, arbitXmlNode $configuration, periodicLogger $logger )
+    public function factory( $command, arbitXmlNode $configuration, periodicLogger $logger )
     {
-        if ( !isset( self::$commands[$command] ) )
+        if ( !isset( $this->commands[$command] ) )
         {
             $logger->log(
                 "Unknown command '$command'.",
@@ -85,7 +85,7 @@ final class periodicCommandRegistry
             return false;
         }
 
-        if ( !class_exists( $class = self::$commands[$command] ) )
+        if ( !class_exists( $class = $this->commands[$command] ) )
         {
             $logger->log(
                 "Implementation for command '$command' could not be found.",

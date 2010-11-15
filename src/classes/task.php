@@ -45,6 +45,13 @@ class periodicTask
     protected $configuration;
 
     /**
+     * Command registry
+     *
+     * @var periodicCommandRegistry
+     */
+    protected $commandRegistry;
+
+    /**
      * Name of current task
      *
      * @var string
@@ -73,16 +80,20 @@ class periodicTask
      *
      * Construct command from its configuration and the currently used logger
      *
-     * @param arbitXmlNode $configuration
-     * @param periodicLogger $logger
+     * @param string $name 
+     * @param int $scheduled 
+     * @param arbitXmlNode $configuration 
+     * @param periodicCommandRegistry $commandRegistry 
+     * @param periodicLogger $logger 
      * @return void
      */
-    public function __construct( $name, $scheduled, arbitXmlNode $configuration, periodicLogger $logger )
+    public function __construct( $name, $scheduled, arbitXmlNode $configuration, periodicCommandRegistry $commandRegistry, periodicLogger $logger )
     {
-        $this->name          = $name;
-        $this->scheduled     = $scheduled;
-        $this->configuration = $configuration;
-        $this->logger        = $logger;
+        $this->name            = $name;
+        $this->scheduled       = $scheduled;
+        $this->configuration   = $configuration;
+        $this->commandRegistry = $commandRegistry;
+        $this->logger          = $logger;
 
         // Configure task
         foreach ( $this->properties as $key => $default )
@@ -121,7 +132,7 @@ class periodicTask
     {
         foreach ( $this->configuration->command as $config )
         {
-            if ( ( $command = periodicCommandRegistry::factory( $type = $config['type'], $config, $this->logger ) ) === false )
+            if ( ( $command = $this->commandRegistry->factory( $type = $config['type'], $config, $this->logger ) ) === false )
             {
                 $this->logger->log(
                     "Failed to instantiate command '$type' - aborting task.",

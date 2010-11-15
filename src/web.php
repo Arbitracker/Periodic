@@ -47,7 +47,10 @@ try
     // Instantiate executor
     $executor = new periodicExecutor(
         $crontable,
-        new periodicTaskFactory( $taskDir ),
+        new periodicTaskFactory(
+            $taskDir,
+            new periodicCommandRegistry()
+        ),
         new periodicHtmlLogger(),
         $dataDir
     );

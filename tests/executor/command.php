@@ -35,12 +35,13 @@ class periodicCommandFactoryTests extends periodicBaseTest
     {
         $this->logger = new periodicTestLogger();
         $this->config = arbitXml::loadString( '<?xml version="1.0" ?><configuration/>' );
+        $this->commandFactory = new periodicCommandRegistry();
     }
 
     public function testUnknownCommand()
     {
         $this->assertFalse(
-            periodicCommandRegistry::factory( 'unknown', $this->config, $this->logger )
+            $this->commandFactory->factory( 'unknown', $this->config, $this->logger )
         );
 
         $this->assertEquals(
@@ -53,9 +54,9 @@ class periodicCommandFactoryTests extends periodicBaseTest
 
     public function testUnknownImplementation()
     {
-        periodicCommandRegistry::registerCommand( 'invalid', 'testUnknownClassName' );
+        $this->commandFactory->registerCommand( 'invalid', 'testUnknownClassName' );
         $this->assertFalse(
-            periodicCommandRegistry::factory( 'invalid', $this->config, $this->logger )
+            $this->commandFactory->factory( 'invalid', $this->config, $this->logger )
         );
 
         $this->assertEquals(
@@ -68,9 +69,9 @@ class periodicCommandFactoryTests extends periodicBaseTest
 
     public function testConstructDummyCommand()
     {
-        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
         $this->assertTrue(
-            periodicCommandRegistry::factory( 'test.dummy', $this->config, $this->logger ) instanceof periodicTestDummyCommand
+            $this->commandFactory->factory( 'test.dummy', $this->config, $this->logger ) instanceof periodicTestDummyCommand
         );
 
         $this->assertEquals(

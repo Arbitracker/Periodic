@@ -33,11 +33,12 @@ class periodicTaskTests extends periodicBaseTest
 
     public function setUp()
     {
-        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
-        periodicCommandRegistry::registerCommand( 'test.abort', 'periodicTestAbortCommand' );
-        periodicCommandRegistry::registerCommand( 'test.reschedule', 'periodicTestRescheduleCommand' );
-        periodicCommandRegistry::registerCommand( 'test.error', 'periodicTestErrorCommand' );
-        periodicCommandRegistry::registerCommand( 'test.errorneous', 'periodicTestErrorneousCommand' );
+        $this->commandFactory = new periodicCommandRegistry();
+        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.abort', 'periodicTestAbortCommand' );
+        $this->commandFactory->registerCommand( 'test.reschedule', 'periodicTestRescheduleCommand' );
+        $this->commandFactory->registerCommand( 'test.error', 'periodicTestErrorCommand' );
+        $this->commandFactory->registerCommand( 'test.errorneous', 'periodicTestErrorneousCommand' );
     }
 
     public function testTaskConfigurationDefaultValues()
@@ -45,6 +46,7 @@ class periodicTaskTests extends periodicBaseTest
         $task = new periodicTask(
             'test', 0,
             arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
+            $this->commandFactory,
             $logger = new periodicTestLogger()
         );
 
@@ -64,6 +66,7 @@ class periodicTaskTests extends periodicBaseTest
         $task = new periodicTask(
             'test', 0,
             arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
+            $this->commandFactory,
             $logger = new periodicTestLogger()
         );
 
@@ -81,6 +84,7 @@ class periodicTaskTests extends periodicBaseTest
         $task = new periodicTask(
             'test', 0,
             arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
+            $this->commandFactory,
             $logger = new periodicTestLogger()
         );
 
@@ -98,6 +102,7 @@ class periodicTaskTests extends periodicBaseTest
         $task = new periodicTask(
             'test', 0,
             arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/dummy.xml" ),
+            $this->commandFactory,
             $logger = new periodicTestLogger()
         );
 
@@ -115,6 +120,7 @@ class periodicTaskTests extends periodicBaseTest
         $task = new periodicTask(
             'test', 0,
             arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/reschedule.xml" ),
+            $this->commandFactory,
             $logger = new periodicTestLogger()
         );
 
@@ -227,6 +233,7 @@ class periodicTaskTests extends periodicBaseTest
         $task = new periodicTask(
             'test', 0,
             arbitXml::loadFile( dirname( __FILE__ ) . "/../data/tasks/$name.xml" ),
+            $this->commandFactory,
             $logger = new periodicTestLogger()
         );
 

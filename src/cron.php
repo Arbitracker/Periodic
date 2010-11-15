@@ -83,7 +83,8 @@ try
 
     // Instantiate task factory
     $taskFactory = new periodicTaskFactory(
-        isset( $options['tasks'] ) ? $options['tasks'] : './tasks/'
+        isset( $options['tasks'] ) ? $options['tasks'] : './tasks/',
+        new periodicCommandRegistry()
     );
 
     $crontab = end( $argv );

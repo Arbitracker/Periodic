@@ -37,17 +37,25 @@ class periodicTaskFactory
     protected $definitions;
 
     /**
+     * Command registry
+     *
+     * @var periodicCommandRegistry
+     */
+    protected $commandRegistry;
+
+    /**
      * Construct task factory
      *
      * Construct task factory from the location where the task definitions
      * resides.
      * 
-     * @param string $definitions 
+     * @param periodicCommandRegistry $commandRegistry 
      * @return void
      */
-    public function __construct( $definitions )
+    public function __construct( $definitions, periodicCommandRegistry $commandRegistry )
     {
-        $this->definitions = $definitions;
+        $this->definitions     = $definitions;
+        $this->commandRegistry = $commandRegistry;
     }
 
     /**
@@ -92,7 +100,7 @@ class periodicTaskFactory
             "Create task '$task' for scheduled date '" . date( 'r', $date ) . "'.",
             periodicLogger::INFO
         );
-        return new periodicTask( $task, $date, $taskDefinition, $logger );
+        return new periodicTask( $task, $date, $taskDefinition, $this->commandRegistry, $logger );
     }
 }
 

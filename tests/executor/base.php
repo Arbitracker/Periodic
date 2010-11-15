@@ -34,7 +34,8 @@ class periodicExecutorTests extends periodicBaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->taskFactory = new periodicTaskFactory( dirname( __FILE__ ) . '/../data/tasks/' );
+        $this->commandFactory = new periodicCommandRegistry();
+        $this->taskFactory = new periodicTaskFactory( dirname( __FILE__ ) . '/../data/tasks/', $this->commandFactory );
     }
 
     public function testEmptyCronTable()
@@ -284,7 +285,7 @@ class periodicExecutorTests extends periodicBaseTest
 
     public function testRunDummyTestCommand()
     {
-        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
         $executor = new periodicTestAllPublicExecutor(
             "* * * * * dummy",
             $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
@@ -313,7 +314,7 @@ class periodicExecutorTests extends periodicBaseTest
 
     public function testRunTwoCommandsWithSameCronEntry()
     {
-        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
         $executor = new periodicTestAllPublicExecutor(
             "* * * * * dummy\n* * * * * dummy",
             $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
@@ -352,8 +353,8 @@ class periodicExecutorTests extends periodicBaseTest
      */
     public function testRescheduleTask()
     {
-        periodicCommandRegistry::registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
-        periodicCommandRegistry::registerCommand( 'test.reschedule', 'periodicTestRescheduleCommand' );
+        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.reschedule', 'periodicTestRescheduleCommand' );
 
         $executor = new periodicTestAllPublicExecutor(
             "0 0 1 1 * reschedule",
