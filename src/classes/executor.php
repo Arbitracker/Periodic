@@ -310,15 +310,22 @@ class periodicExecutor
      */
     protected function aquireLock()
     {
+        $lockfile = $this->lockDir . '/lock';
         // Silence call, since PHP will issue a warning when the file exists.
         // But there is no other way to properly immediately create a lock file
         // only if it does not exist yet.
-        $fp = @fopen( $this->lockDir . '/lock', 'x' );
+        $fp = @fopen( $lockfile, 'x' );
 
         if ( $fp === false )
         {
             // Aquiring the lock failed.
-            $this->logger->log( 'Locked.', periodicLogger::INFO );
+            $this->logger->log( 
+                sprintf(
+                    'The lockfile %s does allready exist.', 
+                    $lockfile
+                ),
+                periodicLogger::WARNING
+            );
             return false;
         }
 
