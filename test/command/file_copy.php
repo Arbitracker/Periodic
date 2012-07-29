@@ -21,7 +21,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'tests/helper/logger.php';
+require_once 'test/helper/logger.php';
 
 class periodicCommandFileCopyTests extends periodicBaseTest
 {
@@ -57,7 +57,7 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file</src>
+                    <src>test/data/file</src>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -81,8 +81,8 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file/dir</src>
-                    <dst>tests/tmp/test</dst>
+                    <src>test/data/file/dir</src>
+                    <dst>test/tmp/test</dst>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -101,8 +101,8 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file/dir</src>
-                    <dst>tests/tmp/test</dst>
+                    <src>test/data/file/dir</src>
+                    <dst>test/tmp/test</dst>
                     <depth>2</depth>
                 </command>
             ' ),
@@ -123,8 +123,8 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file/file</src>
-                    <dst>tests/tmp/test</dst>
+                    <src>test/data/file/file</src>
+                    <dst>test/tmp/test</dst>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -143,8 +143,8 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file/not_existant</src>
-                    <dst>tests/tmp/test</dst>
+                    <src>test/data/file/not_existant</src>
+                    <dst>test/tmp/test</dst>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -157,7 +157,7 @@ class periodicCommandFileCopyTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) tests/data/file/not_existant is not a valid source.',
+                '(W) test/data/file/not_existant is not a valid source.',
             ),
             $logger->logMessages
         );
@@ -168,8 +168,8 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file/dir</src>
-                    <dst>tests/tmp/existing</dst>
+                    <src>test/data/file/dir</src>
+                    <dst>test/tmp/existing</dst>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -183,7 +183,7 @@ class periodicCommandFileCopyTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) tests/tmp/existing already exists, and cannot be overwritten.',
+                '(W) test/tmp/existing already exists, and cannot be overwritten.',
             ),
             $logger->logMessages
         );
@@ -194,8 +194,8 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file/dir</src>
-                    <dst>tests/tmp/first</dst>
+                    <src>test/data/file/dir</src>
+                    <dst>test/tmp/first</dst>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -206,8 +206,8 @@ class periodicCommandFileCopyTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/tmp/first</src>
-                    <dst>tests/tmp/second</dst>
+                    <src>test/tmp/first</src>
+                    <dst>test/tmp/second</dst>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -220,7 +220,7 @@ class periodicCommandFileCopyTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) tests/tmp/first/second is not readable, skipping.',
+                '(W) test/tmp/first/second is not readable, skipping.',
             ),
             $logger->logMessages
         );

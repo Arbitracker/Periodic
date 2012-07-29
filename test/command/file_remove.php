@@ -21,7 +21,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'tests/helper/logger.php';
+require_once 'test/helper/logger.php';
 
 class periodicCommandFileRemoveTests extends periodicBaseTest
 {
@@ -37,8 +37,8 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>tests/data/file/dir</src>
-                    <dst>tests/tmp/dir</dst>
+                    <src>test/data/file/dir</src>
+                    <dst>test/tmp/dir</dst>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -73,7 +73,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <path>tests/not_existing</path>
+                    <path>test/not_existing</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -86,7 +86,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) tests/not_existing is not a valid source.',
+                '(W) test/not_existing is not a valid source.',
             ),
             $logger->logMessages
         );
@@ -97,7 +97,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <path>tests/tmp/dir/subdir/file1</path>
+                    <path>test/tmp/dir/subdir/file1</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -111,7 +111,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) tests/tmp/dir/subdir/file1 is not readable, skipping.',
+                '(W) test/tmp/dir/subdir/file1 is not readable, skipping.',
             ),
             $logger->logMessages
         );
@@ -122,7 +122,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <path>tests/tmp/dir/subdir/file1</path>
+                    <path>test/tmp/dir/subdir/file1</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -136,7 +136,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) tests/tmp/dir/subdir is not writable, skipping.',
+                '(W) test/tmp/dir/subdir is not writable, skipping.',
             ),
             $logger->logMessages
         );
@@ -147,7 +147,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <path>tests/tmp/dir</path>
+                    <path>test/tmp/dir</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -167,7 +167,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <path>tests/tmp/dir</path>
+                    <path>test/tmp/dir</path>
                     <pattern>file*</pattern>
                 </command>
             ' ),
@@ -191,7 +191,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <path>tests/tmp/dir</path>
+                    <path>test/tmp/dir</path>
                     <pattern>subdir</pattern>
                 </command>
             ' ),
@@ -215,7 +215,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <path>tests/tmp/dir/subdir/file1</path>
+                    <path>test/tmp/dir/subdir/file1</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
