@@ -21,9 +21,11 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+require_once __DIR__ . '/../TestCase.php';
+
 require_once 'test/Arbit/Periodic/helper/logger.php';
 
-class periodicCommandFileCopyTests extends periodicBaseTest
+class periodicCommandFileCopyTests extends TestCase
 {
     public static function suite()
     {

@@ -24,7 +24,7 @@
 require_once 'test/Arbit/Periodic/helper/logger.php';
 require_once 'test/Arbit/Periodic/helper/public.php';
 
-class periodicExecutorTests extends periodicBaseTest
+class periodicExecutorTests extends TestCase
 {
     public static function suite()
     {

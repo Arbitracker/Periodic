@@ -11,7 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
  * License for * more details.
  *
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * along with Periodic; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
@@ -24,14 +24,14 @@
 /**
  * Periodic base test
  */
-abstract class periodicBaseTest extends PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     protected $tmpDir = null;
 
     public function setUp()
     {
         $this->tmpDir = __DIR__ . '/tmp/';
-        
+
         // Ensure tmpdir has proper access right
         chmod( $this->tmpDir, 0755 );
     }
@@ -43,7 +43,7 @@ abstract class periodicBaseTest extends PHPUnit_Framework_TestCase
             // Test case tem dir has not been initilized, no need to clean up.
             return;
         }
-        
+
         // Ensure tmpdir has proper access right
         chmod( $this->tmpDir, 0755 );
         foreach ( glob( $this->tmpDir . '*' ) as $file )
@@ -64,8 +64,8 @@ abstract class periodicBaseTest extends PHPUnit_Framework_TestCase
      * Remove directory
      *
      * Delete the given directory and all of its contents recusively.
-     * 
-     * @param string $dir 
+     *
+     * @param string $dir
      * @return void
      */
     protected function removeRecursively( $dir )

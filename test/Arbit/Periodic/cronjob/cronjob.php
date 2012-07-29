@@ -21,7 +21,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-class periodicCronjobTests extends periodicBaseTest
+require_once __DIR__ . '/../TestCase.php';
+
+class periodicCronjobTests extends TestCase
 {
     public static function suite()
     {
