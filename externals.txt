@@ -1,2 +1,0 @@
-svn /src/classes/external/xml svn://arbitracker.org/arbit/projects/xml/trunk/src/classes
-svn /tests/runner svn://arbitracker.org/arbitTestRunner/trunk/src
