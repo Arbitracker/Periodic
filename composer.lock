@@ -1,0 +1,19 @@
+{
+    "hash": "24da5aab8b02fb85f7e871e4be9ada90",
+    "packages": [
+        {
+            "package": "Arbit/XML",
+            "version": "dev-master",
+            "source-reference": "98292848400a78cab0d7c586dc68339a507bad1c",
+            "commit-date": "1343581878"
+        }
+    ],
+    "packages-dev": null,
+    "aliases": [
+
+    ],
+    "minimum-stability": "dev",
+    "stability-flags": [
+
+    ]
+}

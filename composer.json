@@ -1,0 +1,19 @@
+{
+    "name":        "Arbit/Periodic",
+    "description": "Periodic is a fully unit tested PHP based task runner. It is supposed to deliver a basic implementation for managing all kinds of recurring tasks and events inside your web application.",
+    "minimum-stability": "dev",
+    "version":     "0.1-dev",
+    "repositories": [ {
+        "type": "vcs",
+        "url":  "https://github.com/Arbitracker/XML"
+    } ],
+    "require":      {
+        "Arbit/XML": "*"
+    },
+    "config":       {
+        "vendor-dir": "src/library"
+    },
+    "autoload":    {
+        "psr-0": { "Arbit\\Periodic": "src/php/" }
+    }
+}
