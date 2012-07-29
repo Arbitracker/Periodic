@@ -23,7 +23,7 @@
 
 require_once __DIR__ . '/../TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/regex_exposed_iterator.php';
+require_once 'test/Arbit/Periodic/helper/RegexExposedIterator.php';
 
 class periodicCronjobIteratorTests extends TestCase
 {

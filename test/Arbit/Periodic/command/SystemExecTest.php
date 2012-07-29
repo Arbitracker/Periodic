@@ -23,7 +23,7 @@
 
 require_once __DIR__ . '/../TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/logger.php';
+require_once 'test/Arbit/Periodic/helper/Logger.php';
 
 class periodicCommandSystemExecTests extends TestCase
 {

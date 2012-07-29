@@ -21,8 +21,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'test/Arbit/Periodic/helper/logger.php';
-require_once 'test/Arbit/Periodic/helper/public.php';
+require_once __DIR__ . '/../TestCase.php';
+
+require_once 'test/Arbit/Periodic/helper/Logger.php';
+require_once 'test/Arbit/Periodic/helper/Public.php';
 
 class periodicExecutorTests extends TestCase
 {
