@@ -56,7 +56,7 @@ class periodicLoggerHtmlTests extends periodicBaseTest
         unset( $logger );
 
         $this->assertSame(
-            preg_replace( '(#babdb6">[^<]+</span>)', '#babdb6">[date]</span>', file_get_contents( 'test/Arbit/Periodic/data/html_logger_00.html' ) ),
+            preg_replace( '(#babdb6">[^<]+</span>)', '#babdb6">[date]</span>', file_get_contents( 'test/Arbit/Periodic/_fixtures/html_logger_00.html' ) ),
             preg_replace( '(#babdb6">[^<]+</span>)', '#babdb6">[date]</span>', ob_get_clean() )
         );
     }

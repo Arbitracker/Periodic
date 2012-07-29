@@ -37,7 +37,7 @@ class periodicCommandFileRemoveTests extends periodicBaseTest
         $cmd = new periodicFilesystemCopyCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>test/Arbit/Periodic/data/file/dir</src>
+                    <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/dir</dst>
                 </command>
             ' ),

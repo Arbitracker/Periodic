@@ -97,8 +97,8 @@ class periodicCronjobIteratorTests extends periodicBaseTest
     public static function functionalCronTestsProvider() 
     {
         // Read the list of test files
-        $input  = glob( dirname( __FILE__ ) . '/../data/cronjob/functional_test/Arbit/Periodic/*.input' );
-        $output = glob( dirname( __FILE__ ) . '/../data/cronjob/functional_test/Arbit/Periodic/*.output' );
+        $input  = glob( dirname( __FILE__ ) . '/../_fixtures/cronjob/functional_test/Arbit/Periodic/*.input' );
+        $output = glob( dirname( __FILE__ ) . '/../_fixtures/cronjob/functional_test/Arbit/Periodic/*.output' );
         
         // Interleave the two arrays to be returned together in each dataset
         $interleaved = array();

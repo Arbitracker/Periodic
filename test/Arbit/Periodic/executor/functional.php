@@ -34,7 +34,7 @@ class periodicFunctionalExecutorTests extends periodicBaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->taskFactory = new periodicTaskFactory( dirname( __FILE__ ) . '/../data/tasks/', new periodicCommandRegistry() );
+        $this->taskFactory = new periodicTaskFactory( dirname( __FILE__ ) . '/../_fixtures/tasks/', new periodicCommandRegistry() );
     }
 
     public function testFullExecutorRun()
