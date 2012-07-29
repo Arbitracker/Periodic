@@ -27,11 +27,6 @@ require_once 'test/Arbit/Periodic/helper/RegexExposedIterator.php';
 
 class periodicCronjobIteratorTests extends TestCase
 {
-    public static function suite()
-    {
-        return new PHPUnit_Framework_TestSuite( __CLASS__ );
-    }
-
     public static function validCronProvider() 
     {
         $crons = array();

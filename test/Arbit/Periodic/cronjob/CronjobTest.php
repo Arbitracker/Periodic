@@ -25,11 +25,6 @@ require_once __DIR__ . '/../TestCase.php';
 
 class periodicCronjobTests extends TestCase
 {
-    public static function suite()
-    {
-        return new PHPUnit_Framework_TestSuite( __CLASS__ );
-    }
-
     public function testSimpleCronLine()
     {
         $cronjob = new periodicCronjob( '*/15 * * * * task' );

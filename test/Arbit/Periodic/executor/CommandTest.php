@@ -28,11 +28,6 @@ require_once 'test/Arbit/Periodic/helper/Command.php';
 
 class periodicCommandFactoryTests extends TestCase
 {
-    public static function suite()
-    {
-        return new PHPUnit_Framework_TestSuite( __CLASS__ );
-    }
-
     public function setUp()
     {
         $this->logger = new periodicTestLogger();

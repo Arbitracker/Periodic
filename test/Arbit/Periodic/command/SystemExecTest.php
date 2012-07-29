@@ -27,11 +27,6 @@ require_once 'test/Arbit/Periodic/helper/Logger.php';
 
 class periodicCommandSystemExecTests extends TestCase
 {
-    public static function suite()
-    {
-        return new PHPUnit_Framework_TestSuite( __CLASS__ );
-    }
-
     public function testEmptyConfiguation()
     {
         $cmd = new periodicSystemExecCommand(
