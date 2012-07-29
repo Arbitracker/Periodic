@@ -21,8 +21,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'test/helper/logger.php';
-require_once 'test/helper/cli_logger.php';
+require_once 'test/Arbit/Periodic/helper/logger.php';
+require_once 'test/Arbit/Periodic/helper/cli_logger.php';
 
 class periodicLoggerHtmlTests extends periodicBaseTest
 {
@@ -56,7 +56,7 @@ class periodicLoggerHtmlTests extends periodicBaseTest
         unset( $logger );
 
         $this->assertSame(
-            preg_replace( '(#babdb6">[^<]+</span>)', '#babdb6">[date]</span>', file_get_contents( 'test/data/html_logger_00.html' ) ),
+            preg_replace( '(#babdb6">[^<]+</span>)', '#babdb6">[date]</span>', file_get_contents( 'test/Arbit/Periodic/data/html_logger_00.html' ) ),
             preg_replace( '(#babdb6">[^<]+</span>)', '#babdb6">[date]</span>', ob_get_clean() )
         );
     }

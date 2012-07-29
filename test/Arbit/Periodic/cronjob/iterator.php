@@ -21,7 +21,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'test/helper/regex_exposed_iterator.php';
+require_once 'test/Arbit/Periodic/helper/regex_exposed_iterator.php';
 
 class periodicCronjobIteratorTests extends periodicBaseTest
 {
@@ -97,8 +97,8 @@ class periodicCronjobIteratorTests extends periodicBaseTest
     public static function functionalCronTestsProvider() 
     {
         // Read the list of test files
-        $input  = glob( dirname( __FILE__ ) . '/../data/cronjob/functional_test/*.input' );
-        $output = glob( dirname( __FILE__ ) . '/../data/cronjob/functional_test/*.output' );
+        $input  = glob( dirname( __FILE__ ) . '/../data/cronjob/functional_test/Arbit/Periodic/*.input' );
+        $output = glob( dirname( __FILE__ ) . '/../data/cronjob/functional_test/Arbit/Periodic/*.output' );
         
         // Interleave the two arrays to be returned together in each dataset
         $interleaved = array();

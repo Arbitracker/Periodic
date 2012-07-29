@@ -21,8 +21,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'test/helper/logger.php';
-require_once 'test/helper/command.php';
+require_once 'test/Arbit/Periodic/helper/logger.php';
+require_once 'test/Arbit/Periodic/helper/command.php';
 
 class periodicCommandFactoryTests extends periodicBaseTest
 {

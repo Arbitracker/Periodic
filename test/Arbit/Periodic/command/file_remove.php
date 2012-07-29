@@ -21,18 +21,34 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-require_once 'test/helper/logger.php';
+require_once 'test/Arbit/Periodic/helper/logger.php';
 
-class periodicCommandFileCopyTests extends periodicBaseTest
+class periodicCommandFileRemoveTests extends periodicBaseTest
 {
     public static function suite()
     {
         return new PHPUnit_Framework_TestSuite( __CLASS__ );
     }
 
+    public function setUp()
+    {
+        parent::setUp();
+
+        $cmd = new periodicFilesystemCopyCommand(
+            arbitXml::loadString( '<?xml version="1.0" ?>
+                <command>
+                    <src>test/Arbit/Periodic/data/file/dir</src>
+                    <dst>test/Arbit/Periodic/tmp/dir</dst>
+                </command>
+            ' ),
+            $logger = new periodicTestLogger()
+        );
+        $cmd->run();
+    }
+
     public function testEmptyConfiguation()
     {
-        $cmd = new periodicFilesystemCopyCommand(
+        $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command/>
             ' ),
@@ -46,105 +62,18 @@ class periodicCommandFileCopyTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(E) No source provided.',
+                '(E) No path provided.',
             ),
             $logger->logMessages
         );
     }
 
-    public function testMissingDestination()
+    public function testRemoveNotExistingDirectory()
     {
-        $cmd = new periodicFilesystemCopyCommand(
+        $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>test/data/file</src>
-                </command>
-            ' ),
-            $logger = new periodicTestLogger()
-        );
-
-        $this->assertSame(
-            periodicExecutor::ERROR,
-            $cmd->run()
-        );
-
-        $this->assertEquals(
-            array(
-                '(E) No destination provided.',
-            ),
-            $logger->logMessages
-        );
-    }
-
-    public function testCopyDirDefaultInfiniteDepth()
-    {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <src>test/data/file/dir</src>
-                    <dst>test/tmp/test</dst>
-                </command>
-            ' ),
-            $logger = new periodicTestLogger()
-        );
-
-        $this->assertSame(
-            periodicExecutor::SUCCESS,
-            $cmd->run()
-        );
-
-        $this->assertFileExists( $this->tmpDir . 'test/subdir/file1' );
-    }
-
-    public function testCopyDirDefaultLimitedDepth()
-    {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <src>test/data/file/dir</src>
-                    <dst>test/tmp/test</dst>
-                    <depth>2</depth>
-                </command>
-            ' ),
-            $logger = new periodicTestLogger()
-        );
-
-        $this->assertSame(
-            periodicExecutor::SUCCESS,
-            $cmd->run()
-        );
-
-        $this->assertFileExists( $this->tmpDir . 'test/subdir' );
-        $this->assertFileNotExists( $this->tmpDir . 'test/subdir/file1' );
-    }
-
-    public function testCopyFileDefaultInfiniteDepth()
-    {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <src>test/data/file/file</src>
-                    <dst>test/tmp/test</dst>
-                </command>
-            ' ),
-            $logger = new periodicTestLogger()
-        );
-
-        $this->assertSame(
-            periodicExecutor::SUCCESS,
-            $cmd->run()
-        );
-
-        $this->assertFileExists( $this->tmpDir . 'test' );
-    }
-
-    public function testCopyUnknwonFile()
-    {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <src>test/data/file/not_existant</src>
-                    <dst>test/tmp/test</dst>
+                    <path>test/Arbit/Periodic/not_existing</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -157,24 +86,23 @@ class periodicCommandFileCopyTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) test/data/file/not_existant is not a valid source.',
+                '(W) test/Arbit/Periodic/not_existing is not a valid source.',
             ),
             $logger->logMessages
         );
     }
 
-    public function testCopyToExistingDirectory()
+    public function testRemoveNotReadableFile()
     {
-        $cmd = new periodicFilesystemCopyCommand(
+        $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>test/data/file/dir</src>
-                    <dst>test/tmp/existing</dst>
+                    <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
         );
-        mkdir( $this->tmpDir . '/existing' );
+        chmod( $this->tmpDir . 'dir/subdir/file1', 0 );
 
         $this->assertSame(
             periodicExecutor::SUCCESS,
@@ -183,31 +111,43 @@ class periodicCommandFileCopyTests extends periodicBaseTest
 
         $this->assertEquals(
             array(
-                '(W) test/tmp/existing already exists, and cannot be overwritten.',
+                '(W) test/Arbit/Periodic/tmp/dir/subdir/file1 is not readable, skipping.',
             ),
             $logger->logMessages
         );
     }
 
-    public function testDirWithNonReadableDirectories()
+    public function testRemoveInNotWriteableParentDir()
     {
-        $cmd = new periodicFilesystemCopyCommand(
+        $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>test/data/file/dir</src>
-                    <dst>test/tmp/first</dst>
+                    <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
         );
-        $cmd->run();
-        chmod( $this->tmpDir . '/first/second', 0 );
+        chmod( $this->tmpDir . 'dir/subdir', 0555 );
 
-        $cmd = new periodicFilesystemCopyCommand(
+        $this->assertSame(
+            periodicExecutor::SUCCESS,
+            $cmd->run()
+        );
+
+        $this->assertEquals(
+            array(
+                '(W) test/Arbit/Periodic/tmp/dir/subdir is not writable, skipping.',
+            ),
+            $logger->logMessages
+        );
+    }
+
+    public function testRemoveDirDefaultInfinitePattern()
+    {
+        $cmd = new periodicFilesystemRemoveCommand(
             arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
-                    <src>test/tmp/first</src>
-                    <dst>test/tmp/second</dst>
+                    <path>test/Arbit/Periodic/tmp/dir</path>
                 </command>
             ' ),
             $logger = new periodicTestLogger()
@@ -218,15 +158,75 @@ class periodicCommandFileCopyTests extends periodicBaseTest
             $cmd->run()
         );
 
-        $this->assertEquals(
-            array(
-                '(W) test/tmp/first/second is not readable, skipping.',
-            ),
-            $logger->logMessages
+        $this->assertFileNotExists( $this->tmpDir . 'dir' );
+    }
+
+    public function testRemoveDirSimpleFilePattern()
+    {
+        $this->assertFileExists( $this->tmpDir . 'dir' );
+        $cmd = new periodicFilesystemRemoveCommand(
+            arbitXml::loadString( '<?xml version="1.0" ?>
+                <command>
+                    <path>test/Arbit/Periodic/tmp/dir</path>
+                    <pattern>file*</pattern>
+                </command>
+            ' ),
+            $logger = new periodicTestLogger()
         );
 
-        $this->assertFileExists( $this->tmpDir . 'second/subdir' );
-        $this->assertFileExists( $this->tmpDir . 'second/subdir/file1' );
-        $this->assertFileNotExists( $this->tmpDir . 'second/second' );
+        $this->assertSame(
+            periodicExecutor::SUCCESS,
+            $cmd->run()
+        );
+
+        $this->assertFileExists( $this->tmpDir . 'dir' );
+        $this->assertFileExists( $this->tmpDir . 'dir/subdir' );
+        $this->assertFileNotExists( $this->tmpDir . 'dir/subdir/file1' );
+        $this->assertFileNotExists( $this->tmpDir . 'dir/subdir/file2' );
+    }
+
+    public function testRemoveDirSimpleDirPattern()
+    {
+        $this->assertFileExists( $this->tmpDir . 'dir' );
+        $cmd = new periodicFilesystemRemoveCommand(
+            arbitXml::loadString( '<?xml version="1.0" ?>
+                <command>
+                    <path>test/Arbit/Periodic/tmp/dir</path>
+                    <pattern>subdir</pattern>
+                </command>
+            ' ),
+            $logger = new periodicTestLogger()
+        );
+
+        $this->assertSame(
+            periodicExecutor::SUCCESS,
+            $cmd->run()
+        );
+
+        $this->assertFileExists( $this->tmpDir . 'dir' );
+        $this->assertFileNotExists( $this->tmpDir . 'dir/subdir' );
+        $this->assertFileNotExists( $this->tmpDir . 'dir/subdir/file1' );
+        $this->assertFileNotExists( $this->tmpDir . 'dir/subdir/file2' );
+    }
+
+    public function testRemoveFile()
+    {
+        $this->assertFileExists( $this->tmpDir . 'dir' );
+        $cmd = new periodicFilesystemRemoveCommand(
+            arbitXml::loadString( '<?xml version="1.0" ?>
+                <command>
+                    <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
+                </command>
+            ' ),
+            $logger = new periodicTestLogger()
+        );
+
+        $this->assertSame(
+            periodicExecutor::SUCCESS,
+            $cmd->run()
+        );
+
+        $this->assertFileExists( $this->tmpDir . 'dir' );
+        $this->assertFileNotExists( $this->tmpDir . 'dir/subdir/file1' );
     }
 }
