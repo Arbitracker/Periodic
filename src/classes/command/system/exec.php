@@ -36,7 +36,7 @@ class periodicSystemExecCommand extends periodicCommand
      *
      * Should return one of the status constant values, defined as class
      * constants in periodicCommand.
-     * 
+     *
      * @return int
      */
     public function run()
@@ -73,8 +73,8 @@ class periodicSystemExecCommand extends periodicCommand
      * If the command returns with an non-zero exit code and $failOnError is
      * set to true the command will return periodicExecutor::ERROR - otherwise
      * it will always return with periodicExecutor::SUCCESS.
-     * 
-     * @param string $command 
+     *
+     * @param string $command
      * @param bool $failOnError
      * @return int
      */

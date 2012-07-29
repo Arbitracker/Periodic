@@ -33,7 +33,7 @@ class periodicCliLogger extends periodicBaseLogger
 {
     /**
      * Mapping of error levels to pipes
-     * 
+     *
      * @var array
      */
     protected $mapping = array(
@@ -63,8 +63,8 @@ class periodicCliLogger extends periodicBaseLogger
      * Write given text to given stream. Simple wrapper function to make class
      * testable.
      *
-     * @param string $stream 
-     * @param string $text 
+     * @param string $stream
+     * @param string $text
      * @return void
      */
     protected function write( $stream, $text )
@@ -79,9 +79,9 @@ class periodicCliLogger extends periodicBaseLogger
      *
      * Log a message, while the message must be convertable into a string.
      * Optionally a log message severity can be specified.
-     * 
-     * @param string $message 
-     * @param int $severity 
+     *
+     * @param string $message
+     * @param int $severity
      * @return void
      */
     public function log( $message, $severity = self::INFO )
@@ -112,8 +112,8 @@ class periodicCliLogger extends periodicBaseLogger
         // Generate and output error message
         $this->write( $stream, sprintf( "[%s]%s %s: %s\n",
             date( 'Y/m/d-H:i.s' ),
-            ( $this->task ? 
-                ' (' . $this->task . ( 
+            ( $this->task ?
+                ' (' . $this->task . (
                     $this->command ?
                         '::' . $this->command :
                         ''
@@ -142,8 +142,8 @@ class periodicCliLogger extends periodicBaseLogger
      * - periodicCliLogger::STDOUT, echo messages to STDOUT
      * - periodicCliLogger::STDERR, echo messages to STDERR
      *
-     * @param int $severity 
-     * @param int $pipe 
+     * @param int $severity
+     * @param int $pipe
      * @return void
      */
     public function setMapping( $severity, $pipe )

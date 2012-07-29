@@ -36,7 +36,7 @@ class periodicFilesystemCopyCommand extends periodicCommand
      *
      * Should return one of the status constant values, defined as class
      * constants in periodicCommand.
-     * 
+     *
      * @return int
      */
     public function run()
@@ -74,10 +74,10 @@ class periodicFilesystemCopyCommand extends periodicCommand
      *
      * A negative depth means infinite recursion. A depth of 1 means that the
      * current files and directories are created, but no recursion is applied.
-     * 
-     * @param string $src 
-     * @param string $dst 
-     * @param int $depth 
+     *
+     * @param string $src
+     * @param string $dst
+     * @param int $depth
      * @return void
      */
     protected function copyRecursive( $src, $dst, $depth )

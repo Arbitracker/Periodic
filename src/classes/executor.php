@@ -32,55 +32,55 @@ class periodicExecutor
 {
     /**
      * Crontable, which consists of a list of periodicCronjob objects.
-     * 
+     *
      * @var array(periodicCronjob)
      */
     protected $crontab;
 
     /**
      * Rescheduled tasks
-     * 
+     *
      * @var array
      */
     protected $rescheduled = array();
 
     /**
      * Logger class, which receives all log messages
-     * 
+     *
      * @var periodicLogger
      */
     protected $logger;
 
     /**
      * Directory to store locak and last run information
-     * 
+     *
      * @var string
      */
     protected $lockDir;
 
     /**
      * Task factory
-     * 
+     *
      * @var periodicTaskFactory
      */
     protected $taskFactory;
 
     /**
-     * Constant indicating success of command run 
+     * Constant indicating success of command run
      */
     const SUCCESS    = 1;
-                  
+
     /**
      * Constant indicating, that the task should be aborted because of the
      * current command.
      */
     const ABORT      = 2;
-                  
+
     /**
      * Constant indicating that the current command caused an error.
      */
     const ERROR      = 4;
-                  
+
     /**
      * Constant indicating a temporary failure, so that the task should be
      * rescheduled.
@@ -92,9 +92,9 @@ class periodicExecutor
      *
      * Construct the executor from the given cron table and a logger
      * implementing the periodicLogger interface.
-     * 
-     * @param string $crontab 
-     * @param periodicLogger $logger 
+     *
+     * @param string $crontab
+     * @param periodicLogger $logger
      * @param string $lockDir
      * @return void
      */
@@ -111,8 +111,8 @@ class periodicExecutor
      *
      * All lines, which are not empty or start with a # or ; character are
      * considered cron lines parsed as such.
-     * 
-     * @param string $crontab 
+     *
+     * @param string $crontab
      * @return void
      */
     protected function parseCrontab( $crontab )
@@ -144,7 +144,7 @@ class periodicExecutor
      *
      * If the lock could successfully be aquired it will run all scheduled
      * tasks in order and release the lock afterwards.
-     * 
+     *
      * @return void
      */
     public function run()
@@ -175,8 +175,8 @@ class periodicExecutor
      * Each job is only returned once, even it occured multiple times in the
      * given timeframe. The jobs are returned in order of their first
      * scheduled execution.
-     * 
-     * @param int $time 
+     *
+     * @param int $time
      * @return array
      */
     protected function getJobsSince( $time )
@@ -220,8 +220,8 @@ class periodicExecutor
      * This basic task executor does not execute any tasks in parallel,
      * because it should not depend on any non-default extensions like
      * ext/pcntl.
-     * 
-     * @param array $tasks 
+     *
+     * @param array $tasks
      * @return void
      */
     protected function executeTasks( array $tasks )
@@ -264,7 +264,7 @@ class periodicExecutor
      *
      * Return the last run of the executor as a unix timestamp. If this the
      * first run of the executor return false.
-     * 
+     *
      * @return mixed
      */
     protected function getLastRun()
@@ -281,7 +281,7 @@ class periodicExecutor
      * Store last run time
      *
      * Stores the time and date of the last run of the executor.
-     * 
+     *
      * @return void
      */
     protected function storeLastRun()
@@ -305,7 +305,7 @@ class periodicExecutor
      *
      * Try to aquire lock - if successful the method will return true - and
      * false otherwise.
-     * 
+     *
      * @return bool
      */
     protected function aquireLock()
@@ -319,9 +319,9 @@ class periodicExecutor
         if ( $fp === false )
         {
             // Aquiring the lock failed.
-            $this->logger->log( 
+            $this->logger->log(
                 sprintf(
-                    'The lockfile %s does allready exist.', 
+                    'The lockfile %s does allready exist.',
                     $lockfile
                 ),
                 periodicLogger::WARNING
@@ -343,7 +343,7 @@ class periodicExecutor
      * Release lock
      *
      * Method to release the aquired lock, after the work has been done.
-     * 
+     *
      * @return void
      */
     protected function releaseLock()

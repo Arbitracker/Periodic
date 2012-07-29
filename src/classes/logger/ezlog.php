@@ -33,7 +33,7 @@ class periodicEzLogLogger extends periodicBaseLogger
 {
     /**
      * Mapping of log severities
-     * 
+     *
      * @var array
      */
     protected $severityMapping = array(
@@ -47,9 +47,9 @@ class periodicEzLogLogger extends periodicBaseLogger
      *
      * Log a message, while the message must be convertable into a string.
      * Optionally a log message severity can be specified.
-     * 
-     * @param string $message 
-     * @param int $severity 
+     *
+     * @param string $message
+     * @param int $severity
      * @return void
      */
     public function log( $message, $severity = self::INFO )

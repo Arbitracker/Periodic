@@ -80,11 +80,11 @@ class periodicTask
      *
      * Construct command from its configuration and the currently used logger
      *
-     * @param string $name 
-     * @param int $scheduled 
-     * @param arbitXmlNode $configuration 
-     * @param periodicCommandRegistry $commandRegistry 
-     * @param periodicLogger $logger 
+     * @param string $name
+     * @param int $scheduled
+     * @param arbitXmlNode $configuration
+     * @param periodicCommandRegistry $commandRegistry
+     * @param periodicLogger $logger
      * @return void
      */
     public function __construct( $name, $scheduled, arbitXmlNode $configuration, periodicCommandRegistry $commandRegistry, periodicLogger $logger )

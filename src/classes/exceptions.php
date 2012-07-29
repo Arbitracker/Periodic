@@ -11,7 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
  * License for * more details.
  *
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * along with Periodic; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
@@ -36,14 +36,14 @@ class periodicRuntimeException extends periodicException
 }
 
 /**
- * periodicAttributeException 
- * 
+ * periodicAttributeException
+ *
  * Thrown if an attribute is accessed in a way which is not allowed.
  */
-class periodicAttributeException extends periodicException 
+class periodicAttributeException extends periodicException
 {
     /**
-     * The accesed attribute is does not exist 
+     * The accesed attribute is does not exist
      */
     const NON_EXISTANT  = 0;
 
@@ -53,22 +53,22 @@ class periodicAttributeException extends periodicException
     const READ          = 1;
 
     /**
-     * The accessed attribute can not be written 
+     * The accessed attribute can not be written
      */
     const WRITE         = 2;
 
     /**
      * Create exception from readability type and attribute name.
-     * 
-     * @param int $type 
-     * @param string $attribute 
+     *
+     * @param int $type
+     * @param string $attribute
      * @return void
      */
-    public function __construct( $type, $attribute ) 
+    public function __construct( $type, $attribute )
     {
         $message = 'The accesed attribute "' . $attribute . '" ';
-        
-        switch( $type ) 
+
+        switch( $type )
         {
             case self::NON_EXISTANT:
                 $message .= 'does not exist.';
@@ -87,7 +87,7 @@ class periodicAttributeException extends periodicException
 
 /**
  * Thrown if a the cronjob iterator is initialized with an invalid cron
- * definition 
+ * definition
  */
 class periodicInvalidCronjobException extends periodicException {}
 

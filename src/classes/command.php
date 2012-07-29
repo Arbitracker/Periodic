@@ -33,14 +33,14 @@ abstract class periodicCommand
 {
     /**
      * Logger
-     * 
+     *
      * @var periodicLogger
      */
     protected $logger;
 
     /**
      * Command configuration
-     * 
+     *
      * @var arbitXmlNode
      */
     protected $configuration;
@@ -49,9 +49,9 @@ abstract class periodicCommand
      * Construct command
      *
      * Construct command from its configuration and the currently used logger
-     * 
-     * @param arbitXmlNode $configuration 
-     * @param periodicLogger $logger 
+     *
+     * @param arbitXmlNode $configuration
+     * @param periodicLogger $logger
      * @return void
      */
     public function __construct( arbitXmlNode $configuration, periodicLogger $logger )
@@ -67,7 +67,7 @@ abstract class periodicCommand
      *
      * Should return one of the status constant values, defined as class
      * constants in periodicCommand.
-     * 
+     *
      * @return int
      */
     abstract public function run();

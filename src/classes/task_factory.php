@@ -31,7 +31,7 @@ class periodicTaskFactory
 {
     /**
      * Location of task definition files
-     * 
+     *
      * @var string
      */
     protected $definitions;
@@ -48,8 +48,8 @@ class periodicTaskFactory
      *
      * Construct task factory from the location where the task definitions
      * resides.
-     * 
-     * @param periodicCommandRegistry $commandRegistry 
+     *
+     * @param periodicCommandRegistry $commandRegistry
      * @return void
      */
     public function __construct( $definitions, periodicCommandRegistry $commandRegistry )
@@ -65,10 +65,10 @@ class periodicTaskFactory
      * logger is also passed to the task.
      *
      * Returns false, if a task could not be created properly.
-     * 
-     * @param string $task 
-     * @param int $date 
-     * @param periodicLogger $logger 
+     *
+     * @param string $task
+     * @param int $date
+     * @param periodicLogger $logger
      * @return periodicTask
      */
     public function factory( $task, $date, periodicLogger $logger )

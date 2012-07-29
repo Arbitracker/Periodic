@@ -32,7 +32,7 @@ class periodicCommandRegistry
 {
     /**
      * List of commands with their associated class names of their
-     * implementations. 
+     * implementations.
      *
      * @var array
      */
@@ -50,9 +50,9 @@ class periodicCommandRegistry
      *
      * Register a new command, specified by its name and the associated
      * implementation specified by its class name.
-     * 
-     * @param string $command 
-     * @param string $class 
+     *
+     * @param string $command
+     * @param string $class
      * @return void
      */
     public function registerCommand( $command, $class )
@@ -69,9 +69,9 @@ class periodicCommandRegistry
      *
      * Returns the created periodicCommand object, or false on failure.
      *
-     * @param string $command 
-     * @param arbitXmlNode $configuration 
-     * @param periodicLogger $logger 
+     * @param string $command
+     * @param arbitXmlNode $configuration
+     * @param periodicLogger $logger
      * @return periodicCommand
      */
     public function factory( $command, arbitXmlNode $configuration, periodicLogger $logger )

@@ -11,7 +11,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
  * License for * more details.
  *
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * along with Periodic; if not, write to the Free Software Foundation, Inc., 51
  * Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
@@ -21,15 +21,15 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-class periodicTestRegexExposedCronjobIterator extends periodicCronjobIterator 
+class periodicTestRegexExposedCronjobIterator extends periodicCronjobIterator
 {
-    public function __construct() 
+    public function __construct()
     {
         // Do nothing
     }
 
     // Make public
-    public function validateColumns( $columns ) 
+    public function validateColumns( $columns )
     {
         return parent::validateColumns( $columns );
     }

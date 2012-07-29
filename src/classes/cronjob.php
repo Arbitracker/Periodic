@@ -28,32 +28,32 @@
  * Class containing all information relevant to a single cronjob item.
  */
 class periodicCronjob
-{   
+{
     /**
      * Cronjob iterator containing the relevant time information
-     * 
+     *
      * @var periodicCronjobIterator
      */
     public $iterator;
 
     /**
      * Name of task
-     * 
+     *
      * @var string
      */
     public $task;
 
     /**
      * Name of task group, or null, if no group has been assigned.
-     * 
+     *
      * @var mixed
      */
     public $group;
 
     /**
      * Construct from a common line in a crontable
-     * 
-     * @param string $line 
+     *
+     * @param string $line
      * @return void
      */
     public function __construct( $line )

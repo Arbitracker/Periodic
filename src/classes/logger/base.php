@@ -33,7 +33,7 @@ abstract class periodicBaseLogger implements periodicLogger
 {
     /**
      * Association of Names to log message severities
-     * 
+     *
      * @var array
      */
     protected $names = array(
@@ -44,14 +44,14 @@ abstract class periodicBaseLogger implements periodicLogger
 
     /**
      * Currently logged task
-     * 
+     *
      * @var string
      */
     protected $task;
 
     /**
      * Currently logged command
-     * 
+     *
      * @var string
      */
     protected $command;
@@ -61,8 +61,8 @@ abstract class periodicBaseLogger implements periodicLogger
      *
      * Set the currently active task. To reset, just call woithout any
      * parameters.
-     * 
-     * @param string $task 
+     *
+     * @param string $task
      * @return void
      */
     public function setTask( $task = null )
@@ -76,7 +76,7 @@ abstract class periodicBaseLogger implements periodicLogger
      * Set the currently active command. To reset, just call woithout any
      * parameters.
      *
-     * @param string $command 
+     * @param string $command
      * @return void
      */
     public function setCommand( $command = null )

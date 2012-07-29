@@ -32,7 +32,7 @@ class periodicHtmlLogger extends periodicBaseLogger
 {
     /**
      * Colors associated with severities
-     * 
+     *
      * @var array
      */
     protected $colors = array(
@@ -45,7 +45,7 @@ class periodicHtmlLogger extends periodicBaseLogger
      * Construct logger
      *
      * Creates and echos the proper HTML header to embed the further output in.
-     * 
+     *
      * @return void
      */
     public function __construct()
@@ -70,7 +70,7 @@ HTMLHEAD;
      * Destruct logger
      *
      * Creates and echos the proper HTML footer.
-     * 
+     *
      * @return void
      */
     public function __destruct()
@@ -88,9 +88,9 @@ HTMLFOOTER;
      *
      * Log a message, while the message must be convertable into a string.
      * Optionally a log message severity can be specified.
-     * 
-     * @param string $message 
-     * @param int $severity 
+     *
+     * @param string $message
+     * @param int $severity
      * @return void
      */
     public function log( $message, $severity = self::INFO )
@@ -105,8 +105,8 @@ HTMLFOOTER;
             <span style=\"color: %s; font-weight: bold;\">%s:</span> %s
         </li>\n",
             date( DATE_RFC1036 ),
-            ( $this->task ? 
-                $this->task . ( 
+            ( $this->task ?
+                $this->task . (
                     $this->command ?
                         '::' . $this->command :
                         ''

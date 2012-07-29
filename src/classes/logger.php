@@ -30,7 +30,7 @@
 interface periodicLogger
 {
     /**
-     * Information level log message 
+     * Information level log message
      */
     const INFO    = 1;
 
@@ -49,9 +49,9 @@ interface periodicLogger
      *
      * Log a message, while the message must be convertable into a string.
      * Optionally a log message severity can be specified.
-     * 
-     * @param string $message 
-     * @param int $severity 
+     *
+     * @param string $message
+     * @param int $severity
      * @return void
      */
     public function log( $message, $severity = self::INFO );
@@ -61,8 +61,8 @@ interface periodicLogger
      *
      * Set the currently active task. To reset, just call woithout any
      * parameters.
-     * 
-     * @param string $task 
+     *
+     * @param string $task
      * @return void
      */
     public function setTask( $task = null );
@@ -73,7 +73,7 @@ interface periodicLogger
      * Set the currently active command. To reset, just call woithout any
      * parameters.
      *
-     * @param string $command 
+     * @param string $command
      * @return void
      */
     public function setCommand( $command = null );

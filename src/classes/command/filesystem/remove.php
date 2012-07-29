@@ -36,7 +36,7 @@ class periodicFilesystemRemoveCommand extends periodicCommand
      *
      * Should return one of the status constant values, defined as class
      * constants in periodicCommand.
-     * 
+     *
      * @return int
      */
     public function run()
@@ -64,7 +64,7 @@ class periodicFilesystemRemoveCommand extends periodicCommand
      * Compile a simple file pattern like known from glob into a regular
      * expression to match the file basename.
      *
-     * @param string $pattern 
+     * @param string $pattern
      * @return string
      */
     protected function compilePattern( $pattern )
@@ -91,9 +91,9 @@ class periodicFilesystemRemoveCommand extends periodicCommand
      * You may optionally specify a pattern and only files and directories
      * matching that pattern will be removed. If a directory matches the
      * pattern all descendents will also be removed.
-     * 
-     * @param string $path 
-     * @param mixed $pattern 
+     *
+     * @param string $path
+     * @param mixed $pattern
      * @return void
      */
     protected function removeRecursive( $path, $pattern )
@@ -119,7 +119,7 @@ class periodicFilesystemRemoveCommand extends periodicCommand
             return;
         }
 
-        $matchesPattern = ( 
+        $matchesPattern = (
             ( $pattern === null ) ||
             ( preg_match( $pattern, basename( $path ) ) )
         );
