@@ -25,11 +25,11 @@
 /**
  * This file conatins the autoload definitions and basic error handling
  */
-function __autoload( $class )
+spl_autoload_register( function ( $class )
 {
     static $base  = null;
     static $files = null;
-    
+
     if ( $base === null )
     {
         $base  = dirname( __FILE__ ) . '/classes/';
@@ -38,7 +38,7 @@ function __autoload( $class )
 
     if ( isset( $files[$class] ) )
     {
-        require $base . $files[$class];
+        include $base . $files[$class];
     }
-}
+} );
 

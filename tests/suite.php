@@ -9,20 +9,6 @@
 /*
  * Set file whitelist for phpunit
  */
-define( 'PERIODIC_TEST', __FILE__ );
-$files = include ( $base = dirname(  __FILE__ ) . '/../src/classes/' ) . 'autoload.php';
-foreach ( $files as $class => $file )
-{
-    require_once $base . $file;
-
-    if ( strpos( $file, 'external/' ) === false )
-    {
-        // Stupid PHPUnit 3.5 removed this:
-        // PHPUnit_Util_Filter::addFileToWhitelist( $base . $file );
-    }
-
-}
-
 require 'base_test.php';
 
 /**

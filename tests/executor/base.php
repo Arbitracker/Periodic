@@ -124,7 +124,7 @@ class periodicExecutorTests extends periodicBaseTest
             $logger->logMessages
         );
 
-        $this->assertType( 'int', $executor->getLastRun() );
+        $this->assertInternalType( 'int', $executor->getLastRun() );
     }
 
     public function testLastRunDateStorageFailure()
