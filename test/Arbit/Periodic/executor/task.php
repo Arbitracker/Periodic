@@ -45,7 +45,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( dirname( __FILE__ ) . "/../_fixtures/tasks/dummy.xml" ),
+            arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new periodicTestLogger()
         );
@@ -65,7 +65,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( dirname( __FILE__ ) . "/../_fixtures/tasks/dummy.xml" ),
+            arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new periodicTestLogger()
         );
@@ -83,7 +83,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( dirname( __FILE__ ) . "/../_fixtures/tasks/dummy.xml" ),
+            arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new periodicTestLogger()
         );
@@ -101,7 +101,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( dirname( __FILE__ ) . "/../_fixtures/tasks/dummy.xml" ),
+            arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new periodicTestLogger()
         );
@@ -119,7 +119,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( dirname( __FILE__ ) . "/../_fixtures/tasks/reschedule.xml" ),
+            arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/reschedule.xml" ),
             $this->commandFactory,
             $logger = new periodicTestLogger()
         );
@@ -232,7 +232,7 @@ class periodicTaskTests extends periodicBaseTest
     {
         $task = new periodicTask(
             'test', 0,
-            arbitXml::loadFile( dirname( __FILE__ ) . "/../_fixtures/tasks/$name.xml" ),
+            arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/$name.xml" ),
             $this->commandFactory,
             $logger = new periodicTestLogger()
         );

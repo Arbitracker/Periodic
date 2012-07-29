@@ -30,7 +30,7 @@ abstract class periodicBaseTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->tmpDir = dirname( __FILE__ ) . '/tmp/';
+        $this->tmpDir = __DIR__ . '/tmp/';
         
         // Ensure tmpdir has proper access right
         chmod( $this->tmpDir, 0755 );
