@@ -23,7 +23,8 @@
 
 namespace Arbit\Periodic\Logger;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\Logger;
 
 require_once __DIR__ . '/../TestCase.php';
 
@@ -37,7 +38,7 @@ class CliTest extends TestCase
         parent::setUp();
     }
 
-    protected function logSomething( \periodicLogger $logger )
+    protected function logSomething( Logger $logger )
     {
         $logger->log( 'Info 1' );
         $logger->setTask( 'task1' );
@@ -45,8 +46,8 @@ class CliTest extends TestCase
         $logger->setCommand( 'command1' );
         $logger->log( 'Info 3' );
         $logger->setTask();
-        $logger->log( 'Warning', \periodicLogger::WARNING );
-        $logger->log( 'Error', \periodicLogger::ERROR );
+        $logger->log( 'Warning', Logger::WARNING );
+        $logger->log( 'Error', Logger::ERROR );
     }
 
     public function testDefaultLogging()
@@ -74,9 +75,9 @@ class CliTest extends TestCase
     public function testRemappedLogging()
     {
         $logger = new \periodicTestCliLogger();
-        $logger->setMapping( \periodicLogger::INFO, \periodicCliLogger::SILENCE );
-        $logger->setMapping( \periodicLogger::WARNING, \periodicCliLogger::STDOUT );
-        $logger->setMapping( \periodicLogger::ERROR, \periodicCliLogger::STDOUT );
+        $logger->setMapping( Logger::INFO, Logger\Cli::SILENCE );
+        $logger->setMapping( Logger::WARNING, Logger\Cli::STDOUT );
+        $logger->setMapping( Logger::ERROR, Logger\Cli::STDOUT );
 
         $this->logSomething( $logger );
 
@@ -93,42 +94,30 @@ class CliTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testInvalidMapping1()
     {
         $logger = new \periodicTestCliLogger();
-
-        try
-        {
-            $logger->setMapping( 42, \periodicCliLogger::SILENCE );
-            $this->fail( 'Expected \periodicRuntimeException.' );
-        }
-        catch ( \periodicRuntimeException $e )
-        { /* Expected */ }
+        $logger->setMapping( 42, Logger\Cli::SILENCE );
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testInvalidMapping2()
     {
         $logger = new \periodicTestCliLogger();
-
-        try
-        {
-            $logger->setMapping( \periodicLogger::INFO, 42 );
-            $this->fail( 'Expected \periodicRuntimeException.' );
-        }
-        catch ( \periodicRuntimeException $e )
-        { /* Expected */ }
+        $logger->setMapping( Logger::INFO, 42 );
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testInvalidSeverity()
     {
         $logger = new \periodicTestCliLogger();
-
-        try
-        {
-            $logger->log( 'Test', 42 );
-            $this->fail( 'Expected \periodicRuntimeException.' );
-        }
-        catch ( \periodicRuntimeException $e )
-        { /* Expected */ }
+        $logger->log( 'Test', 42 );
     }
 }
