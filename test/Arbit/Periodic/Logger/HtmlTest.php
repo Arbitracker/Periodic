@@ -23,12 +23,12 @@
 
 namespace Arbit\Periodic\Logger;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\Logger;
 
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
-require_once 'test/Arbit/Periodic/helper/CliLogger.php';
 
 class HtmlTest extends TestCase
 {
@@ -37,7 +37,7 @@ class HtmlTest extends TestCase
         parent::setUp();
     }
 
-    protected function logSomething( \periodicLogger $logger )
+    protected function logSomething( Logger $logger )
     {
         $logger->log( 'Info 1' );
         $logger->setTask( 'task1' );
@@ -45,14 +45,14 @@ class HtmlTest extends TestCase
         $logger->setCommand( 'command1' );
         $logger->log( 'Info 3' );
         $logger->setTask();
-        $logger->log( 'Warning', \periodicLogger::WARNING );
-        $logger->log( 'Error', \periodicLogger::ERROR );
+        $logger->log( 'Warning', Logger::WARNING );
+        $logger->log( 'Error', Logger::ERROR );
     }
 
     public function testDefaultLogging()
     {
         ob_start();
-        $logger = new \periodicHtmlLogger();
+        $logger = new Html();
         $this->logSomething( $logger );
         unset( $logger );
 
@@ -62,20 +62,21 @@ class HtmlTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testInvalidSeverity()
     {
-        ob_start();
-        $logger = new \periodicHtmlLogger();
-
         try
         {
+            ob_start();
+            $logger = new Html();
             $logger->log( 'Test', 42 );
-            $this->fail( 'Expected \periodicRuntimeException.' );
-        }
-        catch ( \periodicRuntimeException $e )
-        { /* Expected */ }
+        } catch ( \Exception $e ) {
+            unset( $logger );
+            ob_end_clean();
 
-        unset( $logger );
-        ob_end_clean();
+            throw $e;
+        }
     }
 }
