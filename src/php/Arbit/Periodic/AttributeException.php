@@ -21,26 +21,14 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-/**
- * Periodic bas exception
- */
-abstract class periodicException extends Exception
-{
-}
-
-/**
- * Periodic runtime exception
- */
-class periodicRuntimeException extends periodicException
-{
-}
+namespace Arbit\Periodic;
 
 /**
  * periodicAttributeException
  *
  * Thrown if an attribute is accessed in a way which is not allowed.
  */
-class periodicAttributeException extends periodicException
+class AttributeException extends \InvalidArgumentException
 {
     /**
      * The accesed attribute is does not exist
@@ -84,10 +72,4 @@ class periodicAttributeException extends periodicException
         parent::__construct( $message );
     }
 }
-
-/**
- * Thrown if a the cronjob iterator is initialized with an invalid cron
- * definition
- */
-class periodicInvalidCronjobException extends periodicException {}
 
