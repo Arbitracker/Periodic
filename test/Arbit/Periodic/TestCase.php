@@ -34,6 +34,13 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $this->tmpDir = __DIR__ . '/tmp/';
 
+        // Since git does not allow to check in empty directories, we create
+        // one, if it does not exit
+        if ( !is_dir( $dir = __DIR__ . '/_fixtures/file/dir/second' ) )
+        {
+            mkdir( $dir );
+        }
+
         // Ensure tmpdir has proper access right
         chmod( $this->tmpDir, 0755 );
     }
