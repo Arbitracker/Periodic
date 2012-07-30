@@ -23,7 +23,9 @@
 
 namespace Arbit\Periodic\Executor;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\CommandRegistry,
+    Arbit\Xml;
 
 require_once __DIR__ . '/../TestCase.php';
 
@@ -35,8 +37,8 @@ class CommandTest extends TestCase
     public function setUp()
     {
         $this->logger = new \periodicTestLogger();
-        $this->config = \arbitXml::loadString( '<?xml version="1.0" ?><configuration/>' );
-        $this->commandFactory = new \periodicCommandRegistry();
+        $this->config = Xml\Document::loadString( '<?xml version="1.0" ?><configuration/>' );
+        $this->commandFactory = new CommandRegistry();
     }
 
     public function testUnknownCommand()
@@ -62,7 +64,7 @@ class CommandTest extends TestCase
 
         $this->assertEquals(
             array(
-                '(E) Implementation for command \'invalid\' could not be found.',
+                '(E) Implementation \'testUnknownClassName\' for command \'invalid\' could not be found.',
             ),
             $this->logger->logMessages
         );
