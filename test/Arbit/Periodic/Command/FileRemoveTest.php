@@ -23,7 +23,9 @@
 
 namespace Arbit\Periodic\Command;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\Executor,
+    Arbit\Xml;
 
 require_once __DIR__ . '/../TestCase.php';
 
@@ -35,8 +37,8 @@ class FileRemoveTest extends TestCase
     {
         parent::setUp();
 
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/dir</dst>
@@ -49,15 +51,15 @@ class FileRemoveTest extends TestCase
 
     public function testEmptyConfiguation()
     {
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command/>
             ' ),
             $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            \periodicExecutor::ERROR,
+            Executor::ERROR,
             $cmd->run()
         );
 
@@ -71,8 +73,8 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveNotExistingDirectory()
     {
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <path>test/Arbit/Periodic/not_existing</path>
                 </command>
@@ -81,7 +83,7 @@ class FileRemoveTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -95,8 +97,8 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveNotReadableFile()
     {
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                 </command>
@@ -106,7 +108,7 @@ class FileRemoveTest extends TestCase
         chmod( $this->tmpDir . 'dir/subdir/file1', 0 );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -120,8 +122,8 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveInNotWriteableParentDir()
     {
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                 </command>
@@ -131,7 +133,7 @@ class FileRemoveTest extends TestCase
         chmod( $this->tmpDir . 'dir/subdir', 0555 );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -145,8 +147,8 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveDirDefaultInfinitePattern()
     {
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <path>test/Arbit/Periodic/tmp/dir</path>
                 </command>
@@ -155,7 +157,7 @@ class FileRemoveTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -165,8 +167,8 @@ class FileRemoveTest extends TestCase
     public function testRemoveDirSimpleFilePattern()
     {
         $this->assertFileExists( $this->tmpDir . 'dir' );
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <path>test/Arbit/Periodic/tmp/dir</path>
                     <pattern>file*</pattern>
@@ -176,7 +178,7 @@ class FileRemoveTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -189,8 +191,8 @@ class FileRemoveTest extends TestCase
     public function testRemoveDirSimpleDirPattern()
     {
         $this->assertFileExists( $this->tmpDir . 'dir' );
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <path>test/Arbit/Periodic/tmp/dir</path>
                     <pattern>subdir</pattern>
@@ -200,7 +202,7 @@ class FileRemoveTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -213,8 +215,8 @@ class FileRemoveTest extends TestCase
     public function testRemoveFile()
     {
         $this->assertFileExists( $this->tmpDir . 'dir' );
-        $cmd = new \periodicFilesystemRemoveCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Remove(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                 </command>
@@ -223,7 +225,7 @@ class FileRemoveTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
