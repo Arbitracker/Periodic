@@ -23,7 +23,11 @@
 
 namespace Arbit\Periodic\Executor;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Xml,
+    Arbit\Periodic\Task,
+    Arbit\Periodic\CommandRegistry,
+    Arbit\Periodic\Executor;
 
 require_once __DIR__ . '/../TestCase.php';
 
@@ -34,7 +38,7 @@ class TaskTest extends TestCase
 {
     public function setUp()
     {
-        $this->commandFactory = new \periodicCommandRegistry();
+        $this->commandFactory = new CommandRegistry();
         $this->commandFactory->registerCommand( 'test.dummy', '\periodicTestDummyCommand' );
         $this->commandFactory->registerCommand( 'test.abort', '\periodicTestAbortCommand' );
         $this->commandFactory->registerCommand( 'test.reschedule', '\periodicTestRescheduleCommand' );
@@ -44,9 +48,9 @@ class TaskTest extends TestCase
 
     public function testTaskConfigurationDefaultValues()
     {
-        $task = new \periodicTask(
+        $task = new Task(
             'test', 0,
-            \arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
+            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new \periodicTestLogger()
         );
@@ -62,65 +66,56 @@ class TaskTest extends TestCase
         );
     }
 
+    /**
+     * @expectedException \Arbit\Periodic\AttributeException
+     */
     public function testTaskConfigurationReadUnknownValue()
     {
-        $task = new \periodicTask(
+        $task = new Task(
             'test', 0,
-            \arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
+            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new \periodicTestLogger()
         );
 
-        try
-        {
-            $task->unknown;
-            $this->fail( 'Expected \periodicAttributeException.' );
-        }
-        catch ( \periodicAttributeException $e )
-        { /* Expected */ }
+        $task->unknown;
     }
 
+    /**
+     * @expectedException \Arbit\Periodic\AttributeException
+     */
     public function testTaskConfigurationWriteUnknownValue()
     {
-        $task = new \periodicTask(
+        $task = new Task(
             'test', 0,
-            \arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
+            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new \periodicTestLogger()
         );
 
-        try
-        {
-            $task->unknown = 42;
-            $this->fail( 'Expected \periodicAttributeException.' );
-        }
-        catch ( \periodicAttributeException $e )
-        { /* Expected */ }
+        $task->unknown = 42;
     }
 
+    /**
+     * @expectedException \Arbit\Periodic\AttributeException
+     */
     public function testTaskConfigurationWriteValue()
     {
-        $task = new \periodicTask(
+        $task = new Task(
             'test', 0,
-            \arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
+            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
             $this->commandFactory,
             $logger = new \periodicTestLogger()
         );
 
-        try
-        {
-            $task->timeout = 42;
-            $this->fail( 'Expected \periodicAttributeException.' );
-        }
-        catch ( \periodicAttributeException $e )
-        { /* Expected */ }
+        $task->timeout = 42;
     }
 
     public function testTaskConfigurationReconfiguredValues()
     {
-        $task = new \periodicTask(
+        $task = new Task(
             'test', 0,
-            \arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/reschedule.xml" ),
+            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/reschedule.xml" ),
             $this->commandFactory,
             $logger = new \periodicTestLogger()
         );
@@ -141,7 +136,7 @@ class TaskTest extends TestCase
         return array(
             array(
                 'dummy',
-                \periodicExecutor::SUCCESS,
+                Executor::SUCCESS,
                 array(
                     '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
@@ -151,7 +146,7 @@ class TaskTest extends TestCase
             ),
             array(
                 'multiple',
-                \periodicExecutor::SUCCESS,
+                Executor::SUCCESS,
                 array(
                     '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
@@ -169,7 +164,7 @@ class TaskTest extends TestCase
             ),
             array(
                 'abort',
-                \periodicExecutor::SUCCESS,
+                Executor::SUCCESS,
                 array(
                     '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
@@ -183,7 +178,7 @@ class TaskTest extends TestCase
             ),
             array(
                 'reschedule',
-                \periodicExecutor::RESCHEDULE,
+                Executor::RESCHEDULE,
                 array(
                     '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
@@ -197,7 +192,7 @@ class TaskTest extends TestCase
             ),
             array(
                 'error',
-                \periodicExecutor::ERROR,
+                Executor::ERROR,
                 array(
                     '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
@@ -211,7 +206,7 @@ class TaskTest extends TestCase
             ),
             array(
                 'errorneous',
-                \periodicExecutor::ERROR,
+                Executor::ERROR,
                 array(
                     '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
@@ -231,9 +226,9 @@ class TaskTest extends TestCase
      */
     public function testRunDummyTestCommand( $name, $status, $log )
     {
-        $task = new \periodicTask(
+        $task = new Task(
             'test', 0,
-            \arbitXml::loadFile( __DIR__ . "/../_fixtures/tasks/$name.xml" ),
+            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/$name.xml" ),
             $this->commandFactory,
             $logger = new \periodicTestLogger()
         );
