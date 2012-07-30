@@ -5,12 +5,12 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         bootstrap="../src/base.php"
+         bootstrap="../src/php/Arbit/Periodic/bootstrap.php"
          syntaxCheck="false">
 
     <filter>
       <whitelist>
-          <directory suffix=".php">../src/</directory>
+          <directory suffix=".php">../src/php/Arbit/Periodic</directory>
       </whitelist>
   </filter>
 </phpunit>
