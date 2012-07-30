@@ -23,6 +23,8 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
 /**
  * This file contains the cron runner for periodic
  *
@@ -34,8 +36,8 @@
  * to STDOUT.
  */
 
-// Include environment, declaring error handler and autoload function
-require dirname( __FILE__ ) . '/base.php';
+// Include environment
+require __DIR__ . '/../php/Arbit/Periodic/bootstrap.php';
 
 // Read passed command line options.
 $options = getopt( 'vh', array( 'verbose', 'help', 'data::', 'tasks::' ) );
@@ -72,19 +74,19 @@ EOHELP;
 try
 {
     // Instantiate logger
-    $logger = new periodicCliLogger();
+    $logger = new Logger\Cli();
 
     // Set logger verbose, if requested
     if ( !isset( $options['v'] ) &&
          !isset( $options['verbose'] ) )
     {
-        $logger->setMapping( periodicLogger::INFO, periodicCliLogger::SILENCE );
+        $logger->setMapping( Logger::INFO, Logger\Cli::SILENCE );
     }
 
     // Instantiate task factory
-    $taskFactory = new periodicTaskFactory(
+    $taskFactory = new TaskFactory(
         isset( $options['tasks'] ) ? $options['tasks'] : './tasks/',
-        new periodicCommandRegistry()
+        new CommandRegistry()
     );
 
     $crontab = end( $argv );
@@ -96,7 +98,7 @@ try
     }
 
     // Instantiate executor
-    $executor = new periodicExecutor(
+    $executor = new Executor(
         file_get_contents( $crontab ),
         $taskFactory,
         $logger,
