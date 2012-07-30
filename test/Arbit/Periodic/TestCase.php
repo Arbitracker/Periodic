@@ -43,6 +43,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         // Ensure tmpdir has proper access right
         chmod( $this->tmpDir, 0755 );
+
+        // Change the current working dir, so the test suite is not required to 
+        // be executed from a certain base dir
+        chdir( __DIR__ . '/../../../' );
     }
 
     public function tearDown()
