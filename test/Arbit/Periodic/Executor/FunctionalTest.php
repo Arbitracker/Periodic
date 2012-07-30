@@ -23,7 +23,9 @@
 
 namespace Arbit\Periodic\Executor;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\CommandRegistry,
+    Arbit\Periodic\TaskFactory;
 
 require_once __DIR__ . '/../TestCase.php';
 
@@ -35,7 +37,7 @@ class FunctionalTests extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->taskFactory = new \periodicTaskFactory( __DIR__ . '/../_fixtures/tasks/', new \periodicCommandRegistry() );
+        $this->taskFactory = new TaskFactory( __DIR__ . '/../_fixtures/tasks/', new CommandRegistry() );
     }
 
     public function testFullExecutorRun()

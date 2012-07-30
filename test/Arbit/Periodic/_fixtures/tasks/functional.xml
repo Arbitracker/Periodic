@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <task>
 	<command type="fs.copy">
-		<src>tests/data/file/dir</src>
-		<dst>tests/tmp/dir</dst>
+		<src>test/Arbit/Periodic/_fixtures/file/dir</src>
+		<dst>test/Arbit/Periodic/tmp/dir</dst>
 	</command>
 	<command type="fs.remove">
-		<path>tests/tmp/dir</path>
+		<path>test/Arbit/Periodic/tmp/dir</path>
 	</command>
 	<command type="system.exec">
 		echo "Hello world"
