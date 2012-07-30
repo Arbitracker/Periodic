@@ -23,7 +23,9 @@
 
 namespace Arbit\Periodic\Command;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\Executor,
+    Arbit\Xml;
 
 require_once __DIR__ . '/../TestCase.php';
 
@@ -33,15 +35,15 @@ class SystemExecTest extends TestCase
 {
     public function testEmptyConfiguation()
     {
-        $cmd = new \periodicSystemExecCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new System\Exec(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command/>
             ' ),
             $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            \periodicExecutor::ERROR,
+            Executor::ERROR,
             $cmd->run()
         );
 
@@ -55,15 +57,15 @@ class SystemExecTest extends TestCase
 
     public function testSuccessfullCommandExecution()
     {
-        $cmd = new \periodicSystemExecCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new System\Exec(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>echo "Hello world"</command>
             ' ),
             $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -78,21 +80,21 @@ class SystemExecTest extends TestCase
 
     public function testFailOnUnknownCommand()
     {
-        $cmd = new \periodicSystemExecCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new System\Exec(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>some_command_not_available</command>
             ' ),
             $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            \periodicExecutor::ERROR,
+            Executor::ERROR,
             $cmd->run()
         );
 
         $this->assertEquals(
             array(
-                '(W) sh: some_command_not_available: command not found',
+                '(W) sh: 1: some_command_not_available: not found',
                 '(i) Command exited with return value 127',
             ),
             $logger->logMessages
@@ -101,21 +103,21 @@ class SystemExecTest extends TestCase
 
     public function testNoFailOnUnknownCommand()
     {
-        $cmd = new \periodicSystemExecCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new System\Exec(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command failOnError="false">some_command_not_available</command>
             ' ),
             $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
         $this->assertEquals(
             array(
-                '(W) sh: some_command_not_available: command not found',
+                '(W) sh: 1: some_command_not_available: not found',
                 '(i) Command exited with return value 127',
             ),
             $logger->logMessages

@@ -25,7 +25,7 @@
 namespace Arbit\Periodic\Command\System;
 
 use Arbit\Periodic\Command,
-    Arbit\Periodic\Executor;
+    Arbit\Periodic\Executor,
     Arbit\Periodic\Logger;
 
 /**
