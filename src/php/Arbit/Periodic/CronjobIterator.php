@@ -22,11 +22,13 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
 /**
  * Class providing easy means to access event times based on a given cron
  * string as defined by the vixie-cron daemon.
  */
-class periodicCronjobIterator implements Iterator
+class CronjobIterator implements \Iterator
 {
     /**
      * Attributes of the class
@@ -103,7 +105,7 @@ class periodicCronjobIterator implements Iterator
 
         if ( $this->validateColumns( $cronjob ) !== true )
         {
-            throw new periodicInvalidCronjobException( 'The supplied cronjob data is invalid.' );
+            throw new InvalidCronjobException( 'The supplied cronjob data is invalid.' );
         }
 
         $this->year = (int)date( 'Y', $this->getCurrentTime() );
@@ -113,7 +115,7 @@ class periodicCronjobIterator implements Iterator
      * Create a cronjobIterator based a complete cronjob definition line
      *
      * @param mixed $cronjobString The cronjob string to use for creation
-     * @return periodicCronjobIterator The cronjobIterator based on the given
+     * @return CronjobIterator The cronjobIterator based on the given
      * cronjobString
      */
     public static function fromString( $cronjobString )
@@ -122,7 +124,7 @@ class periodicCronjobIterator implements Iterator
          * @todo: maybe this splitting should be done using a regex to support
          * arbitrary whitespace characters
          */
-        return new periodicCronjobIterator(
+        return new CronjobIterator(
             explode( ' ', $cronjobString )
         );
     }
@@ -700,7 +702,7 @@ class periodicCronjobIterator implements Iterator
     {
         if ( array_key_exists( $k, $this->attributes ) !== true )
         {
-            throw new periodicAttributeException( periodicAttributeException::NON_EXISTANT, $k );
+            throw new AttributeException( AttributeException::NON_EXISTANT, $k );
         }
 
         switch( $k )
@@ -720,7 +722,7 @@ class periodicCronjobIterator implements Iterator
                 $this->generateTimetable( 0 );
             break;
             default:
-                throw new periodicAttributeException( periodicAttributeException::WRITE, $k );
+                throw new AttributeException( AttributeException::WRITE, $k );
         }
     }
 
@@ -734,7 +736,7 @@ class periodicCronjobIterator implements Iterator
     {
         if ( array_key_exists( $k, $this->attributes ) !== true )
         {
-            throw new periodicAttributeException( periodicAttributeException::NON_EXISTANT, $k );
+            throw new AttributeException( AttributeException::NON_EXISTANT, $k );
         }
 
         // All existant attributes are readable

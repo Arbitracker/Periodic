@@ -22,17 +22,19 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
 /**
  * Cronjob
  *
  * Class containing all information relevant to a single cronjob item.
  */
-class periodicCronjob
+class Cronjob
 {
     /**
      * Cronjob iterator containing the relevant time information
      *
-     * @var periodicCronjobIterator
+     * @var CronjobIterator
      */
     public $iterator;
 
@@ -64,10 +66,10 @@ class periodicCronjob
             (?:(?P<group>[^:\\s]+):)?(?P<task>[^:\\s]+)\\s*$
         )x', $line, $matches ) )
         {
-            throw new periodicInvalidCronjobException( 'Invalid cron table line: ' . $line );
+            throw new \UnexpectedValueException( 'Invalid cron table line: ' . $line );
         }
 
-        $this->iterator = new periodicCronjobIterator( array(
+        $this->iterator = new CronjobIterator( array(
             $matches[1],
             $matches[2],
             $matches[3],

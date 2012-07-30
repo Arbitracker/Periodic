@@ -22,12 +22,18 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic\Command\FileSystem;
+
+use Arbit\Periodic\Command,
+    Arbit\Periodic\Executor;
+    Arbit\Periodic\Logger;
+
 /**
  * Command
  *
  * Command to (recursively) copy files.
  */
-class periodicFilesystemRemoveCommand extends periodicCommand
+class Remove extends Command
 {
     /**
      * Run command
@@ -35,7 +41,7 @@ class periodicFilesystemRemoveCommand extends periodicCommand
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in periodicCommand.
+     * constants in Command.
      *
      * @return int
      */
@@ -43,8 +49,8 @@ class periodicFilesystemRemoveCommand extends periodicCommand
     {
         if ( !isset( $this->configuration->path ) )
         {
-            $this->logger->log( 'No path provided.', periodicLogger::ERROR );
-            return periodicExecutor::ERROR;
+            $this->logger->log( 'No path provided.', Logger::ERROR );
+            return Executor::ERROR;
         }
         $path = (string) $this->configuration->path;
 
@@ -55,7 +61,7 @@ class periodicFilesystemRemoveCommand extends periodicCommand
         }
 
         $this->removeRecursive( $path, $pattern );
-        return periodicExecutor::SUCCESS;
+        return Executor::SUCCESS;
     }
 
     /**
@@ -101,21 +107,21 @@ class periodicFilesystemRemoveCommand extends periodicCommand
         // Check if source file exists at all.
         if ( !is_file( $path ) && !is_dir( $path ) )
         {
-            $this->logger->log( "$path is not a valid source.", periodicLogger::WARNING );
+            $this->logger->log( "$path is not a valid source.", Logger::WARNING );
             return;
         }
 
         // Skip non readable files in src directory
         if ( !is_readable( $path ) )
         {
-            $this->logger->log( "$path is not readable, skipping.", periodicLogger::WARNING );
+            $this->logger->log( "$path is not readable, skipping.", Logger::WARNING );
             return;
         }
 
         // Skip non writeable parent directories
         if ( !is_writeable( $parent = dirname( $path ) ) )
         {
-            $this->logger->log( "$parent is not writable, skipping.", periodicLogger::WARNING );
+            $this->logger->log( "$parent is not writable, skipping.", Logger::WARNING );
             return;
         }
 

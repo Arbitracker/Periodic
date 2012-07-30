@@ -22,12 +22,18 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic\Command\FileSystem;
+
+use Arbit\Periodic\Command,
+    Arbit\Periodic\Executor;
+    Arbit\Periodic\Logger;
+
 /**
  * Command
  *
  * Command to (recursively) copy files.
  */
-class periodicFilesystemCopyCommand extends periodicCommand
+class Copy extends Command
 {
     /**
      * Run command
@@ -35,7 +41,7 @@ class periodicFilesystemCopyCommand extends periodicCommand
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in periodicCommand.
+     * constants in Command.
      *
      * @return int
      */
@@ -43,15 +49,15 @@ class periodicFilesystemCopyCommand extends periodicCommand
     {
         if ( !isset( $this->configuration->src ) )
         {
-            $this->logger->log( 'No source provided.', periodicLogger::ERROR );
-            return periodicExecutor::ERROR;
+            $this->logger->log( 'No source provided.', Logger::ERROR );
+            return Executor::ERROR;
         }
         $src = (string) $this->configuration->src;
 
         if ( !isset( $this->configuration->dst ) )
         {
-            $this->logger->log( 'No destination provided.', periodicLogger::ERROR );
-            return periodicExecutor::ERROR;
+            $this->logger->log( 'No destination provided.', Logger::ERROR );
+            return Executor::ERROR;
         }
         $dst = (string) $this->configuration->dst;
 
@@ -63,7 +69,7 @@ class periodicFilesystemCopyCommand extends periodicCommand
         }
 
         $this->copyRecursive( $src, $dst, $depth );
-        return periodicExecutor::SUCCESS;
+        return Executor::SUCCESS;
     }
 
     /**
@@ -90,21 +96,21 @@ class periodicFilesystemCopyCommand extends periodicCommand
         // Check if source file exists at all.
         if ( !is_file( $src ) && !is_dir( $src ) )
         {
-            $this->logger->log( "$src is not a valid source.", periodicLogger::WARNING );
+            $this->logger->log( "$src is not a valid source.", Logger::WARNING );
             return;
         }
 
         // Skip non readable files in src directory
         if ( !is_readable( $src ) )
         {
-            $this->logger->log( "$src is not readable, skipping.", periodicLogger::WARNING );
+            $this->logger->log( "$src is not readable, skipping.", Logger::WARNING );
             return;
         }
 
         // Destination file should not exist
         if ( is_file( $dst ) || is_dir( $dst ) )
         {
-            $this->logger->log( "$dst already exists, and cannot be overwritten.", periodicLogger::WARNING );
+            $this->logger->log( "$dst already exists, and cannot be overwritten.", Logger::WARNING );
             return;
         }
 

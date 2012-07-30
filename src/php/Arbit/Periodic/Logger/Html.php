@@ -22,13 +22,17 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic\Logger;
+
+use Arbit\Periodic\Logger;
+
 /**
  * Web HTML logger
  *
  * Logger which generates HTML output from the logged messages, so the return
  * value can be viewed using a web browser.
  */
-class periodicHtmlLogger extends periodicBaseLogger
+class Html extends Base
 {
     /**
      * Colors associated with severities
@@ -36,9 +40,9 @@ class periodicHtmlLogger extends periodicBaseLogger
      * @var array
      */
     protected $colors = array(
-        periodicLogger::INFO    => '#4e9a06',
-        periodicLogger::WARNING => '#edd400',
-        periodicLogger::ERROR   => '#cc0000',
+        Logger::INFO    => '#4e9a06',
+        Logger::WARNING => '#edd400',
+        Logger::ERROR   => '#cc0000',
     );
 
     /**
@@ -97,7 +101,7 @@ HTMLFOOTER;
     {
         if ( !isset( $this->names[$severity] ) )
         {
-            throw new periodicRuntimeException( "Unknown severity: " . $severity );
+            throw new \RuntimeException( "Unknown severity: " . $severity );
         }
 
         printf( "        <li>

@@ -22,12 +22,14 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
 /**
  * Logger interface
  *
  * Interface which should be implemented by loggers passed to the executor
  */
-interface periodicLogger
+interface Logger
 {
     /**
      * Information level log message

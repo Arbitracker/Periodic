@@ -22,18 +22,20 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
 /**
  * Peridoc executor
  *
  * Manages the execution of scheduled tasks, as defined by the associated
  * crontab.
  */
-class periodicExecutor
+class Executor
 {
     /**
-     * Crontable, which consists of a list of periodicCronjob objects.
+     * Crontable, which consists of a list of Cronjob objects.
      *
-     * @var array(periodicCronjob)
+     * @var array(Cronjob)
      */
     protected $crontab;
 
@@ -47,7 +49,7 @@ class periodicExecutor
     /**
      * Logger class, which receives all log messages
      *
-     * @var periodicLogger
+     * @var Logger
      */
     protected $logger;
 
@@ -61,7 +63,7 @@ class periodicExecutor
     /**
      * Task factory
      *
-     * @var periodicTaskFactory
+     * @var TaskFactory
      */
     protected $taskFactory;
 
@@ -91,14 +93,14 @@ class periodicExecutor
      * Construct the executor
      *
      * Construct the executor from the given cron table and a logger
-     * implementing the periodicLogger interface.
+     * implementing the Logger interface.
      *
      * @param string $crontab
-     * @param periodicLogger $logger
+     * @param Logger $logger
      * @param string $lockDir
      * @return void
      */
-    public function __construct( $crontab, periodicTaskFactory $taskFactory, periodicLogger $logger, $lockDir )
+    public function __construct( $crontab, TaskFactory $taskFactory, Logger $logger, $lockDir )
     {
         $this->parseCrontab( $crontab );
         $this->taskFactory = $taskFactory;
@@ -126,7 +128,7 @@ class periodicExecutor
                  ( $line[0] !== '#' ) &&
                  ( $line[0] !== ';' ) )
             {
-                $this->crontab[] = new periodicCronjob( $line );
+                $this->crontab[] = new Cronjob( $line );
             }
         }
     }
@@ -238,18 +240,18 @@ class periodicExecutor
 
                     switch ( $status )
                     {
-                        case periodicExecutor::SUCCESS:
+                        case Executor::SUCCESS:
                             $this->logger->log( 'Finished task execution.' );
                             break;
-                        case periodicExecutor::ERROR:
-                            $this->logger->log( 'Error occured during task execution.', periodicLogger::WARNING );
+                        case Executor::ERROR:
+                            $this->logger->log( 'Error occured during task execution.', Logger::WARNING );
                             break;
-                        case periodicExecutor::RESCHEDULE:
+                        case Executor::RESCHEDULE:
                             $this->logger->log( 'Task will be rescheduled for ' . $task->reScheduleTime . ' seconds.' );
                             $this->rescheduled[$scheduled + $task->reScheduleTime] = $cronjob;
                             break;
                         default:
-                            $this->logger->log( 'Invalid status returned by task.', periodicLogger::ERROR );
+                            $this->logger->log( 'Invalid status returned by task.', Logger::ERROR );
                             break;
                     }
 
@@ -292,12 +294,12 @@ class periodicExecutor
         {
             $this->logger->log(
                 'Failure storing last run time: ' . ( isset( $php_errormsg ) ? $php_errormsg : 'Unknown error - enable the track_errors ini directive.' ),
-                periodicLogger::ERROR
+                Logger::ERROR
             );
             return;
         }
 
-        $this->logger->log( 'Stored last run time.', periodicLogger::INFO );
+        $this->logger->log( 'Stored last run time.', Logger::INFO );
     }
 
     /**
@@ -324,7 +326,7 @@ class periodicExecutor
                     'The lockfile %s does allready exist.',
                     $lockfile
                 ),
-                periodicLogger::WARNING
+                Logger::WARNING
             );
             return false;
         }
@@ -335,7 +337,7 @@ class periodicExecutor
         fwrite( $fp, time() );
         fclose( $fp );
 
-        $this->logger->log( 'Aquired lock.', periodicLogger::INFO );
+        $this->logger->log( 'Aquired lock.', Logger::INFO );
         return true;
     }
 
@@ -355,12 +357,12 @@ class periodicExecutor
         {
             $this->logger->log(
                 'Failure releasing lock: ' . ( isset( $php_errormsg ) ? $php_errormsg : 'Unknown error - enable the track_errors ini directive.' ),
-                periodicLogger::ERROR
+                Logger::ERROR
             );
             return;
         }
 
-        $this->logger->log( 'Released lock.', periodicLogger::INFO );
+        $this->logger->log( 'Released lock.', Logger::INFO );
     }
 }
 

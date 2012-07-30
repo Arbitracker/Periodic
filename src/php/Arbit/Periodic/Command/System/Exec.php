@@ -22,12 +22,18 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic\Command\System;
+
+use Arbit\Periodic\Command,
+    Arbit\Periodic\Executor;
+    Arbit\Periodic\Logger;
+
 /**
  * Command
  *
  * Command to execute system commands
  */
-class periodicSystemExecCommand extends periodicCommand
+class Exec extends Command
 {
     /**
      * Run command
@@ -35,7 +41,7 @@ class periodicSystemExecCommand extends periodicCommand
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in periodicCommand.
+     * constants in Command.
      *
      * @return int
      */
@@ -44,15 +50,15 @@ class periodicSystemExecCommand extends periodicCommand
         $command = (string) $this->configuration;
         if ( empty( $command ) )
         {
-            $this->logger->log( 'No command provided for execution.', periodicLogger::ERROR );
-            return periodicExecutor::ERROR;
+            $this->logger->log( 'No command provided for execution.', Logger::ERROR );
+            return Executor::ERROR;
         }
 
         // Check for availability of PHP command execution functions
         if ( !function_exists( 'proc_open' ) )
         {
-            $this->logger->log( 'Required PHP functions proc_* not available.', periodicLogger::ERROR );
-            return periodicExecutor::ERROR;
+            $this->logger->log( 'Required PHP functions proc_* not available.', Logger::ERROR );
+            return Executor::ERROR;
         }
 
         $failOnError = true;
@@ -71,8 +77,8 @@ class periodicSystemExecCommand extends periodicCommand
      * will be added as warnings to the logger.
      *
      * If the command returns with an non-zero exit code and $failOnError is
-     * set to true the command will return periodicExecutor::ERROR - otherwise
-     * it will always return with periodicExecutor::SUCCESS.
+     * set to true the command will return Executor::ERROR - otherwise
+     * it will always return with Executor::SUCCESS.
      *
      * @param string $command
      * @param bool $failOnError
@@ -89,8 +95,8 @@ class periodicSystemExecCommand extends periodicCommand
         $proc = proc_open( $command, $descriptors, $pipes );
         if ( !is_resource( $proc ) )
         {
-            $this->logger->log( 'Could not start processs.', periodicLogger::ERROR );
-            return periodicExecutor::ERROR;
+            $this->logger->log( 'Could not start processs.', Logger::ERROR );
+            return Executor::ERROR;
         }
 
         // Add command output as information to log
@@ -105,7 +111,7 @@ class periodicSystemExecCommand extends periodicCommand
         $output = trim( stream_get_contents( $pipes[2] ) );
         if ( !empty( $output ) )
         {
-            $this->logger->log( $output, periodicLogger::WARNING );
+            $this->logger->log( $output, Logger::WARNING );
         }
         fclose( $pipes[2] );
 
@@ -113,7 +119,7 @@ class periodicSystemExecCommand extends periodicCommand
         $return = proc_close( $proc );
         $this->logger->log( "Command exited with return value $return" );
 
-        return ( $return && $failOnError ) ? periodicExecutor::ERROR : periodicExecutor::SUCCESS;
+        return ( $return && $failOnError ) ? Executor::ERROR : Executor::SUCCESS;
     }
 }
 

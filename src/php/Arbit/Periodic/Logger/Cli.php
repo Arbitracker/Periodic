@@ -22,6 +22,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic\Logger;
+
+use Arbit\Periodic\Logger;
+
 /**
  * Command line logger
  *
@@ -29,7 +33,7 @@
  * warnings will be logged to STDERR, while info messages are printed to
  * STDOUT.
  */
-class periodicCliLogger extends periodicBaseLogger
+class Cli extends Base
 {
     /**
      * Mapping of error levels to pipes
@@ -37,9 +41,9 @@ class periodicCliLogger extends periodicBaseLogger
      * @var array
      */
     protected $mapping = array(
-        periodicLogger::INFO    => self::STDOUT,
-        periodicLogger::WARNING => self::STDERR,
-        periodicLogger::ERROR   => self::STDERR,
+        Logger::INFO    => self::STDOUT,
+        Logger::WARNING => self::STDERR,
+        Logger::ERROR   => self::STDERR,
     );
 
     /**
@@ -88,7 +92,7 @@ class periodicCliLogger extends periodicBaseLogger
     {
         if ( !isset( $this->mapping[$severity] ) )
         {
-            throw new periodicRuntimeException( "Unknown severity: " . $severity );
+            throw new \RuntimeException( "Unknown severity: " . $severity );
         }
 
         switch ( $pipe = $this->mapping[$severity] )
@@ -106,7 +110,7 @@ class periodicCliLogger extends periodicBaseLogger
                 break;
 
             default:
-                throw new periodicRuntimeException( "Unknown output pipe: " . $pipe );
+                throw new \RuntimeException( "Unknown output pipe: " . $pipe );
         }
 
         // Generate and output error message
@@ -132,15 +136,15 @@ class periodicCliLogger extends periodicBaseLogger
      * severity. The available severities are defined in the logger interface
      * and are:
      *
-     * - periodicLogger::INFO
-     * - periodicLogger::WARNING
-     * - periodicLogger::ERROR
+     * - Logger::INFO
+     * - Logger::WARNING
+     * - Logger::ERROR
      *
      * The available output pipes are:
      *
-     * - periodicCliLogger::SILENCE, do not output anything
-     * - periodicCliLogger::STDOUT, echo messages to STDOUT
-     * - periodicCliLogger::STDERR, echo messages to STDERR
+     * - Cli::SILENCE, do not output anything
+     * - Cli::STDOUT, echo messages to STDOUT
+     * - Cli::STDERR, echo messages to STDERR
      *
      * @param int $severity
      * @param int $pipe
@@ -150,14 +154,14 @@ class periodicCliLogger extends periodicBaseLogger
     {
         if ( !isset( $this->mapping[$severity] ) )
         {
-            throw new periodicRuntimeException( "Unknown severity: " . $severity );
+            throw new \RuntimeException( "Unknown severity: " . $severity );
         }
 
         if ( ( $pipe !== self::SILENCE ) &&
              ( $pipe !== self::STDOUT ) &&
              ( $pipe !== self::STDERR ) )
         {
-            throw new periodicRuntimeException( "Unknown output pipe: " . $pipe );
+            throw new \RuntimeException( "Unknown output pipe: " . $pipe );
         }
 
         $this->mapping[$severity] = $pipe;

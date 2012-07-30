@@ -22,13 +22,17 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
+use Arbit\XML;
+
 /**
  * Command registry
  *
  * A simple static-only command registry, where commands can be registered with
  * their associated implementations.
  */
-class periodicCommandRegistry
+class CommandRegistry
 {
     /**
      * List of commands with their associated class names of their
@@ -38,11 +42,11 @@ class periodicCommandRegistry
      */
     protected $commands = array(
         // Standard file system operations
-        'fs.copy'     => 'periodicFilesystemCopyCommand',
-        'fs.remove'   => 'periodicFilesystemRemoveCommand',
+        'fs.copy'     => '\\Arbit\\Periodic\\Command\\FileSystem\\Copy',
+        'fs.remove'   => '\\Arbit\\Periodic\\Command\\FileSystem\\Remove',
 
         // Generic system operations
-        'system.exec' => 'periodicSystemExecCommand',
+        'system.exec' => '\\Arbit\\Periodic\\Command\\System\\Exec',
     );
 
     /**
@@ -67,20 +71,20 @@ class periodicCommandRegistry
      * configuration. The additionally passed logger will be used to log
      * command creation and will be passed to the command object for logging.
      *
-     * Returns the created periodicCommand object, or false on failure.
+     * Returns the created Command object, or false on failure.
      *
      * @param string $command
-     * @param arbitXmlNode $configuration
-     * @param periodicLogger $logger
-     * @return periodicCommand
+     * @param XML\Node $configuration
+     * @param Logger $logger
+     * @return Command
      */
-    public function factory( $command, arbitXmlNode $configuration, periodicLogger $logger )
+    public function factory( $command, XML\Node $configuration, Logger $logger )
     {
         if ( !isset( $this->commands[$command] ) )
         {
             $logger->log(
                 "Unknown command '$command'.",
-                periodicLogger::ERROR
+                Logger::ERROR
             );
             return false;
         }
@@ -89,14 +93,14 @@ class periodicCommandRegistry
         {
             $logger->log(
                 "Implementation for command '$command' could not be found.",
-                periodicLogger::ERROR
+                Logger::ERROR
             );
             return false;
         }
 
         $logger->log(
             "Create command '$command'.",
-            periodicLogger::INFO
+            Logger::INFO
         );
         return new $class( $configuration, $logger );
     }

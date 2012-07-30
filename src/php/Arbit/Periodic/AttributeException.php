@@ -24,7 +24,7 @@
 namespace Arbit\Periodic;
 
 /**
- * periodicAttributeException
+ * AttributeException
  *
  * Thrown if an attribute is accessed in a way which is not allowed.
  */

@@ -22,6 +22,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic\Logger;
+
+use Arbit\Periodic\Logger;
+
 /**
  * Command line logger
  *
@@ -29,7 +33,7 @@
  * warnings will be logged to STDERR, while info messages are printed to
  * STDOUT.
  */
-abstract class periodicBaseLogger implements periodicLogger
+abstract class Base implements Logger
 {
     /**
      * Association of Names to log message severities
@@ -37,9 +41,9 @@ abstract class periodicBaseLogger implements periodicLogger
      * @var array
      */
     protected $names = array(
-        periodicLogger::INFO    => 'Info',
-        periodicLogger::WARNING => 'Warning',
-        periodicLogger::ERROR   => 'Error',
+        Logger::INFO    => 'Info',
+        Logger::WARNING => 'Warning',
+        Logger::ERROR   => 'Error',
     );
 
     /**

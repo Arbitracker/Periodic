@@ -22,6 +22,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
+use Arbit\XML;
+
 /**
  * Command
  *
@@ -29,19 +33,19 @@
  *
  * Commands are the actually execution implementations for all parts of tasks.
  */
-abstract class periodicCommand
+abstract class Command
 {
     /**
      * Logger
      *
-     * @var periodicLogger
+     * @var Logger
      */
     protected $logger;
 
     /**
      * Command configuration
      *
-     * @var arbitXmlNode
+     * @var XML\Node
      */
     protected $configuration;
 
@@ -50,11 +54,11 @@ abstract class periodicCommand
      *
      * Construct command from its configuration and the currently used logger
      *
-     * @param arbitXmlNode $configuration
-     * @param periodicLogger $logger
+     * @param XML\Node $configuration
+     * @param Logger $logger
      * @return void
      */
-    public function __construct( arbitXmlNode $configuration, periodicLogger $logger )
+    public function __construct( XML\Node $configuration, Logger $logger )
     {
         $this->configuration = $configuration;
         $this->logger        = $logger;
@@ -66,7 +70,7 @@ abstract class periodicCommand
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in periodicCommand.
+     * constants in Command.
      *
      * @return int
      */

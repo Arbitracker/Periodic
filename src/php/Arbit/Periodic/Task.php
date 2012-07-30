@@ -22,32 +22,36 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
+use Arbit\XML;
+
 /**
  * Task
  *
  * Tasks are sets of commands with optional additional configuration to handle
  * the different return states of its contained commands.
  */
-class periodicTask
+class Task
 {
     /**
      * Logger
      *
-     * @var periodicLogger
+     * @var Logger
      */
     protected $logger;
 
     /**
      * Command configuration
      *
-     * @var arbitXmlNode
+     * @var XML\Node
      */
     protected $configuration;
 
     /**
      * Command registry
      *
-     * @var periodicCommandRegistry
+     * @var CommandRegistry
      */
     protected $commandRegistry;
 
@@ -82,12 +86,12 @@ class periodicTask
      *
      * @param string $name
      * @param int $scheduled
-     * @param arbitXmlNode $configuration
-     * @param periodicCommandRegistry $commandRegistry
-     * @param periodicLogger $logger
+     * @param XML\Node $configuration
+     * @param CommandRegistry $commandRegistry
+     * @param Logger $logger
      * @return void
      */
-    public function __construct( $name, $scheduled, arbitXmlNode $configuration, periodicCommandRegistry $commandRegistry, periodicLogger $logger )
+    public function __construct( $name, $scheduled, XML\Node $configuration, CommandRegistry $commandRegistry, Logger $logger )
     {
         $this->name            = $name;
         $this->scheduled       = $scheduled;
@@ -136,9 +140,9 @@ class periodicTask
             {
                 $this->logger->log(
                     "Failed to instantiate command '$type' - aborting task.",
-                    periodicLogger::ERROR
+                    Logger::ERROR
                 );
-                return periodicExecutor::ERROR;
+                return Executor::ERROR;
             }
 
             $this->logger->log( "Execute command '$type'." );
@@ -148,29 +152,29 @@ class periodicTask
 
             switch ( $status )
             {
-                case periodicExecutor::SUCCESS:
+                case Executor::SUCCESS:
                     $this->logger->log( 'Finished command execution.' );
                     break;
 
-                case periodicExecutor::ABORT:
+                case Executor::ABORT:
                     $this->logger->log( 'Command aborted execution.' );
-                    return periodicExecutor::SUCCESS;
+                    return Executor::SUCCESS;
 
-                case periodicExecutor::ERROR:
-                    $this->logger->log( 'Command reported error.', periodicLogger::WARNING );
-                    return periodicExecutor::ERROR;
+                case Executor::ERROR:
+                    $this->logger->log( 'Command reported error.', Logger::WARNING );
+                    return Executor::ERROR;
 
-                case periodicExecutor::RESCHEDULE:
+                case Executor::RESCHEDULE:
                     $this->logger->log( 'Command requested rescheduled execution.' );
-                    return periodicExecutor::RESCHEDULE;
+                    return Executor::RESCHEDULE;
 
                 default:
-                    $this->logger->log( 'Command returned in unknown state.', periodicLogger::ERROR );
-                    return periodicExecutor::ERROR;
+                    $this->logger->log( 'Command returned in unknown state.', Logger::ERROR );
+                    return Executor::ERROR;
             }
         }
 
-        return periodicExecutor::SUCCESS;
+        return Executor::SUCCESS;
     }
 
     /**
@@ -183,7 +187,7 @@ class periodicTask
     {
         if ( !array_key_exists( $property, $this->properties ) )
         {
-            throw new periodicAttributeException( periodicAttributeException::NON_EXISTANT, $property );
+            throw new AttributeException( AttributeException::NON_EXISTANT, $property );
         }
 
         return $this->properties[$property];
@@ -200,10 +204,10 @@ class periodicTask
     {
         if ( !array_key_exists( $property, $this->properties ) )
         {
-            throw new periodicAttributeException( periodicAttributeException::NON_EXISTANT, $property );
+            throw new AttributeException( AttributeException::NON_EXISTANT, $property );
         }
 
-        throw new periodicAttributeException( periodicAttributeException::WRITE, $property );
+        throw new AttributeException( AttributeException::WRITE, $property );
     }
 }
 

@@ -22,12 +22,16 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic;
+
+use Arbit\XML;
+
 /**
  * Task factory
  *
  * Creates task objects from taks name and date.
  */
-class periodicTaskFactory
+class TaskFactory
 {
     /**
      * Location of task definition files
@@ -39,7 +43,7 @@ class periodicTaskFactory
     /**
      * Command registry
      *
-     * @var periodicCommandRegistry
+     * @var CommandRegistry
      */
     protected $commandRegistry;
 
@@ -49,10 +53,10 @@ class periodicTaskFactory
      * Construct task factory from the location where the task definitions
      * resides.
      *
-     * @param periodicCommandRegistry $commandRegistry
+     * @param CommandRegistry $commandRegistry
      * @return void
      */
-    public function __construct( $definitions, periodicCommandRegistry $commandRegistry )
+    public function __construct( $definitions, CommandRegistry $commandRegistry )
     {
         $this->definitions     = $definitions;
         $this->commandRegistry = $commandRegistry;
@@ -68,39 +72,39 @@ class periodicTaskFactory
      *
      * @param string $task
      * @param int $date
-     * @param periodicLogger $logger
-     * @return periodicTask
+     * @param Logger $logger
+     * @return Task
      */
-    public function factory( $task, $date, periodicLogger $logger )
+    public function factory( $task, $date, Logger $logger )
     {
         if ( !is_file( $path = $this->definitions . '/' . $task . '.xml' ) ||
              !is_readable( $path ) )
         {
             $logger->log(
                 "Error reading definition file for task '$task'",
-                periodicLogger::ERROR
+                Logger::ERROR
             );
             return false;
         }
 
         try
         {
-            $taskDefinition = arbitXml::loadFile( $path );
+            $taskDefinition = XML\Document::loadFile( $path );
         }
         catch ( arbitException $e )
         {
             $logger->log(
                 "Error parsing definition file for task '$task': " . $e->getMessage(),
-                periodicLogger::ERROR
+                Logger::ERROR
             );
             return false;
         }
 
         $logger->log(
             "Create task '$task' for scheduled date '" . date( 'r', $date ) . "'.",
-            periodicLogger::INFO
+            Logger::INFO
         );
-        return new periodicTask( $task, $date, $taskDefinition, $this->commandRegistry, $logger );
+        return new Task( $task, $date, $taskDefinition, $this->commandRegistry, $logger );
     }
 }
 

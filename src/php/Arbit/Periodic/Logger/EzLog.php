@@ -22,6 +22,10 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPL
  */
 
+namespace Arbit\Periodic\Logger;
+
+use Arbit\Periodic\Logger;
+
 /**
  * Command line logger
  *
@@ -29,7 +33,7 @@
  * warnings will be logged to STDERR, while info messages are printed to
  * STDOUT.
  */
-class periodicEzLogLogger extends periodicBaseLogger
+class EzLog extends Base
 {
     /**
      * Mapping of log severities
@@ -37,9 +41,9 @@ class periodicEzLogLogger extends periodicBaseLogger
      * @var array
      */
     protected $severityMapping = array(
-        periodicLogger::INFO    => ezcLog::INFO,
-        periodicLogger::WARNING => ezcLog::WARNING,
-        periodicLogger::ERROR   => ezcLog::ERROR,
+        Logger::INFO    => \ezcLog::INFO,
+        Logger::WARNING => \ezcLog::WARNING,
+        Logger::ERROR   => \ezcLog::ERROR,
     );
 
     /**
@@ -54,7 +58,7 @@ class periodicEzLogLogger extends periodicBaseLogger
      */
     public function log( $message, $severity = self::INFO )
     {
-        $log = ezcLog::getInstance();
+        $log = \ezcLog::getInstance();
         $log->log( $message, $this->severityMapping[$severity] );
     }
 }
