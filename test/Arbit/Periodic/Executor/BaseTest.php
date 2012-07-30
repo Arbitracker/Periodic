@@ -179,12 +179,20 @@ class BaseTest extends TestCase
         $this->assertFalse( $executor->aquireLock() );
         $executor->releaseLock();
 
+        $tmpDir = $this->tmpDir;
         $this->assertEquals(
             array(
                 '(i) Aquired lock.',
-                '(i) Released lock.'
+                '(W) The lockfile /lock does already exist.',
+                '(i) Released lock.',
             ),
-            $logger->logMessages
+            array_map(
+                function ( $message ) use ( $tmpDir )
+                {
+                    return str_replace( $tmpDir, '', $message );
+                },
+                $logger->logMessages
+            )
         );
     }
 
