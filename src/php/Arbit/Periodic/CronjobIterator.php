@@ -105,7 +105,7 @@ class CronjobIterator implements \Iterator
 
         if ( $this->validateColumns( $cronjob ) !== true )
         {
-            throw new InvalidCronjobException( 'The supplied cronjob data is invalid.' );
+            throw new \UnexpectedValueException( 'The supplied cronjob data is invalid.' );
         }
 
         $this->year = (int)date( 'Y', $this->getCurrentTime() );

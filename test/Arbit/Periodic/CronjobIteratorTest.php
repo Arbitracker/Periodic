@@ -21,11 +21,9 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Arbit\Periodic\Cronjob;
+namespace Arbit\Periodic;
 
-use Arbit\Periodic\TestCase;
-
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/RegexExposedIterator.php';
 
@@ -95,62 +93,34 @@ class IteratorTest extends TestCase
         return $crons;
     }
 
-    public static function functionalCronTestProvider()
-    {
-        // Read the list of test files
-        $input  = glob( __DIR__ . '/../_fixtures/cronjob/functional_test/Arbit/Periodic/*.input' );
-        $output = glob( __DIR__ . '/../_fixtures/cronjob/functional_test/Arbit/Periodic/*.output' );
-
-        // Interleave the two arrays to be returned together in each dataset
-        $interleaved = array();
-        $number      = 0;
-        while( count( $input ) !== 0 && count( $output ) !== 0 )
-        {
-            $in  = array_shift( $input );
-            $out = array_shift( $output );
-            $interleaved[] = array( $number++, $in, $out );
-        }
-        return $interleaved;
-    }
-
+    /**
+     * @expectedException \UnexpectedValueException
+     */
     public function testThrowExceptionOnInvalidCronjob()
     {
-        try
-        {
-            $iterator = new \periodicCronjobIterator(
-                array(
-                   '*/0', '*/0', '*/0', '*/0', '*/0'
-                )
-            );
-            $this->fail( 'The expected \periodicInvalidCronjobException was not thrown' );
-        }
-        catch( \periodicInvalidCronjobException $e )
-        {
-            // We want to check for this exception
-        }
+        $iterator = new CronjobIterator(
+            array(
+               '*/0', '*/0', '*/0', '*/0', '*/0'
+            )
+        );
     }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     */
     public function testThrowExceptionOnInvalidCronjobString()
     {
-        try
-        {
-            $iterator = \periodicCronjobIterator::fromString( '*/0 */0 */0 */0 */0' );
-            $this->fail( 'The expected \periodicInvalidCronjobException was not thrown' );
-        }
-        catch( \periodicInvalidCronjobException $e )
-        {
-            // We want to check for this exception
-        }
+        $iterator = CronjobIterator::fromString( '*/0 */0 */0 */0 */0' );
     }
 
     public function testInstantiationByCronjobString()
     {
-            $iterator = \periodicCronjobIterator::fromString( '1 2 3 4 *' );
+            $iterator = CronjobIterator::fromString( '1 2 3 4 *' );
     }
 
     public function testInstantiationByCronjobArray()
     {
-        $iterator = new \periodicCronjobIterator(
+        $iterator = new CronjobIterator(
             array(
                '1', '2', '3', '4', '*'
             )
@@ -175,8 +145,26 @@ class IteratorTest extends TestCase
         $this->assertEquals( $output, $iterator->validateColumns( $input ) );
     }
 
+    public function getFunctionalCronTestProvider()
+    {
+        // Read the list of test files
+        $input  = glob( __DIR__ . '/_fixtures/cronjob/functional_tests/*.input' );
+        $output = glob( __DIR__ . '/_fixtures/cronjob/functional_tests/*.output' );
+
+        // Interleave the two arrays to be returned together in each dataset
+        $interleaved = array();
+        $number      = 0;
+        while( count( $input ) !== 0 && count( $output ) !== 0 )
+        {
+            $in  = array_shift( $input );
+            $out = array_shift( $output );
+            $interleaved[] = array( $number++, $in, $out );
+        }
+        return $interleaved;
+    }
+
     /**
-     * @dataProvider functionalCronTestProvider
+     * @dataProvider getFunctionalCronTestProvider
      */
     public function testCronFunctional( $number, $inputfile, $outputfile )
     {
@@ -194,7 +182,7 @@ class IteratorTest extends TestCase
         $output = array_map( 'trim', $output );
 
         // Instantiate a new cronjobIterator with the read input data
-        $iterator = new \periodicCronjobIterator( $input );
+        $iterator = new CronjobIterator( $input );
         $iterator->startTime = strtotime( '2009-01-01 00:00:01' );
 
         // Generate the same ammount of timestamps that is available as output
