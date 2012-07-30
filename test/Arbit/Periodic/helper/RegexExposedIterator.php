@@ -21,7 +21,7 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-class periodicTestRegexExposedCronjobIterator extends periodicCronjobIterator
+class periodicTestRegexExposedCronjobIterator extends \Arbit\Periodic\CronjobIterator
 {
     public function __construct()
     {

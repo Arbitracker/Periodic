@@ -1,6 +1,6 @@
 <?php
 
-class periodicTestCliLogger extends periodicCliLogger
+class periodicTestCliLogger extends \Arbit\Periodic\Logger\Cli
 {
     public $texts = array(
         'php://stdout' => array(),

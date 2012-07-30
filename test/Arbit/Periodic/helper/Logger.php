@@ -1,17 +1,17 @@
 <?php
 
-class periodicTestLogger implements periodicLogger
+class periodicTestLogger implements \Arbit\Periodic\Logger
 {
     public $logMessages = array();
     public $task        = null;
     public $command     = null;
 
-    public function log( $message, $severity = periodicLogger::INFO )
+    public function log( $message, $severity = \Arbit\Periodic\Logger::INFO )
     {
         $mapping = array(
-            periodicLogger::INFO    => "i",
-            periodicLogger::WARNING => "W",
-            periodicLogger::ERROR   => "E",
+            \Arbit\Periodic\Logger::INFO    => "i",
+            \Arbit\Periodic\Logger::WARNING => "W",
+            \Arbit\Periodic\Logger::ERROR   => "E",
         );
         $msg = '(' . $mapping[$severity] . ') ';
 

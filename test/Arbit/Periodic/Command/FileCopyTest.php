@@ -23,7 +23,9 @@
 
 namespace Arbit\Periodic\Command;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\Executor,
+    Arbit\Xml;
 
 require_once __DIR__ . '/../TestCase.php';
 
@@ -33,15 +35,15 @@ class FileCopyTest extends TestCase
 {
     public function testEmptyConfiguation()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command/>
             ' ),
             $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            \periodicExecutor::ERROR,
+            Executor::ERROR,
             $cmd->run()
         );
 
@@ -55,8 +57,8 @@ class FileCopyTest extends TestCase
 
     public function testMissingDestination()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file</src>
                 </command>
@@ -65,7 +67,7 @@ class FileCopyTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::ERROR,
+            Executor::ERROR,
             $cmd->run()
         );
 
@@ -79,8 +81,8 @@ class FileCopyTest extends TestCase
 
     public function testCopyDirDefaultInfiniteDepth()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
@@ -90,17 +92,17 @@ class FileCopyTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
-        $this->assertFileExists( $this->tmpDir . 'test/Arbit/Periodic/subdir/file1' );
+        $this->assertFileExists( $this->tmpDir . 'test/subdir/file1' );
     }
 
     public function testCopyDirDefaultLimitedDepth()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
@@ -111,18 +113,18 @@ class FileCopyTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
-        $this->assertFileExists( $this->tmpDir . 'test/Arbit/Periodic/subdir' );
-        $this->assertFileNotExists( $this->tmpDir . 'test/Arbit/Periodic/subdir/file1' );
+        $this->assertFileExists( $this->tmpDir . 'test/subdir' );
+        $this->assertFileNotExists( $this->tmpDir . 'test/subdir/file1' );
     }
 
     public function testCopyFileDefaultInfiniteDepth()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/file</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
@@ -132,7 +134,7 @@ class FileCopyTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -141,8 +143,8 @@ class FileCopyTest extends TestCase
 
     public function testCopyUnknwonFile()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/not_existant</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
@@ -152,7 +154,7 @@ class FileCopyTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -166,8 +168,8 @@ class FileCopyTest extends TestCase
 
     public function testCopyToExistingDirectory()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/existing</dst>
@@ -178,7 +180,7 @@ class FileCopyTest extends TestCase
         mkdir( $this->tmpDir . '/existing' );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 
@@ -192,8 +194,8 @@ class FileCopyTest extends TestCase
 
     public function testDirWithNonReadableDirectories()
     {
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/first</dst>
@@ -204,8 +206,8 @@ class FileCopyTest extends TestCase
         $cmd->run();
         chmod( $this->tmpDir . '/first/second', 0 );
 
-        $cmd = new \periodicFilesystemCopyCommand(
-            \arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new FileSystem\Copy(
+            Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/tmp/first</src>
                     <dst>test/Arbit/Periodic/tmp/second</dst>
@@ -215,7 +217,7 @@ class FileCopyTest extends TestCase
         );
 
         $this->assertSame(
-            \periodicExecutor::SUCCESS,
+            Executor::SUCCESS,
             $cmd->run()
         );
 

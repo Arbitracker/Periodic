@@ -1,6 +1,6 @@
 <?php
 
-class periodicTestAllPublicExecutor extends periodicExecutor
+class periodicTestAllPublicExecutor extends \Arbit\Periodic\Executor
 {
     public $crontab;
 
