@@ -323,7 +323,7 @@ class Executor
             // Aquiring the lock failed.
             $this->logger->log(
                 sprintf(
-                    'The lockfile %s does allready exist.',
+                    'The lockfile %s does already exist.',
                     $lockfile
                 ),
                 Logger::WARNING

@@ -92,7 +92,7 @@ class CommandRegistry
         if ( !class_exists( $class = $this->commands[$command] ) )
         {
             $logger->log(
-                "Implementation for command '$command' could not be found.",
+                "Implementation '$class' for command '$command' could not be found.",
                 Logger::ERROR
             );
             return false;

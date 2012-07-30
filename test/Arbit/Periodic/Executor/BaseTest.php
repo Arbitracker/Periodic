@@ -23,10 +23,14 @@
 
 namespace Arbit\Periodic\Executor;
 
-use Arbit\Periodic\TestCase;
+use Arbit\Periodic\TestCase,
+    Arbit\Periodic\Executor,
+    Arbit\Periodic\TaskFactory,
+    Arbit\Periodic\CommandRegistry;
 
 require_once __DIR__ . '/../TestCase.php';
 
+require_once 'test/Arbit/Periodic/helper/Command.php';
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 require_once 'test/Arbit/Periodic/helper/Public.php';
 
@@ -35,13 +39,13 @@ class BaseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->commandFactory = new \periodicCommandRegistry();
-        $this->taskFactory = new \periodicTaskFactory( __DIR__ . '/../_fixtures/tasks/', $this->commandFactory );
+        $this->commandFactory = new CommandRegistry();
+        $this->taskFactory = new TaskFactory( __DIR__ . '/../_fixtures/tasks/', $this->commandFactory );
     }
 
     public function testEmptyCronTable()
     {
-        $executor = new \periodicExecutor(
+        $executor = new Executor(
             "",
             $this->taskFactory,
             $logger = new \periodicTestLogger(),

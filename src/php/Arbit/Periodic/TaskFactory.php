@@ -24,7 +24,7 @@
 
 namespace Arbit\Periodic;
 
-use Arbit\XML;
+use Arbit\Xml;
 
 /**
  * Task factory
@@ -89,9 +89,9 @@ class TaskFactory
 
         try
         {
-            $taskDefinition = XML\Document::loadFile( $path );
+            $taskDefinition = Xml\Document::loadFile( $path );
         }
-        catch ( arbitException $e )
+        catch ( \Arbit\Xml\XmlParserException $e )
         {
             $logger->log(
                 "Error parsing definition file for task '$task': " . $e->getMessage(),
