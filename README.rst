@@ -159,11 +159,11 @@ the execution of the given command.
 Commands
 ^^^^^^^^
 
-All command classes inherit from periodicCommand, which specifies the
+All command classes inherit from Command, which specifies the
 constructor, which takes the command XML subtree from the task specification
 file as its configuration, and a execute() method::
 
-    abstract class periodicCommand
+    abstract class Command
     {
         abstract public function __construct( arbitXmlNode $configuration );
 
@@ -175,7 +175,7 @@ file as its configuration, and a execute() method::
         abstract public function execute();
     }
 
-All commands must be registered in the periodicCommandRegistry under the name,
+All commands must be registered in the CommandRegistry under the name,
 which correlates to the type attribute in the task specification and are
 instantiated by the executor.
 
@@ -198,15 +198,15 @@ default logging mechanism.
 
 The logging interface could be something simple as::
 
-    interface periodicLogger
+    interface Logger
     {
         const INFO    = 1;
         const WARNING = 2;
         const ERROR   = 4;
 
         public function log( (toString) $message, $severity = self::INFO );
-        public function setTask( periodicTask $task );
-        public function setCommand( periodicCommand $command );
+        public function setTask( Task $task );
+        public function setCommand( Command $command );
     }
 
 
