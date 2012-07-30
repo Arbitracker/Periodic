@@ -33,25 +33,27 @@
  * Configure proper data and task directories directly in this script.
  */
 
+namespace Arbit\Periodic;
+
 $dataDir     = 'data/';
 $taskDir     = 'tasks/';
 $crontable = <<<EOCRON
 # * * * * * myTask
 EOCRON;
 
-// Include environment, declaring error handler and autoload function
-require dirname( __FILE__ ) . '/base.php';
+// Include environment
+require __DIR__ . '/../php/Arbit/Periodic/bootstrap.php';
 
 try
 {
     // Instantiate executor
-    $executor = new periodicExecutor(
+    $executor = new Executor(
         $crontable,
-        new periodicTaskFactory(
+        new TaskFactory(
             $taskDir,
-            new periodicCommandRegistry()
+            new CommandRegistry()
         ),
-        new periodicHtmlLogger(),
+        new Logger\Html(),
         $dataDir
     );
     $executor->run();
