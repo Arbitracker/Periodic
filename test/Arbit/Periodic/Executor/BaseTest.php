@@ -21,26 +21,30 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Executor;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 require_once 'test/Arbit/Periodic/helper/Public.php';
 
-class periodicExecutorTests extends TestCase
+class BaseTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
-        $this->commandFactory = new periodicCommandRegistry();
-        $this->taskFactory = new periodicTaskFactory( __DIR__ . '/../_fixtures/tasks/', $this->commandFactory );
+        $this->commandFactory = new \periodicCommandRegistry();
+        $this->taskFactory = new \periodicTaskFactory( __DIR__ . '/../_fixtures/tasks/', $this->commandFactory );
     }
 
     public function testEmptyCronTable()
     {
-        $executor = new periodicExecutor(
+        $executor = new \periodicExecutor(
             "",
             $this->taskFactory,
-            $logger = new periodicTestLogger(),
+            $logger = new \periodicTestLogger(),
             $this->tmpDir
         );
 
@@ -52,10 +56,10 @@ class periodicExecutorTests extends TestCase
 
     public function testCrontableWithCommentsOnly()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "# Comment\n;Comment\r# Comment",
             $this->taskFactory,
-            $logger = new periodicTestLogger(),
+            $logger = new \periodicTestLogger(),
             $this->tmpDir
         );
 
@@ -67,10 +71,10 @@ class periodicExecutorTests extends TestCase
 
     public function testValidCronLine()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * test",
             $this->taskFactory,
-            $logger = new periodicTestLogger(),
+            $logger = new \periodicTestLogger(),
             $this->tmpDir
         );
 
@@ -82,10 +86,10 @@ class periodicExecutorTests extends TestCase
 
     public function testMultipleCronLinesWithComments()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "\n# Line 1:\r\n* * * * * test\r; And a second one:\n* * * * * Foo\n",
             $this->taskFactory,
-            $logger = new periodicTestLogger(),
+            $logger = new \periodicTestLogger(),
             $this->tmpDir
         );
 
@@ -97,8 +101,8 @@ class periodicExecutorTests extends TestCase
 
     public function testGetInitialLastRunDate()
     {
-        $executor = new periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        $executor = new \periodicTestAllPublicExecutor(
+            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $this->assertSame( false, $executor->getLastRun() );
@@ -111,8 +115,8 @@ class periodicExecutorTests extends TestCase
 
     public function testLastRunDateAfterStoreDate()
     {
-        $executor = new periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        $executor = new \periodicTestAllPublicExecutor(
+            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $executor->storeLastRun();
@@ -126,8 +130,8 @@ class periodicExecutorTests extends TestCase
 
     public function testLastRunDateStorageFailure()
     {
-        $executor = new periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        $executor = new \periodicTestAllPublicExecutor(
+            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $oldPerms = fileperms( $this->tmpDir );
@@ -145,8 +149,8 @@ class periodicExecutorTests extends TestCase
 
     public function testAquireAndReleaseLock()
     {
-        $executor = new periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        $executor = new \periodicTestAllPublicExecutor(
+            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $this->assertTrue( $executor->aquireLock() );
@@ -163,8 +167,8 @@ class periodicExecutorTests extends TestCase
 
     public function testReAquireLock()
     {
-        $executor = new periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        $executor = new \periodicTestAllPublicExecutor(
+            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $this->assertTrue( $executor->aquireLock() );
@@ -182,8 +186,8 @@ class periodicExecutorTests extends TestCase
 
     public function testReleaseLockFailure()
     {
-        $executor = new periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+        $executor = new \periodicTestAllPublicExecutor(
+            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $executor->releaseLock();
@@ -195,9 +199,9 @@ class periodicExecutorTests extends TestCase
 
     public function testGetSingularJob()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * job1",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
@@ -208,9 +212,9 @@ class periodicExecutorTests extends TestCase
 
     public function testGetMultipleJobs()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "*/15 * * * * *job2\n* * * * * job1",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
@@ -221,9 +225,9 @@ class periodicExecutorTests extends TestCase
 
     public function testGetNoJobsInTimeframe()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * job1",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $jobs = $executor->getJobsSince( time() + 3600 );
@@ -232,9 +236,9 @@ class periodicExecutorTests extends TestCase
 
     public function testDoNothingOnFirstRun()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * unknown",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         $executor->run();
@@ -243,9 +247,9 @@ class periodicExecutorTests extends TestCase
 
     public function testUnknownTaskDefinitionFile()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * unknown",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
@@ -265,9 +269,9 @@ class periodicExecutorTests extends TestCase
 
     public function testInvalidTaskDefinitionFile()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * invalid",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
@@ -282,10 +286,10 @@ class periodicExecutorTests extends TestCase
 
     public function testRunDummyTestCommand()
     {
-        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
-        $executor = new periodicTestAllPublicExecutor(
+        $this->commandFactory->registerCommand( 'test.dummy', '\periodicTestDummyCommand' );
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * dummy",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
@@ -311,10 +315,10 @@ class periodicExecutorTests extends TestCase
 
     public function testRunTwoCommandsWithSameCronEntry()
     {
-        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
-        $executor = new periodicTestAllPublicExecutor(
+        $this->commandFactory->registerCommand( 'test.dummy', '\periodicTestDummyCommand' );
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * dummy\n* * * * * dummy",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
@@ -350,12 +354,12 @@ class periodicExecutorTests extends TestCase
      */
     public function testRescheduleTask()
     {
-        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
-        $this->commandFactory->registerCommand( 'test.reschedule', 'periodicTestRescheduleCommand' );
+        $this->commandFactory->registerCommand( 'test.dummy', '\periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.reschedule', '\periodicTestRescheduleCommand' );
 
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "0 0 1 1 * reschedule",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic

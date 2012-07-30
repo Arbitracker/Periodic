@@ -21,11 +21,15 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Cronjob;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/RegexExposedIterator.php';
 
-class periodicCronjobIteratorTests extends TestCase
+class IteratorTest extends TestCase
 {
     public static function validCronProvider()
     {
@@ -91,7 +95,7 @@ class periodicCronjobIteratorTests extends TestCase
         return $crons;
     }
 
-    public static function functionalCronTestsProvider()
+    public static function functionalCronTestProvider()
     {
         // Read the list of test files
         $input  = glob( __DIR__ . '/../_fixtures/cronjob/functional_test/Arbit/Periodic/*.input' );
@@ -113,14 +117,14 @@ class periodicCronjobIteratorTests extends TestCase
     {
         try
         {
-            $iterator = new periodicCronjobIterator(
+            $iterator = new \periodicCronjobIterator(
                 array(
                    '*/0', '*/0', '*/0', '*/0', '*/0'
                 )
             );
-            $this->fail( 'The expected periodicInvalidCronjobException was not thrown' );
+            $this->fail( 'The expected \periodicInvalidCronjobException was not thrown' );
         }
-        catch( periodicInvalidCronjobException $e )
+        catch( \periodicInvalidCronjobException $e )
         {
             // We want to check for this exception
         }
@@ -130,10 +134,10 @@ class periodicCronjobIteratorTests extends TestCase
     {
         try
         {
-            $iterator = periodicCronjobIterator::fromString( '*/0 */0 */0 */0 */0' );
-            $this->fail( 'The expected periodicInvalidCronjobException was not thrown' );
+            $iterator = \periodicCronjobIterator::fromString( '*/0 */0 */0 */0 */0' );
+            $this->fail( 'The expected \periodicInvalidCronjobException was not thrown' );
         }
-        catch( periodicInvalidCronjobException $e )
+        catch( \periodicInvalidCronjobException $e )
         {
             // We want to check for this exception
         }
@@ -141,12 +145,12 @@ class periodicCronjobIteratorTests extends TestCase
 
     public function testInstantiationByCronjobString()
     {
-            $iterator = periodicCronjobIterator::fromString( '1 2 3 4 *' );
+            $iterator = \periodicCronjobIterator::fromString( '1 2 3 4 *' );
     }
 
     public function testInstantiationByCronjobArray()
     {
-        $iterator = new periodicCronjobIterator(
+        $iterator = new \periodicCronjobIterator(
             array(
                '1', '2', '3', '4', '*'
             )
@@ -158,7 +162,7 @@ class periodicCronjobIteratorTests extends TestCase
      */
     public function testValidCron( $input )
     {
-        $iterator = new periodicTestRegexExposedCronjobIterator();
+        $iterator = new \periodicTestRegexExposedCronjobIterator();
         $this->assertSame( true, $iterator->validateColumns( $input ) );
     }
 
@@ -167,12 +171,12 @@ class periodicCronjobIteratorTests extends TestCase
      */
     public function testInvalidCron( $input, $output )
     {
-        $iterator = new periodicTestRegexExposedCronjobIterator();
+        $iterator = new \periodicTestRegexExposedCronjobIterator();
         $this->assertEquals( $output, $iterator->validateColumns( $input ) );
     }
 
     /**
-     * @dataProvider functionalCronTestsProvider
+     * @dataProvider functionalCronTestProvider
      */
     public function testCronFunctional( $number, $inputfile, $outputfile )
     {
@@ -190,7 +194,7 @@ class periodicCronjobIteratorTests extends TestCase
         $output = array_map( 'trim', $output );
 
         // Instantiate a new cronjobIterator with the read input data
-        $iterator = new periodicCronjobIterator( $input );
+        $iterator = new \periodicCronjobIterator( $input );
         $iterator->startTime = strtotime( '2009-01-01 00:00:01' );
 
         // Generate the same ammount of timestamps that is available as output

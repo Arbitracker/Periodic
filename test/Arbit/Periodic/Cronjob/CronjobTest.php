@@ -21,20 +21,24 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Cronjob;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
-class periodicCronjobTests extends TestCase
+class CronjobTest extends TestCase
 {
     public function testSimpleCronLine()
     {
-        $cronjob = new periodicCronjob( '*/15 * * * * task' );
+        $cronjob = new \periodicCronjob( '*/15 * * * * task' );
         $this->assertSame( null, $cronjob->group );
         $this->assertSame( 'task', $cronjob->task );
     }
 
     public function testGroupedTaskCronLine()
     {
-        $cronjob = new periodicCronjob( '*/15 * * * * group:task' );
+        $cronjob = new \periodicCronjob( '*/15 * * * * group:task' );
         $this->assertSame( 'group', $cronjob->group );
         $this->assertSame( 'task', $cronjob->task );
     }
@@ -57,10 +61,10 @@ class periodicCronjobTests extends TestCase
     {
         try
         {
-            $cronjob = new periodicCronjob( $line );
-            $this->fail( 'Expected periodicInvalidCronjobException.' );
+            $cronjob = new \periodicCronjob( $line );
+            $this->fail( 'Expected \periodicInvalidCronjobException.' );
         }
-        catch ( periodicInvalidCronjobException $e )
+        catch ( \periodicInvalidCronjobException $e )
         {
             $this->assertEquals(
                 'Invalid cron table line: ' . $line,

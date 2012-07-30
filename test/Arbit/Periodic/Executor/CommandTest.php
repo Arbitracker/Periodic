@@ -21,18 +21,22 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Executor;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 require_once 'test/Arbit/Periodic/helper/Command.php';
 
-class periodicCommandFactoryTests extends TestCase
+class CommandTest extends TestCase
 {
     public function setUp()
     {
-        $this->logger = new periodicTestLogger();
-        $this->config = arbitXml::loadString( '<?xml version="1.0" ?><configuration/>' );
-        $this->commandFactory = new periodicCommandRegistry();
+        $this->logger = new \periodicTestLogger();
+        $this->config = \arbitXml::loadString( '<?xml version="1.0" ?><configuration/>' );
+        $this->commandFactory = new \periodicCommandRegistry();
     }
 
     public function testUnknownCommand()
@@ -66,9 +70,9 @@ class periodicCommandFactoryTests extends TestCase
 
     public function testConstructDummyCommand()
     {
-        $this->commandFactory->registerCommand( 'test.dummy', 'periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.dummy', '\periodicTestDummyCommand' );
         $this->assertTrue(
-            $this->commandFactory->factory( 'test.dummy', $this->config, $this->logger ) instanceof periodicTestDummyCommand
+            $this->commandFactory->factory( 'test.dummy', $this->config, $this->logger ) instanceof \periodicTestDummyCommand
         );
 
         $this->assertEquals(

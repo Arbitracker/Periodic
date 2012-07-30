@@ -21,19 +21,23 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Logger;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 require_once 'test/Arbit/Periodic/helper/CliLogger.php';
 
-class periodicLoggerHtmlTests extends TestCase
+class HtmlTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
     }
 
-    protected function logSomething( periodicLogger $logger )
+    protected function logSomething( \periodicLogger $logger )
     {
         $logger->log( 'Info 1' );
         $logger->setTask( 'task1' );
@@ -41,14 +45,14 @@ class periodicLoggerHtmlTests extends TestCase
         $logger->setCommand( 'command1' );
         $logger->log( 'Info 3' );
         $logger->setTask();
-        $logger->log( 'Warning', periodicLogger::WARNING );
-        $logger->log( 'Error', periodicLogger::ERROR );
+        $logger->log( 'Warning', \periodicLogger::WARNING );
+        $logger->log( 'Error', \periodicLogger::ERROR );
     }
 
     public function testDefaultLogging()
     {
         ob_start();
-        $logger = new periodicHtmlLogger();
+        $logger = new \periodicHtmlLogger();
         $this->logSomething( $logger );
         unset( $logger );
 
@@ -61,14 +65,14 @@ class periodicLoggerHtmlTests extends TestCase
     public function testInvalidSeverity()
     {
         ob_start();
-        $logger = new periodicHtmlLogger();
+        $logger = new \periodicHtmlLogger();
 
         try
         {
             $logger->log( 'Test', 42 );
-            $this->fail( 'Expected periodicRuntimeException.' );
+            $this->fail( 'Expected \periodicRuntimeException.' );
         }
-        catch ( periodicRuntimeException $e )
+        catch ( \periodicRuntimeException $e )
         { /* Expected */ }
 
         unset( $logger );

@@ -21,23 +21,27 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Command;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 
-class periodicCommandFileCopyTests extends TestCase
+class FileCopyTest extends TestCase
 {
     public function testEmptyConfiguation()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command/>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::ERROR,
+            \periodicExecutor::ERROR,
             $cmd->run()
         );
 
@@ -51,17 +55,17 @@ class periodicCommandFileCopyTests extends TestCase
 
     public function testMissingDestination()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file</src>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::ERROR,
+            \periodicExecutor::ERROR,
             $cmd->run()
         );
 
@@ -75,18 +79,18 @@ class periodicCommandFileCopyTests extends TestCase
 
     public function testCopyDirDefaultInfiniteDepth()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 
@@ -95,19 +99,19 @@ class periodicCommandFileCopyTests extends TestCase
 
     public function testCopyDirDefaultLimitedDepth()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
                     <depth>2</depth>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 
@@ -117,18 +121,18 @@ class periodicCommandFileCopyTests extends TestCase
 
     public function testCopyFileDefaultInfiniteDepth()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/file</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 
@@ -137,18 +141,18 @@ class periodicCommandFileCopyTests extends TestCase
 
     public function testCopyUnknwonFile()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/not_existant</src>
                     <dst>test/Arbit/Periodic/tmp/test</dst>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 
@@ -162,19 +166,19 @@ class periodicCommandFileCopyTests extends TestCase
 
     public function testCopyToExistingDirectory()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/existing</dst>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
         mkdir( $this->tmpDir . '/existing' );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 
@@ -188,30 +192,30 @@ class periodicCommandFileCopyTests extends TestCase
 
     public function testDirWithNonReadableDirectories()
     {
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
                     <dst>test/Arbit/Periodic/tmp/first</dst>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
         $cmd->run();
         chmod( $this->tmpDir . '/first/second', 0 );
 
-        $cmd = new periodicFilesystemCopyCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicFilesystemCopyCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/tmp/first</src>
                     <dst>test/Arbit/Periodic/tmp/second</dst>
                 </command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 

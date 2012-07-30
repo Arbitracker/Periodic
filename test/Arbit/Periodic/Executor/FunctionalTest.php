@@ -21,24 +21,28 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Executor;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 require_once 'test/Arbit/Periodic/helper/Public.php';
 
-class periodicFunctionalExecutorTests extends TestCase
+class FunctionalTests extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
-        $this->taskFactory = new periodicTaskFactory( __DIR__ . '/../_fixtures/tasks/', new periodicCommandRegistry() );
+        $this->taskFactory = new \periodicTaskFactory( __DIR__ . '/../_fixtures/tasks/', new \periodicCommandRegistry() );
     }
 
     public function testFullExecutorRun()
     {
-        $executor = new periodicTestAllPublicExecutor(
+        $executor = new \periodicTestAllPublicExecutor(
             "* * * * * functional",
-            $this->taskFactory, $logger = new periodicTestLogger(), $this->tmpDir
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic

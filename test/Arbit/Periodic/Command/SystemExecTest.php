@@ -21,23 +21,27 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
+namespace Arbit\Periodic\Command;
+
+use Arbit\Periodic\TestCase;
+
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 
-class periodicCommandSystemExecTests extends TestCase
+class SystemExecTest extends TestCase
 {
     public function testEmptyConfiguation()
     {
-        $cmd = new periodicSystemExecCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicSystemExecCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command/>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::ERROR,
+            \periodicExecutor::ERROR,
             $cmd->run()
         );
 
@@ -51,15 +55,15 @@ class periodicCommandSystemExecTests extends TestCase
 
     public function testSuccessfullCommandExecution()
     {
-        $cmd = new periodicSystemExecCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicSystemExecCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>echo "Hello world"</command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 
@@ -74,15 +78,15 @@ class periodicCommandSystemExecTests extends TestCase
 
     public function testFailOnUnknownCommand()
     {
-        $cmd = new periodicSystemExecCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicSystemExecCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command>some_command_not_available</command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::ERROR,
+            \periodicExecutor::ERROR,
             $cmd->run()
         );
 
@@ -97,15 +101,15 @@ class periodicCommandSystemExecTests extends TestCase
 
     public function testNoFailOnUnknownCommand()
     {
-        $cmd = new periodicSystemExecCommand(
-            arbitXml::loadString( '<?xml version="1.0" ?>
+        $cmd = new \periodicSystemExecCommand(
+            \arbitXml::loadString( '<?xml version="1.0" ?>
                 <command failOnError="false">some_command_not_available</command>
             ' ),
-            $logger = new periodicTestLogger()
+            $logger = new \periodicTestLogger()
         );
 
         $this->assertSame(
-            periodicExecutor::SUCCESS,
+            \periodicExecutor::SUCCESS,
             $cmd->run()
         );
 
