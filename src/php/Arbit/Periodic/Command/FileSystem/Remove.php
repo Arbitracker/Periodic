@@ -26,7 +26,8 @@ namespace Arbit\Periodic\Command\FileSystem;
 
 use Arbit\Periodic\Command,
     Arbit\Periodic\Executor,
-    Arbit\Periodic\Logger;
+    Arbit\Periodic\Logger,
+    Arbit\XML;
 
 /**
  * Command
@@ -41,26 +42,28 @@ class Remove extends Command
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in Command.
+     * constants in Executor.
      *
+     * @param XML\Node $configuration
+     * @param Logger $logger
      * @return int
      */
-    public function run()
+    public function run( XML\Node $configuration, Logger $logger )
     {
-        if ( !isset( $this->configuration->path ) )
+        if ( !isset( $configuration->path ) )
         {
-            $this->logger->log( 'No path provided.', Logger::ERROR );
+            $logger->log( 'No path provided.', Logger::ERROR );
             return Executor::ERROR;
         }
-        $path = (string) $this->configuration->path;
+        $path = (string) $configuration->path;
 
         $pattern = null;
-        if ( isset( $this->configuration->pattern ) )
+        if ( isset( $configuration->pattern ) )
         {
-            $pattern = $this->compilePattern( (string) $this->configuration->pattern );
+            $pattern = $this->compilePattern( (string) $configuration->pattern );
         }
 
-        $this->removeRecursive( $path, $pattern );
+        $this->removeRecursive( $path, $pattern, $logger );
         return Executor::SUCCESS;
     }
 
@@ -100,28 +103,29 @@ class Remove extends Command
      *
      * @param string $path
      * @param mixed $pattern
+     * @param Logger $logger
      * @return void
      */
-    protected function removeRecursive( $path, $pattern )
+    protected function removeRecursive( $path, $pattern, Logger $logger )
     {
         // Check if source file exists at all.
         if ( !is_file( $path ) && !is_dir( $path ) )
         {
-            $this->logger->log( "$path is not a valid source.", Logger::WARNING );
+            $logger->log( "$path is not a valid source.", Logger::WARNING );
             return;
         }
 
         // Skip non readable files in src directory
         if ( !is_readable( $path ) )
         {
-            $this->logger->log( "$path is not readable, skipping.", Logger::WARNING );
+            $logger->log( "$path is not readable, skipping.", Logger::WARNING );
             return;
         }
 
         // Skip non writeable parent directories
         if ( !is_writeable( $parent = dirname( $path ) ) )
         {
-            $this->logger->log( "$parent is not writable, skipping.", Logger::WARNING );
+            $logger->log( "$parent is not writable, skipping.", Logger::WARNING );
             return;
         }
 
@@ -152,7 +156,8 @@ class Remove extends Command
 
             $this->removeRecursive(
                 $path . '/' . $file,
-                ( $matchesPattern ? null : $pattern )
+                ( $matchesPattern ? null : $pattern ),
+                $logger
             );
         }
 

@@ -21,23 +21,24 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Arbit\Periodic\Command;
+namespace Arbit\Periodic\Command\FileSystem;
 
 use Arbit\Periodic\TestCase,
     Arbit\Periodic\Executor,
     Arbit\Xml;
 
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/../../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 
-class FileRemoveTest extends TestCase
+class RemoveTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
 
-        $cmd = new FileSystem\Copy(
+        $cmd = new Copy();
+        $cmd->run(
             Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
                     <src>test/Arbit/Periodic/_fixtures/file/dir</src>
@@ -46,21 +47,20 @@ class FileRemoveTest extends TestCase
             ' ),
             $logger = new \periodicTestLogger()
         );
-        $cmd->run();
     }
 
     public function testEmptyConfiguation()
     {
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command/>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
 
         $this->assertSame(
             Executor::ERROR,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command/>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
@@ -73,18 +73,18 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveNotExistingDirectory()
     {
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <path>test/Arbit/Periodic/not_existing</path>
-                </command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>
+                        <path>test/Arbit/Periodic/not_existing</path>
+                    </command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
@@ -97,19 +97,19 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveNotReadableFile()
     {
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
-                </command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
         chmod( $this->tmpDir . 'dir/subdir/file1', 0 );
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>
+                        <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
+                    </command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
@@ -122,19 +122,19 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveInNotWriteableParentDir()
     {
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
-                </command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
         chmod( $this->tmpDir . 'dir/subdir', 0555 );
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>
+                        <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
+                    </command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
@@ -147,18 +147,18 @@ class FileRemoveTest extends TestCase
 
     public function testRemoveDirDefaultInfinitePattern()
     {
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <path>test/Arbit/Periodic/tmp/dir</path>
-                </command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>
+                        <path>test/Arbit/Periodic/tmp/dir</path>
+                    </command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertFileNotExists( $this->tmpDir . 'dir' );
@@ -167,19 +167,19 @@ class FileRemoveTest extends TestCase
     public function testRemoveDirSimpleFilePattern()
     {
         $this->assertFileExists( $this->tmpDir . 'dir' );
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <path>test/Arbit/Periodic/tmp/dir</path>
-                    <pattern>file*</pattern>
-                </command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>
+                        <path>test/Arbit/Periodic/tmp/dir</path>
+                        <pattern>file*</pattern>
+                    </command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertFileExists( $this->tmpDir . 'dir' );
@@ -191,19 +191,19 @@ class FileRemoveTest extends TestCase
     public function testRemoveDirSimpleDirPattern()
     {
         $this->assertFileExists( $this->tmpDir . 'dir' );
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <path>test/Arbit/Periodic/tmp/dir</path>
-                    <pattern>subdir</pattern>
-                </command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>
+                        <path>test/Arbit/Periodic/tmp/dir</path>
+                        <pattern>subdir</pattern>
+                    </command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertFileExists( $this->tmpDir . 'dir' );
@@ -215,18 +215,18 @@ class FileRemoveTest extends TestCase
     public function testRemoveFile()
     {
         $this->assertFileExists( $this->tmpDir . 'dir' );
-        $cmd = new FileSystem\Remove(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>
-                    <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
-                </command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Remove();
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>
+                        <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
+                    </command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertFileExists( $this->tmpDir . 'dir' );
