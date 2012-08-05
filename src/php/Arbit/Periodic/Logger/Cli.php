@@ -33,7 +33,7 @@ use Arbit\Periodic\Logger;
  * warnings will be logged to STDERR, while info messages are printed to
  * STDOUT.
  */
-class Cli extends Base
+class Cli extends Logger
 {
     /**
      * Mapping of error levels to pipes

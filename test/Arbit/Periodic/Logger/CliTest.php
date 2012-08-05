@@ -28,9 +28,6 @@ use Arbit\Periodic\TestCase,
 
 require_once __DIR__ . '/../TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
-require_once 'test/Arbit/Periodic/helper/CliLogger.php';
-
 class CliTest extends TestCase
 {
     public function setUp()
@@ -50,48 +47,65 @@ class CliTest extends TestCase
         $logger->log( 'Error', Logger::ERROR );
     }
 
-    public function testDefaultLogging()
+    protected function getLoggerMock( array $messages )
     {
-        $logger = new \periodicTestCliLogger();
+        $logger = $this->getMock( '\\Arbit\\Periodic\\Logger\\Cli', array( 'write' ) );
 
-        $this->logSomething( $logger );
+        foreach ( $messages as $nr => $message )
+        {
+            $logger
+                ->expects( $this->at( $nr ) )
+                ->method( 'write' )
+                ->with(
+                    $this->equalTo( $message[0] ),
+                    $this->matchesRegularExpression(
+                        '(^\\[[^\\]]+\\] ' . preg_quote( $message[1] ) . ')'
+                    )
+                );
+        }
 
-        $this->assertSame(
-            array(
-                "php://stdout" => array(
-                    "[date] Info: Info 1\n",
-                    "[date] (task1) Info: Info 2\n",
-                    "[date] (task1::command1) Info: Info 3\n",
-                ),
-                "php://stderr" => array(
-                    "[date] Warning: Warning\n",
-                    "[date] Error: Error\n",
-                ),
-            ),
-            $logger->texts
-        );
+        return $logger;
+    }
+
+    public function testLogInfo()
+    {
+        $logger = $this->getLoggerMock( array(
+            array( 'php://stdout', 'Info: Info 1' ),
+        ) );
+
+        $logger->log( 'Info 1' );
+    }
+
+    public function testLogWarning()
+    {
+        $logger = $this->getLoggerMock( array(
+            array( 'php://stderr', 'Warning: Warning 1' ),
+        ) );
+
+        $logger->log( 'Warning 1', Logger::WARNING );
+    }
+
+    public function testLogError()
+    {
+        $logger = $this->getLoggerMock( array(
+            array( 'php://stderr', 'Error: Error 1' ),
+        ) );
+
+        $logger->log( 'Error 1', Logger::ERROR );
     }
 
     public function testRemappedLogging()
     {
-        $logger = new \periodicTestCliLogger();
+        $logger = $this->getLoggerMock( array(
+            array( 'php://stdout', 'Warning: Warning' ),
+            array( 'php://stdout', 'Error: Error' ),
+        ) );
+
         $logger->setMapping( Logger::INFO, Logger\Cli::SILENCE );
         $logger->setMapping( Logger::WARNING, Logger\Cli::STDOUT );
         $logger->setMapping( Logger::ERROR, Logger\Cli::STDOUT );
 
         $this->logSomething( $logger );
-
-        $this->assertSame(
-            array(
-                "php://stdout" => array(
-                    "[date] Warning: Warning\n",
-                    "[date] Error: Error\n",
-                ),
-                "php://stderr" => array(
-                ),
-            ),
-            $logger->texts
-        );
     }
 
     /**
@@ -99,7 +113,7 @@ class CliTest extends TestCase
      */
     public function testInvalidMapping1()
     {
-        $logger = new \periodicTestCliLogger();
+        $logger = new Cli();
         $logger->setMapping( 42, Logger\Cli::SILENCE );
     }
 
@@ -108,7 +122,7 @@ class CliTest extends TestCase
      */
     public function testInvalidMapping2()
     {
-        $logger = new \periodicTestCliLogger();
+        $logger = new Cli();
         $logger->setMapping( Logger::INFO, 42 );
     }
 
@@ -117,7 +131,7 @@ class CliTest extends TestCase
      */
     public function testInvalidSeverity()
     {
-        $logger = new \periodicTestCliLogger();
+        $logger = new Cli();
         $logger->log( 'Test', 42 );
     }
 }
