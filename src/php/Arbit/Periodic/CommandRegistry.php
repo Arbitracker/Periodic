@@ -56,13 +56,13 @@ class CommandRegistry
      * Register a new command, specified by its name and the associated
      * implementation specified by its class name.
      *
-     * @param string $command
-     * @param string $class
+     * @param string $name
+     * @param Command $command
      * @return void
      */
-    public function registerCommand( $command, Command $command )
+    public function registerCommand( $name, Command $command )
     {
-        $this->commands[$command] = $class;
+        $this->commands[$name] = $command;
     }
 
     /**
