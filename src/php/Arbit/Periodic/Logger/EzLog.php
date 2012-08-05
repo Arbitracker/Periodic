@@ -33,7 +33,7 @@ use Arbit\Periodic\Logger;
  * warnings will be logged to STDERR, while info messages are printed to
  * STDOUT.
  */
-class EzLog extends Base
+class EzLog extends Logger
 {
     /**
      * Mapping of log severities
