@@ -28,8 +28,6 @@ use Arbit\Periodic\TestCase,
 
 require_once __DIR__ . '/../TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
-
 class HtmlTest extends TestCase
 {
     public function setUp()

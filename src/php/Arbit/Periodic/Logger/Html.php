@@ -32,7 +32,7 @@ use Arbit\Periodic\Logger;
  * Logger which generates HTML output from the logged messages, so the return
  * value can be viewed using a web browser.
  */
-class Html extends Base
+class Html extends Logger
 {
     /**
      * Colors associated with severities
