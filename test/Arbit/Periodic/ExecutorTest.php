@@ -21,25 +21,20 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Arbit\Periodic\Executor;
+namespace Arbit\Periodic;
 
-use Arbit\Periodic\TestCase,
-    Arbit\Periodic\Executor,
-    Arbit\Periodic\TaskFactory,
-    Arbit\Periodic\CommandRegistry;
-
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 require_once 'test/Arbit/Periodic/helper/Public.php';
 
-class BaseTest extends TestCase
+class ExecutorTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
         $this->commandFactory = new CommandRegistry();
-        $this->taskFactory = new TaskFactory( __DIR__ . '/../_fixtures/tasks/', $this->commandFactory );
+        $this->taskFactory = new TaskFactory( __DIR__ . '/_fixtures/tasks/', $this->commandFactory );
     }
 
     public function testEmptyCronTable()
@@ -397,6 +392,43 @@ class BaseTest extends TestCase
                 '(i) [reschedule-0000] Execute command \'test.reschedule\'.',
                 '(i) [reschedule-0000] Command requested rescheduled execution.',
                 '(i) [reschedule-0000] Task will be rescheduled for 30 seconds.',
+                '(i) Released lock.',
+            ),
+            $logger->logMessages
+        );
+    }
+
+    public function testFullExecutorRun()
+    {
+        $executor = new \periodicTestAllPublicExecutor(
+            "* * * * * functional",
+            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+        );
+
+        // Set a manual last run date, to keep tests deterministic
+        file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
+
+        // First run, should reschedule the test
+        $executor->run();
+
+        // Second run - should run rescheduled test only.
+        $executor->run();
+
+        $this->assertEquals(
+            array(
+                '(i) Aquired lock.',
+                '(i) Stored last run time.',
+                '(i) Create task \'functional\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
+                '(i) [functional-1224] Start task execution.',
+                '(i) [functional-1224] Execute command \'fs.copy\'.',
+                '(i) [functional-1224] Finished command execution.',
+                '(i) [functional-1224] Execute command \'fs.remove\'.',
+                '(i) [functional-1224] Finished command execution.',
+                '(i) [functional-1224] Execute command \'system.exec\'.',
+                '(i) [functional-1224] [system.exec] Hello world',
+                '(i) [functional-1224] [system.exec] Command exited with return value 0',
+                '(i) [functional-1224] Finished command execution.',
+                '(i) [functional-1224] Finished task execution.',
                 '(i) Released lock.',
             ),
             $logger->logMessages
