@@ -36,44 +36,17 @@ use Arbit\XML;
 abstract class Command
 {
     /**
-     * Logger
-     *
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * Command configuration
-     *
-     * @var XML\Node
-     */
-    protected $configuration;
-
-    /**
-     * Construct command
-     *
-     * Construct command from its configuration and the currently used logger
-     *
-     * @param XML\Node $configuration
-     * @param Logger $logger
-     * @return void
-     */
-    public function __construct( XML\Node $configuration, Logger $logger )
-    {
-        $this->configuration = $configuration;
-        $this->logger        = $logger;
-    }
-
-    /**
      * Run command
      *
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in Command.
+     * constants in Executor.
      *
+     * @param XML\Node $configuration
+     * @param Logger $logger
      * @return int
      */
-    abstract public function run();
+    abstract public function run( XML\Node $configuration, Logger $logger );
 }
 
