@@ -27,8 +27,6 @@ use Arbit\Xml;
 
 require_once __DIR__ . '/TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
-
 class TaskTest extends TestCase
 {
     public function setUp()
@@ -50,7 +48,7 @@ class TaskTest extends TestCase
             'test', 0,
             Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
             $this->commandRegistry,
-            $logger = new \periodicTestLogger()
+            $this->getLogger()
         );
 
         $this->assertSame(
@@ -73,7 +71,7 @@ class TaskTest extends TestCase
             'test', 0,
             Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
             $this->commandRegistry,
-            $logger = new \periodicTestLogger()
+            $this->getLogger()
         );
 
         $task->unknown;
@@ -88,7 +86,7 @@ class TaskTest extends TestCase
             'test', 0,
             Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
             $this->commandRegistry,
-            $logger = new \periodicTestLogger()
+            $this->getLogger()
         );
 
         $task->unknown = 42;
@@ -103,7 +101,7 @@ class TaskTest extends TestCase
             'test', 0,
             Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
             $this->commandRegistry,
-            $logger = new \periodicTestLogger()
+            $this->getLogger()
         );
 
         $task->timeout = 42;
@@ -115,7 +113,7 @@ class TaskTest extends TestCase
             'test', 0,
             Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/reschedule.xml" ),
             $this->commandRegistry,
-            $logger = new \periodicTestLogger()
+            $this->getLogger()
         );
 
         $this->assertSame(
@@ -136,71 +134,71 @@ class TaskTest extends TestCase
                 'dummy',
                 Executor::SUCCESS,
                 array(
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
                 ),
             ),
             array(
                 'multiple',
                 Executor::SUCCESS,
                 array(
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
                 ),
             ),
             array(
                 'abort',
                 Executor::SUCCESS,
                 array(
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
-                    '(i) Execute command \'test.abort\'.',
-                    '(i) Command aborted execution.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
+                    'Execute command \'test.abort\'.',
+                    'Command aborted execution.',
                 ),
             ),
             array(
                 'reschedule',
                 Executor::RESCHEDULE,
                 array(
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
-                    '(i) Execute command \'test.reschedule\'.',
-                    '(i) Command requested rescheduled execution.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
+                    'Execute command \'test.reschedule\'.',
+                    'Command requested rescheduled execution.',
                 ),
             ),
             array(
                 'error',
                 Executor::ERROR,
                 array(
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
-                    '(i) Execute command \'test.error\'.',
-                    '(W) Command reported error.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
+                    'Execute command \'test.error\'.',
+                    'Command reported error.',
                 ),
             ),
             array(
                 'errorneous',
                 Executor::ERROR,
                 array(
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
-                    '(i) Execute command \'test.errorneous\'.',
-                    '(E) Command returned in unknown state.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
+                    'Execute command \'test.errorneous\'.',
+                    'Command returned in unknown state.',
                 ),
             ),
             array(
                 'exception',
                 Executor::ERROR,
                 array(
-                    '(i) Execute command \'test.dummy\'.',
-                    '(i) Finished command execution.',
-                    '(i) Execute command \'test.exception\'.',
-                    '(E) [test.exception] Command threw exception: Hello world!',
-                    '(E) Command returned in unknown state.',
+                    'Execute command \'test.dummy\'.',
+                    'Finished command execution.',
+                    'Execute command \'test.exception\'.',
+                    'Command threw exception: Hello world!',
+                    'Command returned in unknown state.',
                 ),
             ),
         );
@@ -215,17 +213,12 @@ class TaskTest extends TestCase
             'test', 0,
             Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/$name.xml" ),
             $this->commandRegistry,
-            $logger = new \periodicTestLogger()
+            $this->getLogger( $log )
         );
 
         $this->assertSame(
             $status,
             $task->execute()
-        );
-
-        $this->assertEquals(
-            $log,
-            $logger->logMessages
         );
     }
 }
