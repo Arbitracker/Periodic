@@ -151,11 +151,10 @@ class Executor
      */
     public function run()
     {
-        // If this is the first run at all, do not do anything.
         if ( ( $lastRun = $this->getLastRun() ) === false )
         {
             $this->storeLastRun();
-            return;
+            $lastRun = 0;
         }
 
         $tasks = $this->getJobsSince( $lastRun );
