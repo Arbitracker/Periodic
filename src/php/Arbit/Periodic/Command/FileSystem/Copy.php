@@ -26,7 +26,8 @@ namespace Arbit\Periodic\Command\FileSystem;
 
 use Arbit\Periodic\Command,
     Arbit\Periodic\Executor,
-    Arbit\Periodic\Logger;
+    Arbit\Periodic\Logger,
+    Arbit\XML;
 
 /**
  * Command
@@ -41,34 +42,36 @@ class Copy extends Command
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in Command.
+     * constants in Executor.
      *
+     * @param XML\Node $configuration
+     * @param Logger $logger
      * @return int
      */
-    public function run()
+    public function run( XML\Node $configuration, Logger $logger )
     {
-        if ( !isset( $this->configuration->src ) )
+        if ( !isset( $configuration->src ) )
         {
-            $this->logger->log( 'No source provided.', Logger::ERROR );
+            $logger->log( 'No source provided.', Logger::ERROR );
             return Executor::ERROR;
         }
-        $src = (string) $this->configuration->src;
+        $src = (string) $configuration->src;
 
-        if ( !isset( $this->configuration->dst ) )
+        if ( !isset( $configuration->dst ) )
         {
-            $this->logger->log( 'No destination provided.', Logger::ERROR );
+            $logger->log( 'No destination provided.', Logger::ERROR );
             return Executor::ERROR;
         }
-        $dst = (string) $this->configuration->dst;
+        $dst = (string) $configuration->dst;
 
         $depth = -1;
-        if ( isset( $this->configuration->depth ) &&
-             is_numeric( (string) $this->configuration->depth ) )
+        if ( isset( $configuration->depth ) &&
+             is_numeric( (string) $configuration->depth ) )
         {
-            $depth = (int) (string) $this->configuration->depth;
+            $depth = (int) (string) $configuration->depth;
         }
 
-        $this->copyRecursive( $src, $dst, $depth );
+        $this->copyRecursive( $src, $dst, $depth, $logger );
         return Executor::SUCCESS;
     }
 
@@ -84,9 +87,10 @@ class Copy extends Command
      * @param string $src
      * @param string $dst
      * @param int $depth
+     * @param Logger $logger
      * @return void
      */
-    protected function copyRecursive( $src, $dst, $depth )
+    protected function copyRecursive( $src, $dst, $depth, Logger $logger )
     {
         if ( $depth == 0 )
         {
@@ -96,21 +100,21 @@ class Copy extends Command
         // Check if source file exists at all.
         if ( !is_file( $src ) && !is_dir( $src ) )
         {
-            $this->logger->log( "$src is not a valid source.", Logger::WARNING );
+            $logger->log( "$src is not a valid source.", Logger::WARNING );
             return;
         }
 
         // Skip non readable files in src directory
         if ( !is_readable( $src ) )
         {
-            $this->logger->log( "$src is not readable, skipping.", Logger::WARNING );
+            $logger->log( "$src is not readable, skipping.", Logger::WARNING );
             return;
         }
 
         // Destination file should not exist
         if ( is_file( $dst ) || is_dir( $dst ) )
         {
-            $this->logger->log( "$dst already exists, and cannot be overwritten.", Logger::WARNING );
+            $logger->log( "$dst already exists, and cannot be overwritten.", Logger::WARNING );
             return;
         }
 
@@ -138,7 +142,8 @@ class Copy extends Command
             $this->copyRecursive(
                 $src . '/' . $file,
                 $dst . '/' . $file,
-                $depth - 1
+                $depth - 1,
+                $logger
             );
         }
     }
