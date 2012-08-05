@@ -147,7 +147,7 @@ class Task
 
             $this->logger->log( "Execute command '$type'." );
             $this->logger->setCommand( $type );
-            $status = $command->run( $config, $logger );
+            $status = $command->run( $config, $this->logger );
             $this->logger->setCommand();
 
             switch ( $status )
