@@ -29,8 +29,6 @@ use Arbit\Periodic\TestCase,
 
 require_once __DIR__ . '/../../TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
-
 class SystemExecTest extends TestCase
 {
     public function testEmptyConfiguation()
@@ -43,15 +41,10 @@ class SystemExecTest extends TestCase
                 Xml\Document::loadString( '<?xml version="1.0" ?>
                     <command/>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'No command provided for execution.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(E) No command provided for execution.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -65,16 +58,11 @@ class SystemExecTest extends TestCase
                 Xml\Document::loadString( '<?xml version="1.0" ?>
                     <command>echo "Hello world"</command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'Hello world',
+                    'Command exited with return value 0',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(i) Hello world',
-                '(i) Command exited with return value 0',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -88,16 +76,11 @@ class SystemExecTest extends TestCase
                 Xml\Document::loadString( '<?xml version="1.0" ?>
                     <command>some_command_not_available</command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'sh: 1: some_command_not_available: not found',
+                    'Command exited with return value 127',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) sh: 1: some_command_not_available: not found',
-                '(i) Command exited with return value 127',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -111,16 +94,11 @@ class SystemExecTest extends TestCase
                 Xml\Document::loadString( '<?xml version="1.0" ?>
                     <command failOnError="false">some_command_not_available</command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'sh: 1: some_command_not_available: not found',
+                    'Command exited with return value 127',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) sh: 1: some_command_not_available: not found',
-                '(i) Command exited with return value 127',
-            ),
-            $logger->logMessages
         );
     }
 }
