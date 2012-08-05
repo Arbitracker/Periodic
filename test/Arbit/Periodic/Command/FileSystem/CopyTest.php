@@ -21,21 +21,21 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Arbit\Periodic\Command;
+namespace Arbit\Periodic\Command\FileSystem;
 
 use Arbit\Periodic\TestCase,
     Arbit\Periodic\Executor,
     Arbit\Xml;
 
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/../../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 
-class FileCopyTest extends TestCase
+class CopyTest extends TestCase
 {
     public function testEmptyConfiguration()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
 
         $this->assertSame(
             Executor::ERROR,
@@ -57,7 +57,7 @@ class FileCopyTest extends TestCase
 
     public function testMissingDestination()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
 
         $this->assertSame(
             Executor::ERROR,
@@ -81,7 +81,7 @@ class FileCopyTest extends TestCase
 
     public function testCopyDirDefaultInfiniteDepth()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
 
         $this->assertSame(
             Executor::SUCCESS,
@@ -101,7 +101,7 @@ class FileCopyTest extends TestCase
 
     public function testCopyDirDefaultLimitedDepth()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
 
         $this->assertSame(
             Executor::SUCCESS,
@@ -123,7 +123,7 @@ class FileCopyTest extends TestCase
 
     public function testCopyFileDefaultInfiniteDepth()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
 
         $this->assertSame(
             Executor::SUCCESS,
@@ -143,7 +143,7 @@ class FileCopyTest extends TestCase
 
     public function testCopyUnknownFile()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
 
         $this->assertSame(
             Executor::SUCCESS,
@@ -168,7 +168,7 @@ class FileCopyTest extends TestCase
 
     public function testCopyToExistingDirectory()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
         mkdir( $this->tmpDir . '/existing' );
 
         $this->assertSame(
@@ -194,7 +194,7 @@ class FileCopyTest extends TestCase
 
     public function testDirWithNonReadableDirectories()
     {
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
         $cmd->run(
             Xml\Document::loadString( '<?xml version="1.0" ?>
                 <command>
@@ -206,7 +206,7 @@ class FileCopyTest extends TestCase
         );
         chmod( $this->tmpDir . '/first/second', 0 );
 
-        $cmd = new FileSystem\Copy();
+        $cmd = new Copy();
 
         $this->assertSame(
             Executor::SUCCESS,
