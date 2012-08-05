@@ -21,15 +21,11 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Arbit\Periodic\Executor;
+namespace Arbit\Periodic;
 
-use Arbit\Periodic\TestCase,
-    Arbit\Xml,
-    Arbit\Periodic\Task,
-    Arbit\Periodic\CommandRegistry,
-    Arbit\Periodic\Executor;
+use Arbit\Xml;
 
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 
@@ -37,20 +33,22 @@ class TaskTest extends TestCase
 {
     public function setUp()
     {
-        $this->commandFactory = new CommandRegistry();
-        $this->commandFactory->registerCommand( 'test.dummy', '\periodicTestDummyCommand' );
-        $this->commandFactory->registerCommand( 'test.abort', '\periodicTestAbortCommand' );
-        $this->commandFactory->registerCommand( 'test.reschedule', '\periodicTestRescheduleCommand' );
-        $this->commandFactory->registerCommand( 'test.error', '\periodicTestErrorCommand' );
-        $this->commandFactory->registerCommand( 'test.errorneous', '\periodicTestErrorneousCommand' );
+        parent::setUp();
+
+        $this->commandRegistry = new CommandRegistry();
+        $this->commandRegistry->registerCommand( 'test.dummy', $this->getSuccessfulCommand() );
+        $this->commandRegistry->registerCommand( 'test.abort', $this->getAbortCommand() );
+        $this->commandRegistry->registerCommand( 'test.reschedule', $this->getRescheduleCommand() );
+        $this->commandRegistry->registerCommand( 'test.error', $this->getErrorCommand() );
+        $this->commandRegistry->registerCommand( 'test.errorneous', $this->getErrornousCommand() );
     }
 
     public function testTaskConfigurationDefaultValues()
     {
         $task = new Task(
             'test', 0,
-            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
-            $this->commandFactory,
+            Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
+            $this->commandRegistry,
             $logger = new \periodicTestLogger()
         );
 
@@ -72,8 +70,8 @@ class TaskTest extends TestCase
     {
         $task = new Task(
             'test', 0,
-            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
-            $this->commandFactory,
+            Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
+            $this->commandRegistry,
             $logger = new \periodicTestLogger()
         );
 
@@ -87,8 +85,8 @@ class TaskTest extends TestCase
     {
         $task = new Task(
             'test', 0,
-            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
-            $this->commandFactory,
+            Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
+            $this->commandRegistry,
             $logger = new \periodicTestLogger()
         );
 
@@ -102,8 +100,8 @@ class TaskTest extends TestCase
     {
         $task = new Task(
             'test', 0,
-            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/dummy.xml" ),
-            $this->commandFactory,
+            Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/dummy.xml" ),
+            $this->commandRegistry,
             $logger = new \periodicTestLogger()
         );
 
@@ -114,8 +112,8 @@ class TaskTest extends TestCase
     {
         $task = new Task(
             'test', 0,
-            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/reschedule.xml" ),
-            $this->commandFactory,
+            Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/reschedule.xml" ),
+            $this->commandRegistry,
             $logger = new \periodicTestLogger()
         );
 
@@ -137,9 +135,7 @@ class TaskTest extends TestCase
                 'dummy',
                 Executor::SUCCESS,
                 array(
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
                 ),
             ),
@@ -147,17 +143,11 @@ class TaskTest extends TestCase
                 'multiple',
                 Executor::SUCCESS,
                 array(
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
                 ),
             ),
@@ -165,13 +155,9 @@ class TaskTest extends TestCase
                 'abort',
                 Executor::SUCCESS,
                 array(
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
-                    '(i) Create command \'test.abort\'.',
                     '(i) Execute command \'test.abort\'.',
-                    '(W) [test.abort] Run test abortion command.',
                     '(i) Command aborted execution.',
                 ),
             ),
@@ -179,13 +165,9 @@ class TaskTest extends TestCase
                 'reschedule',
                 Executor::RESCHEDULE,
                 array(
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
-                    '(i) Create command \'test.reschedule\'.',
                     '(i) Execute command \'test.reschedule\'.',
-                    '(W) [test.reschedule] Run test reschedule command.',
                     '(i) Command requested rescheduled execution.',
                 ),
             ),
@@ -193,13 +175,9 @@ class TaskTest extends TestCase
                 'error',
                 Executor::ERROR,
                 array(
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
-                    '(i) Create command \'test.error\'.',
                     '(i) Execute command \'test.error\'.',
-                    '(E) [test.error] Run test error command.',
                     '(W) Command reported error.',
                 ),
             ),
@@ -207,13 +185,9 @@ class TaskTest extends TestCase
                 'errorneous',
                 Executor::ERROR,
                 array(
-                    '(i) Create command \'test.dummy\'.',
                     '(i) Execute command \'test.dummy\'.',
-                    '(i) [test.dummy] Run test command.',
                     '(i) Finished command execution.',
-                    '(i) Create command \'test.errorneous\'.',
                     '(i) Execute command \'test.errorneous\'.',
-                    '(i) [test.errorneous] Run command returnin nothing.',
                     '(E) Command returned in unknown state.',
                 ),
             ),
@@ -227,8 +201,8 @@ class TaskTest extends TestCase
     {
         $task = new Task(
             'test', 0,
-            Xml\Document::loadFile( __DIR__ . "/../_fixtures/tasks/$name.xml" ),
-            $this->commandFactory,
+            Xml\Document::loadFile( __DIR__ . "/_fixtures/tasks/$name.xml" ),
+            $this->commandRegistry,
             $logger = new \periodicTestLogger()
         );
 

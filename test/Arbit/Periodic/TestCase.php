@@ -23,6 +23,10 @@
 
 namespace Arbit\Periodic;
 
+// Workaround around PHPUnits incapability to source files, used in
+// mocks, and thus creating wrong mocks
+new \Arbit\Xml\Document();
+
 /**
  * Periodic base test
  */
@@ -71,10 +75,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 unlink( $file );
             }
         }
-
-        // Workaround around PHPUnits incapability to source files, used in
-        // mocks, and thus creating wrong mocks
-        new \Arbit\Xml\Document();
     }
 
     /**
@@ -130,6 +130,39 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             ->expects( $this->any() )
             ->method( 'run' )
             ->will( $this->returnValue( Executor::RESCHEDULE ) );
+
+        return $command;
+    }
+
+    protected function getAbortCommand()
+    {
+        $command = $this->getMock( '\\Arbit\\Periodic\\Command' );
+        $command
+            ->expects( $this->any() )
+            ->method( 'run' )
+            ->will( $this->returnValue( Executor::ABORT ) );
+
+        return $command;
+    }
+
+    protected function getErrorCommand()
+    {
+        $command = $this->getMock( '\\Arbit\\Periodic\\Command' );
+        $command
+            ->expects( $this->any() )
+            ->method( 'run' )
+            ->will( $this->returnValue( Executor::ERROR ) );
+
+        return $command;
+    }
+
+    protected function getErrornousCommand()
+    {
+        $command = $this->getMock( '\\Arbit\\Periodic\\Command' );
+        $command
+            ->expects( $this->any() )
+            ->method( 'run' )
+            ->will( $this->returnValue( null ) );
 
         return $command;
     }
