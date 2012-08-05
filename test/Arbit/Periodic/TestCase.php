@@ -71,6 +71,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 unlink( $file );
             }
         }
+
+        // Workaround around PHPUnits incapability to source files, used in
+        // mocks, and thus creating wrong mocks
+        new \Arbit\Xml\Document();
     }
 
     /**
