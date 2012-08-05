@@ -27,8 +27,6 @@ use Arbit\Xml;
 
 require_once __DIR__ . '/TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
-
 class CommandRegistryTest extends TestCase
 {
     public function testUnknownCommand()
@@ -37,15 +35,10 @@ class CommandRegistryTest extends TestCase
         $this->assertFalse(
             $commandRegistry->get(
                 'unknown',
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'Unknown command \'unknown\'.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(E) Unknown command \'unknown\'.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -56,7 +49,8 @@ class CommandRegistryTest extends TestCase
         $this->assertTrue(
             $commandRegistry->get(
                 'test.dummy',
-                new \periodicTestLogger()
+                $this->getLogger( array(
+                ) )
             ) instanceof Command
         );
     }
