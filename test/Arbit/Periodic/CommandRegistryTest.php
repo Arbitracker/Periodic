@@ -21,45 +21,44 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Arbit\Periodic\Executor;
+namespace Arbit\Periodic;
 
-use Arbit\Periodic\TestCase,
-    Arbit\Periodic\Command,
-    Arbit\Periodic\CommandRegistry,
-    Arbit\Xml;
+use Arbit\Xml;
 
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 
-class CommandTest extends TestCase
+class CommandRegistryTest extends TestCase
 {
-    public function setUp()
-    {
-        $this->logger = new \periodicTestLogger();
-        $this->config = Xml\Document::loadString( '<?xml version="1.0" ?><configuration/>' );
-        $this->commandFactory = new CommandRegistry();
-    }
-
     public function testUnknownCommand()
     {
+        $commandRegistry = new CommandRegistry();
         $this->assertFalse(
-            $this->commandFactory->get( 'unknown', $this->logger )
+            $commandRegistry->get(
+                'unknown',
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
             array(
                 '(E) Unknown command \'unknown\'.',
             ),
-            $this->logger->logMessages
+            $logger->logMessages
         );
     }
 
     public function testConstructDummyCommand()
     {
-        $this->commandFactory->registerCommand( 'test.dummy', $this->getSuccessfulCommand() );
+        $commandRegistry = new CommandRegistry();
+        $commandRegistry->registerCommand( 'test.dummy', $this->getSuccessfulCommand() );
         $this->assertTrue(
-            $this->commandFactory->get( 'test.dummy', $this->logger ) instanceof Command
+            $commandRegistry->get(
+                'test.dummy',
+                new \periodicTestLogger()
+            ) instanceof Command
         );
     }
 }
+
