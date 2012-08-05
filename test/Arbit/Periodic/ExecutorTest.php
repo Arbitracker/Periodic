@@ -25,7 +25,6 @@ namespace Arbit\Periodic;
 
 require_once __DIR__ . '/TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
 require_once 'test/Arbit/Periodic/helper/Public.php';
 
 class ExecutorTest extends TestCase
@@ -42,7 +41,7 @@ class ExecutorTest extends TestCase
         $executor = new Executor(
             "",
             $this->taskFactory,
-            $logger = new \periodicTestLogger(),
+            $this->getLogger(),
             $this->tmpDir
         );
 
@@ -57,7 +56,7 @@ class ExecutorTest extends TestCase
         $executor = new \periodicTestAllPublicExecutor(
             "# Comment\n;Comment\r# Comment",
             $this->taskFactory,
-            $logger = new \periodicTestLogger(),
+            $this->getLogger(),
             $this->tmpDir
         );
 
@@ -72,7 +71,7 @@ class ExecutorTest extends TestCase
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * test",
             $this->taskFactory,
-            $logger = new \periodicTestLogger(),
+            $this->getLogger(),
             $this->tmpDir
         );
 
@@ -87,7 +86,7 @@ class ExecutorTest extends TestCase
         $executor = new \periodicTestAllPublicExecutor(
             "\n# Line 1:\r\n* * * * * test\r; And a second one:\n* * * * * Foo\n",
             $this->taskFactory,
-            $logger = new \periodicTestLogger(),
+            $this->getLogger(),
             $this->tmpDir
         );
 
@@ -100,47 +99,45 @@ class ExecutorTest extends TestCase
     public function testGetInitialLastRunDate()
     {
         $executor = new \periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            "",
+            $this->taskFactory,
+            $this->getLogger( array() ),
+            $this->tmpDir
         );
 
         $this->assertSame( false, $executor->getLastRun() );
-
-        $this->assertEquals(
-            array(),
-            $logger->logMessages
-        );
     }
 
     public function testLastRunDateAfterStoreDate()
     {
         $executor = new \periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            "",
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Stored last run time.'
+            ) ),
+            $this->tmpDir
         );
 
         $executor->storeLastRun();
-        $this->assertEquals(
-            array( '(i) Stored last run time.' ),
-            $logger->logMessages
-        );
-
         $this->assertInternalType( 'int', $executor->getLastRun() );
     }
 
     public function testLastRunDateStorageFailure()
     {
         $executor = new \periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            "",
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Failure storing last run time'
+            ) ),
+            $this->tmpDir
         );
 
         $oldPerms = fileperms( $this->tmpDir );
         chmod( $this->tmpDir, 0 );
 
         $executor->storeLastRun();
-        $this->assertSame(
-            0,
-            strpos( $logger->logMessages[0], '(E) Failure storing last run time' )
-        );
-
         $this->assertSame( false, $executor->getLastRun() );
         chmod( $this->tmpDir, $oldPerms );
     }
@@ -148,66 +145,58 @@ class ExecutorTest extends TestCase
     public function testAquireAndReleaseLock()
     {
         $executor = new \periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            "",
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         $this->assertTrue( $executor->aquireLock() );
         $executor->releaseLock();
-
-        $this->assertEquals(
-            array(
-                '(i) Aquired lock.',
-                '(i) Released lock.'
-            ),
-            $logger->logMessages
-        );
     }
 
     public function testReAquireLock()
     {
         $executor = new \periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            "",
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'The lockfile ' . $this->tmpDir . '/lock does already exist.',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         $this->assertTrue( $executor->aquireLock() );
         $this->assertFalse( $executor->aquireLock() );
         $executor->releaseLock();
-
-        $tmpDir = $this->tmpDir;
-        $this->assertEquals(
-            array(
-                '(i) Aquired lock.',
-                '(W) The lockfile /lock does already exist.',
-                '(i) Released lock.',
-            ),
-            array_map(
-                function ( $message ) use ( $tmpDir )
-                {
-                    return str_replace( $tmpDir, '', $message );
-                },
-                $logger->logMessages
-            )
-        );
     }
 
     public function testReleaseLockFailure()
     {
         $executor = new \periodicTestAllPublicExecutor(
-            "", $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            "",
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Failure releasing lock',
+            ) ),
+            $this->tmpDir
         );
 
         $executor->releaseLock();
-        $this->assertSame(
-            0,
-            strpos( $logger->logMessages[0], '(E) Failure releasing lock' )
-        );
     }
 
     public function testGetSingularJob()
     {
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * job1",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger(),
+            $this->tmpDir
         );
 
         $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
@@ -220,7 +209,9 @@ class ExecutorTest extends TestCase
     {
         $executor = new \periodicTestAllPublicExecutor(
             "*/15 * * * * *job2\n* * * * * job1",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger(),
+            $this->tmpDir
         );
 
         $jobs = $executor->getJobsSince( strtotime( "2000-01-01 12:23:34" ) );
@@ -233,7 +224,9 @@ class ExecutorTest extends TestCase
     {
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * job1",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger(),
+            $this->tmpDir
         );
 
         $jobs = $executor->getJobsSince( time() + 3600 );
@@ -244,7 +237,9 @@ class ExecutorTest extends TestCase
     {
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * unknown",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger(),
+            $this->tmpDir
         );
 
         $executor->run();
@@ -255,39 +250,38 @@ class ExecutorTest extends TestCase
     {
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * unknown",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'Stored last run time.',
+                'Error reading definition file for task \'unknown\'',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
         file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
         $executor->run();
-
-        $this->assertEquals(
-            array(
-                '(i) Aquired lock.',
-                '(i) Stored last run time.',
-                '(E) Error reading definition file for task \'unknown\'',
-                '(i) Released lock.',
-            ),
-            $logger->logMessages
-        );
     }
 
     public function testInvalidTaskDefinitionFile()
     {
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * invalid",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'Stored last run time.',
+                'Error parsing definition file for task \'invalid\'',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
         file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
         $executor->run();
-
-        $this->assertSame(
-            0,
-            strpos( $logger->logMessages[2], '(E) Error parsing definition file for task \'invalid\':' )
-        );
     }
 
     public function testRunDummyTestCommand()
@@ -295,26 +289,23 @@ class ExecutorTest extends TestCase
         $this->commandFactory->registerCommand( 'test.dummy', $this->getSuccessfulCommand() );
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * dummy",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'Stored last run time.',
+                'Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
+                'Start task execution.',
+                'Execute command \'test.dummy\'.',
+                'Finished command execution.',
+                'Finished task execution.',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
         file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
         $executor->run();
-
-        $this->assertEquals(
-            array(
-                '(i) Aquired lock.',
-                '(i) Stored last run time.',
-                '(i) Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
-                '(i) [dummy-1224] Start task execution.',
-                '(i) [dummy-1224] Execute command \'test.dummy\'.',
-                '(i) [dummy-1224] Finished command execution.',
-                '(i) [dummy-1224] Finished task execution.',
-                '(i) Released lock.',
-            ),
-            $logger->logMessages
-        );
     }
 
     public function testRunTwoCommandsWithSameCronEntry()
@@ -322,31 +313,28 @@ class ExecutorTest extends TestCase
         $this->commandFactory->registerCommand( 'test.dummy', $this->getSuccessfulCommand() );
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * dummy\n* * * * * dummy",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'Stored last run time.',
+                'Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
+                'Start task execution.',
+                'Execute command \'test.dummy\'.',
+                'Finished command execution.',
+                'Finished task execution.',
+                'Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
+                'Start task execution.',
+                'Execute command \'test.dummy\'.',
+                'Finished command execution.',
+                'Finished task execution.',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
         file_put_contents( $this->tmpDir . '/lastRun', strtotime( "2000-01-01 12:23:34" ) );
         $executor->run();
-
-        $this->assertEquals(
-            array(
-                '(i) Aquired lock.',
-                '(i) Stored last run time.',
-                '(i) Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
-                '(i) [dummy-1224] Start task execution.',
-                '(i) [dummy-1224] Execute command \'test.dummy\'.',
-                '(i) [dummy-1224] Finished command execution.',
-                '(i) [dummy-1224] Finished task execution.',
-                '(i) Create task \'dummy\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
-                '(i) [dummy-1224] Start task execution.',
-                '(i) [dummy-1224] Execute command \'test.dummy\'.',
-                '(i) [dummy-1224] Finished command execution.',
-                '(i) [dummy-1224] Finished task execution.',
-                '(i) Released lock.',
-            ),
-            $logger->logMessages
-        );
     }
 
     /**
@@ -359,7 +347,30 @@ class ExecutorTest extends TestCase
 
         $executor = new \periodicTestAllPublicExecutor(
             "0 0 1 1 * reschedule",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'Stored last run time.',
+                'Create task \'reschedule\' for scheduled date \'Mon, 01 Jan 2001 00:00:00 +0100\'.',
+                'Start task execution.',
+                'Execute command \'test.dummy\'.',
+                'Finished command execution.',
+                'Execute command \'test.reschedule\'.',
+                'Command requested rescheduled execution.',
+                'Task will be rescheduled for 30 seconds.',
+                'Released lock.',
+                'Aquired lock.',
+                'Stored last run time.',
+                'Create task \'reschedule\' for scheduled date \'Mon, 01 Jan 2001 00:00:30 +0100\'.',
+                'Start task execution.',
+                'Execute command \'test.dummy\'.',
+                'Finished command execution.',
+                'Execute command \'test.reschedule\'.',
+                'Command requested rescheduled execution.',
+                'Task will be rescheduled for 30 seconds.',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
@@ -370,39 +381,30 @@ class ExecutorTest extends TestCase
 
         // Second run - should run rescheduled test only.
         $executor->run();
-
-        $this->assertEquals(
-            array(
-                '(i) Aquired lock.',
-                '(i) Stored last run time.',
-                '(i) Create task \'reschedule\' for scheduled date \'Mon, 01 Jan 2001 00:00:00 +0100\'.',
-                '(i) [reschedule-0000] Start task execution.',
-                '(i) [reschedule-0000] Execute command \'test.dummy\'.',
-                '(i) [reschedule-0000] Finished command execution.',
-                '(i) [reschedule-0000] Execute command \'test.reschedule\'.',
-                '(i) [reschedule-0000] Command requested rescheduled execution.',
-                '(i) [reschedule-0000] Task will be rescheduled for 30 seconds.',
-                '(i) Released lock.',
-                '(i) Aquired lock.',
-                '(i) Stored last run time.',
-                '(i) Create task \'reschedule\' for scheduled date \'Mon, 01 Jan 2001 00:00:30 +0100\'.',
-                '(i) [reschedule-0000] Start task execution.',
-                '(i) [reschedule-0000] Execute command \'test.dummy\'.',
-                '(i) [reschedule-0000] Finished command execution.',
-                '(i) [reschedule-0000] Execute command \'test.reschedule\'.',
-                '(i) [reschedule-0000] Command requested rescheduled execution.',
-                '(i) [reschedule-0000] Task will be rescheduled for 30 seconds.',
-                '(i) Released lock.',
-            ),
-            $logger->logMessages
-        );
     }
 
     public function testFullExecutorRun()
     {
         $executor = new \periodicTestAllPublicExecutor(
             "* * * * * functional",
-            $this->taskFactory, $logger = new \periodicTestLogger(), $this->tmpDir
+            $this->taskFactory,
+            $this->getLogger( array(
+                'Aquired lock.',
+                'Stored last run time.',
+                'Create task \'functional\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
+                'Start task execution.',
+                'Execute command \'fs.copy\'.',
+                'Finished command execution.',
+                'Execute command \'fs.remove\'.',
+                'Finished command execution.',
+                'Execute command \'system.exec\'.',
+                'Hello world',
+                'Command exited with return value 0',
+                'Finished command execution.',
+                'Finished task execution.',
+                'Released lock.',
+            ) ),
+            $this->tmpDir
         );
 
         // Set a manual last run date, to keep tests deterministic
@@ -413,25 +415,5 @@ class ExecutorTest extends TestCase
 
         // Second run - should run rescheduled test only.
         $executor->run();
-
-        $this->assertEquals(
-            array(
-                '(i) Aquired lock.',
-                '(i) Stored last run time.',
-                '(i) Create task \'functional\' for scheduled date \'Sat, 01 Jan 2000 12:24:00 +0100\'.',
-                '(i) [functional-1224] Start task execution.',
-                '(i) [functional-1224] Execute command \'fs.copy\'.',
-                '(i) [functional-1224] Finished command execution.',
-                '(i) [functional-1224] Execute command \'fs.remove\'.',
-                '(i) [functional-1224] Finished command execution.',
-                '(i) [functional-1224] Execute command \'system.exec\'.',
-                '(i) [functional-1224] [system.exec] Hello world',
-                '(i) [functional-1224] [system.exec] Command exited with return value 0',
-                '(i) [functional-1224] Finished command execution.',
-                '(i) [functional-1224] Finished task execution.',
-                '(i) Released lock.',
-            ),
-            $logger->logMessages
-        );
     }
 }

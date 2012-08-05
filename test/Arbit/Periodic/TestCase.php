@@ -114,7 +114,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function getLogger( array $log = null )
     {
-        $logger = $this->getMock( '\\Arbit\\Periodic\\Logger\\Base' );
+        $logger = $this->getMock( '\\Arbit\\Periodic\\Logger\\Base', array( 'log' ) );
 
         if ( $log === null )
         {
@@ -130,7 +130,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             $logger
                 ->expects( $this->at( $nr ) )
                 ->method( 'log' )
-                ->with( $message );
+                ->with(
+                    $this->matchesRegularExpression(
+                        '(^' . preg_quote( $message ) . ')'
+                    )
+                );
         }
         return $logger;
     }
