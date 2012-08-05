@@ -29,8 +29,6 @@ use Arbit\Periodic\TestCase,
 
 require_once __DIR__ . '/../../TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
-
 class CopyTest extends TestCase
 {
     public function testEmptyConfiguration()
@@ -43,15 +41,10 @@ class CopyTest extends TestCase
                 Xml\Document::loadString( '<?xml version="1.0" ?>
                     <command/>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'No source provided.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(E) No source provided.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -67,15 +60,10 @@ class CopyTest extends TestCase
                         <src>test/Arbit/Periodic/_fixtures/file</src>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'No destination provided.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(E) No destination provided.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -92,7 +80,7 @@ class CopyTest extends TestCase
                         <dst>test/Arbit/Periodic/tmp/test</dst>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger()
             )
         );
 
@@ -113,7 +101,7 @@ class CopyTest extends TestCase
                         <depth>2</depth>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger()
             )
         );
 
@@ -134,7 +122,7 @@ class CopyTest extends TestCase
                         <dst>test/Arbit/Periodic/tmp/test</dst>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger()
             )
         );
 
@@ -154,15 +142,10 @@ class CopyTest extends TestCase
                         <dst>test/Arbit/Periodic/tmp/test</dst>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'test/Arbit/Periodic/_fixtures/file/not_existant is not a valid source.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) test/Arbit/Periodic/_fixtures/file/not_existant is not a valid source.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -180,15 +163,10 @@ class CopyTest extends TestCase
                         <dst>test/Arbit/Periodic/tmp/existing</dst>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'test/Arbit/Periodic/tmp/existing already exists, and cannot be overwritten.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) test/Arbit/Periodic/tmp/existing already exists, and cannot be overwritten.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -202,7 +180,7 @@ class CopyTest extends TestCase
                     <dst>test/Arbit/Periodic/tmp/first</dst>
                 </command>
             ' ),
-            $logger = new \periodicTestLogger()
+            $this->getLogger()
         );
         chmod( $this->tmpDir . '/first/second', 0 );
 
@@ -217,15 +195,10 @@ class CopyTest extends TestCase
                         <dst>test/Arbit/Periodic/tmp/second</dst>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'test/Arbit/Periodic/tmp/first/second is not readable, skipping.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) test/Arbit/Periodic/tmp/first/second is not readable, skipping.',
-            ),
-            $logger->logMessages
         );
 
         $this->assertFileExists( $this->tmpDir . 'second/subdir' );

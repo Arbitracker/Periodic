@@ -112,6 +112,29 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         rmdir( $dir );
     }
 
+    protected function getLogger( array $log = null )
+    {
+        $logger = $this->getMock( '\\Arbit\\Periodic\\Logger\\Base' );
+
+        if ( $log === null )
+        {
+            $logger
+                ->expects( $this->any() )
+                ->method( 'log' );
+
+            return $logger;
+        }
+
+        foreach ( $log as $nr => $message )
+        {
+            $logger
+                ->expects( $this->at( $nr ) )
+                ->method( 'log' )
+                ->with( $message );
+        }
+        return $logger;
+    }
+
     protected function getSuccessfulCommand()
     {
         $command = $this->getMock( '\\Arbit\\Periodic\\Command' );
