@@ -24,6 +24,7 @@
 namespace Arbit\Periodic\Executor;
 
 use Arbit\Periodic\TestCase,
+    Arbit\Periodic\Command,
     Arbit\Periodic\CommandRegistry,
     Arbit\Xml;
 
@@ -43,7 +44,7 @@ class CommandTest extends TestCase
     public function testUnknownCommand()
     {
         $this->assertFalse(
-            $this->commandFactory->factory( 'unknown', $this->config, $this->logger )
+            $this->commandFactory->get( 'unknown', $this->logger )
         );
 
         $this->assertEquals(
@@ -54,33 +55,11 @@ class CommandTest extends TestCase
         );
     }
 
-    public function testUnknownImplementation()
-    {
-        $this->commandFactory->registerCommand( 'invalid', 'testUnknownClassName' );
-        $this->assertFalse(
-            $this->commandFactory->factory( 'invalid', $this->config, $this->logger )
-        );
-
-        $this->assertEquals(
-            array(
-                '(E) Implementation \'testUnknownClassName\' for command \'invalid\' could not be found.',
-            ),
-            $this->logger->logMessages
-        );
-    }
-
     public function testConstructDummyCommand()
     {
-        $this->commandFactory->registerCommand( 'test.dummy', '\periodicTestDummyCommand' );
+        $this->commandFactory->registerCommand( 'test.dummy', $this->getSuccessfulCommand() );
         $this->assertTrue(
-            $this->commandFactory->factory( 'test.dummy', $this->config, $this->logger ) instanceof \periodicTestDummyCommand
-        );
-
-        $this->assertEquals(
-            array(
-                '(i) Create command \'test.dummy\'.',
-            ),
-            $this->logger->logMessages
+            $this->commandFactory->get( 'test.dummy', $this->logger ) instanceof Command
         );
     }
 }
