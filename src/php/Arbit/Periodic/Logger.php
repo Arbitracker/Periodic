@@ -29,7 +29,7 @@ namespace Arbit\Periodic;
  *
  * Interface which should be implemented by loggers passed to the executor
  */
-interface Logger
+abstract class Logger
 {
     /**
      * Information level log message
@@ -47,16 +47,29 @@ interface Logger
     const ERROR   = 4;
 
     /**
-     * Log message
+     * Association of Names to log message severities
      *
-     * Log a message, while the message must be convertable into a string.
-     * Optionally a log message severity can be specified.
-     *
-     * @param string $message
-     * @param int $severity
-     * @return void
+     * @var array
      */
-    public function log( $message, $severity = self::INFO );
+    protected $names = array(
+        Logger::INFO    => 'Info',
+        Logger::WARNING => 'Warning',
+        Logger::ERROR   => 'Error',
+    );
+
+    /**
+     * Currently logged task
+     *
+     * @var string
+     */
+    protected $task;
+
+    /**
+     * Currently logged command
+     *
+     * @var string
+     */
+    protected $command;
 
     /**
      * Set current task
@@ -67,7 +80,10 @@ interface Logger
      * @param string $task
      * @return void
      */
-    public function setTask( $task = null );
+    public function setTask( $task = null )
+    {
+        $this->task = $task;
+    }
 
     /**
      * Set current command
@@ -78,6 +94,21 @@ interface Logger
      * @param string $command
      * @return void
      */
-    public function setCommand( $command = null );
+    public function setCommand( $command = null )
+    {
+        $this->command = $command;
+    }
+
+    /**
+     * Log message
+     *
+     * Log a message, while the message must be convertable into a string.
+     * Optionally a log message severity can be specified.
+     *
+     * @param string $message
+     * @param int $severity
+     * @return void
+     */
+    abstract public function log( $message, $severity = self::INFO );
 }
 

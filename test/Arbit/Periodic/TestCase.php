@@ -114,7 +114,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function getLogger( array $log = null )
     {
-        $logger = $this->getMock( '\\Arbit\\Periodic\\Logger\\Base', array( 'log' ) );
+        $logger = $this->getMock( '\\Arbit\\Periodic\\Logger', array( 'log' ) );
 
         if ( $log === null )
         {
