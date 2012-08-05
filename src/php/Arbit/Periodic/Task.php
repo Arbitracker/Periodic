@@ -147,7 +147,15 @@ class Task
 
             $this->logger->log( "Execute command '$type'." );
             $this->logger->setCommand( $type );
-            $status = $command->run( $config, $this->logger );
+            try
+            {
+                $status = $command->run( $config, $this->logger );
+            }
+            catch ( \Exception $e )
+            {
+                $this->logger->log( 'Command threw exception: ' . $e->getMessage(), Logger::ERROR );
+                $status = 0;
+            }
             $this->logger->setCommand();
 
             switch ( $status )

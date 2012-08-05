@@ -41,6 +41,7 @@ class TaskTest extends TestCase
         $this->commandRegistry->registerCommand( 'test.reschedule', $this->getRescheduleCommand() );
         $this->commandRegistry->registerCommand( 'test.error', $this->getErrorCommand() );
         $this->commandRegistry->registerCommand( 'test.errorneous', $this->getErrornousCommand() );
+        $this->commandRegistry->registerCommand( 'test.exception', $this->getCommandThrowingException() );
     }
 
     public function testTaskConfigurationDefaultValues()
@@ -188,6 +189,17 @@ class TaskTest extends TestCase
                     '(i) Execute command \'test.dummy\'.',
                     '(i) Finished command execution.',
                     '(i) Execute command \'test.errorneous\'.',
+                    '(E) Command returned in unknown state.',
+                ),
+            ),
+            array(
+                'exception',
+                Executor::ERROR,
+                array(
+                    '(i) Execute command \'test.dummy\'.',
+                    '(i) Finished command execution.',
+                    '(i) Execute command \'test.exception\'.',
+                    '(E) [test.exception] Command threw exception: Hello world!',
                     '(E) Command returned in unknown state.',
                 ),
             ),

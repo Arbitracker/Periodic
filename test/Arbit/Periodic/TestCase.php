@@ -166,4 +166,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         return $command;
     }
+
+    protected function getCommandThrowingException()
+    {
+        $command = $this->getMock( '\\Arbit\\Periodic\\Command' );
+        $command
+            ->expects( $this->any() )
+            ->method( 'run' )
+            ->will( $this->throwException( new \RuntimeException( "Hello world!" ) ) );
+
+        return $command;
+    }
 }
