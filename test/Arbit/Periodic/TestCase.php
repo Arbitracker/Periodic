@@ -107,4 +107,26 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         rmdir( $dir );
     }
+
+    protected function getSuccessfulCommand()
+    {
+        $command = $this->getMock( '\\Arbit\\Periodic\\Command' );
+        $command
+            ->expects( $this->any() )
+            ->method( 'run' )
+            ->will( $this->returnValue( Executor::SUCCESS ) );
+
+        return $command;
+    }
+
+    protected function getRescheduleCommand()
+    {
+        $command = $this->getMock( '\\Arbit\\Periodic\\Command' );
+        $command
+            ->expects( $this->any() )
+            ->method( 'run' )
+            ->will( $this->returnValue( Executor::RESCHEDULE ) );
+
+        return $command;
+    }
 }
