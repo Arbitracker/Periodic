@@ -26,7 +26,8 @@ namespace Arbit\Periodic\Command\System;
 
 use Arbit\Periodic\Command,
     Arbit\Periodic\Executor,
-    Arbit\Periodic\Logger;
+    Arbit\Periodic\Logger,
+    Arbit\XML;
 
 /**
  * Command
@@ -41,33 +42,35 @@ class Exec extends Command
      * Execute the actual bits.
      *
      * Should return one of the status constant values, defined as class
-     * constants in Command.
+     * constants in Executor.
      *
+     * @param XML\Node $configuration
+     * @param Logger $logger
      * @return int
      */
-    public function run()
+    public function run( XML\Node $configuration, Logger $logger )
     {
-        $command = (string) $this->configuration;
+        $command = (string) $configuration;
         if ( empty( $command ) )
         {
-            $this->logger->log( 'No command provided for execution.', Logger::ERROR );
+            $logger->log( 'No command provided for execution.', Logger::ERROR );
             return Executor::ERROR;
         }
 
         // Check for availability of PHP command execution functions
         if ( !function_exists( 'proc_open' ) )
         {
-            $this->logger->log( 'Required PHP functions proc_* not available.', Logger::ERROR );
+            $logger->log( 'Required PHP functions proc_* not available.', Logger::ERROR );
             return Executor::ERROR;
         }
 
         $failOnError = true;
-        if ( isset( $this->configuration['failOnError'] ) )
+        if ( isset( $configuration['failOnError'] ) )
         {
-            $failOnError = !( (string) $this->configuration['failOnError'] === 'false' );
+            $failOnError = !( (string) $configuration['failOnError'] === 'false' );
         }
 
-        return $this->execute( $command, $failOnError );
+        return $this->execute( $command, $failOnError, $logger );
     }
 
     /**
@@ -82,9 +85,10 @@ class Exec extends Command
      *
      * @param string $command
      * @param bool $failOnError
+     * @param Logger $logger
      * @return int
      */
-    protected function execute( $command, $failOnError = true )
+    protected function execute( $command, $failOnError = true, Logger $logger )
     {
         $descriptors = array(
             0 => array( 'pipe', 'r' ), // STDIN
@@ -95,7 +99,7 @@ class Exec extends Command
         $proc = proc_open( $command, $descriptors, $pipes );
         if ( !is_resource( $proc ) )
         {
-            $this->logger->log( 'Could not start processs.', Logger::ERROR );
+            $logger->log( 'Could not start processs.', Logger::ERROR );
             return Executor::ERROR;
         }
 
@@ -103,7 +107,7 @@ class Exec extends Command
         $output = trim( stream_get_contents( $pipes[1] ) );
         if ( !empty( $output ) )
         {
-            $this->logger->log( $output );
+            $logger->log( $output );
         }
         fclose( $pipes[1] );
 
@@ -111,13 +115,13 @@ class Exec extends Command
         $output = trim( stream_get_contents( $pipes[2] ) );
         if ( !empty( $output ) )
         {
-            $this->logger->log( $output, Logger::WARNING );
+            $logger->log( $output, Logger::WARNING );
         }
         fclose( $pipes[2] );
 
         // Receive process return values
         $return = proc_close( $proc );
-        $this->logger->log( "Command exited with return value $return" );
+        $logger->log( "Command exited with return value $return" );
 
         return ( $return && $failOnError ) ? Executor::ERROR : Executor::SUCCESS;
     }

@@ -21,13 +21,13 @@
  * @license http://www.gnu.org/licenses/lgpl-3.0.txt LGPLv3
  */
 
-namespace Arbit\Periodic\Command;
+namespace Arbit\Periodic\Command\System;
 
 use Arbit\Periodic\TestCase,
     Arbit\Periodic\Executor,
     Arbit\Xml;
 
-require_once __DIR__ . '/../TestCase.php';
+require_once __DIR__ . '/../../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
 
@@ -35,16 +35,16 @@ class SystemExecTest extends TestCase
 {
     public function testEmptyConfiguation()
     {
-        $cmd = new System\Exec(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command/>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Exec();
 
         $this->assertSame(
             Executor::ERROR,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command/>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
@@ -57,16 +57,16 @@ class SystemExecTest extends TestCase
 
     public function testSuccessfullCommandExecution()
     {
-        $cmd = new System\Exec(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>echo "Hello world"</command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Exec();
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>echo "Hello world"</command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
@@ -80,16 +80,16 @@ class SystemExecTest extends TestCase
 
     public function testFailOnUnknownCommand()
     {
-        $cmd = new System\Exec(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command>some_command_not_available</command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Exec();
 
         $this->assertSame(
             Executor::ERROR,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command>some_command_not_available</command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
@@ -103,16 +103,16 @@ class SystemExecTest extends TestCase
 
     public function testNoFailOnUnknownCommand()
     {
-        $cmd = new System\Exec(
-            Xml\Document::loadString( '<?xml version="1.0" ?>
-                <command failOnError="false">some_command_not_available</command>
-            ' ),
-            $logger = new \periodicTestLogger()
-        );
+        $cmd = new Exec();
 
         $this->assertSame(
             Executor::SUCCESS,
-            $cmd->run()
+            $cmd->run(
+                Xml\Document::loadString( '<?xml version="1.0" ?>
+                    <command failOnError="false">some_command_not_available</command>
+                ' ),
+                $logger = new \periodicTestLogger()
+            )
         );
 
         $this->assertEquals(
