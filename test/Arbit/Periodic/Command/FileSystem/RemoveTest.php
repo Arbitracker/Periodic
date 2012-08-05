@@ -29,8 +29,6 @@ use Arbit\Periodic\TestCase,
 
 require_once __DIR__ . '/../../TestCase.php';
 
-require_once 'test/Arbit/Periodic/helper/Logger.php';
-
 class RemoveTest extends TestCase
 {
     public function setUp()
@@ -45,7 +43,7 @@ class RemoveTest extends TestCase
                     <dst>test/Arbit/Periodic/tmp/dir</dst>
                 </command>
             ' ),
-            $logger = new \periodicTestLogger()
+            $this->getLogger()
         );
     }
 
@@ -59,15 +57,10 @@ class RemoveTest extends TestCase
                 Xml\Document::loadString( '<?xml version="1.0" ?>
                     <command/>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'No path provided.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(E) No path provided.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -83,15 +76,10 @@ class RemoveTest extends TestCase
                         <path>test/Arbit/Periodic/not_existing</path>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'test/Arbit/Periodic/not_existing is not a valid source.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) test/Arbit/Periodic/not_existing is not a valid source.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -108,15 +96,10 @@ class RemoveTest extends TestCase
                         <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'test/Arbit/Periodic/tmp/dir/subdir/file1 is not readable, skipping.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) test/Arbit/Periodic/tmp/dir/subdir/file1 is not readable, skipping.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -133,15 +116,10 @@ class RemoveTest extends TestCase
                         <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                    'test/Arbit/Periodic/tmp/dir/subdir is not writable, skipping.',
+                ) )
             )
-        );
-
-        $this->assertEquals(
-            array(
-                '(W) test/Arbit/Periodic/tmp/dir/subdir is not writable, skipping.',
-            ),
-            $logger->logMessages
         );
     }
 
@@ -157,7 +135,8 @@ class RemoveTest extends TestCase
                         <path>test/Arbit/Periodic/tmp/dir</path>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                ) )
             )
         );
 
@@ -178,7 +157,8 @@ class RemoveTest extends TestCase
                         <pattern>file*</pattern>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                ) )
             )
         );
 
@@ -202,7 +182,8 @@ class RemoveTest extends TestCase
                         <pattern>subdir</pattern>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                ) )
             )
         );
 
@@ -225,7 +206,8 @@ class RemoveTest extends TestCase
                         <path>test/Arbit/Periodic/tmp/dir/subdir/file1</path>
                     </command>
                 ' ),
-                $logger = new \periodicTestLogger()
+                $this->getLogger( array(
+                ) )
             )
         );
 
