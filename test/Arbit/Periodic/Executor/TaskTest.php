@@ -32,7 +32,6 @@ use Arbit\Periodic\TestCase,
 require_once __DIR__ . '/../TestCase.php';
 
 require_once 'test/Arbit/Periodic/helper/Logger.php';
-require_once 'test/Arbit/Periodic/helper/Command.php';
 
 class TaskTest extends TestCase
 {
