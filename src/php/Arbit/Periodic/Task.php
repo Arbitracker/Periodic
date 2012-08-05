@@ -136,7 +136,7 @@ class Task
     {
         foreach ( $this->configuration->command as $config )
         {
-            if ( ( $command = $this->commandRegistry->factory( $type = $config['type'], $config, $this->logger ) ) === false )
+            if ( ( $command = $this->commandRegistry->get( $type = $config['type'], $this->logger ) ) === false )
             {
                 $this->logger->log(
                     "Failed to instantiate command '$type' - aborting task.",
@@ -147,7 +147,7 @@ class Task
 
             $this->logger->log( "Execute command '$type'." );
             $this->logger->setCommand( $type );
-            $status = $command->run();
+            $status = $command->run( $config, $logger );
             $this->logger->setCommand();
 
             switch ( $status )
