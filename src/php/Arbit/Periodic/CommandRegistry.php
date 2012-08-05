@@ -40,14 +40,15 @@ class CommandRegistry
      *
      * @var array
      */
-    protected $commands = array(
-        // Standard file system operations
-        'fs.copy'     => '\\Arbit\\Periodic\\Command\\FileSystem\\Copy',
-        'fs.remove'   => '\\Arbit\\Periodic\\Command\\FileSystem\\Remove',
+    protected $commands = array();
 
-        // Generic system operations
-        'system.exec' => '\\Arbit\\Periodic\\Command\\System\\Exec',
-    );
+    public function __construct()
+    {
+        // Register default commands
+        $this->registerCommand( 'fs.copy', new Command\FileSystem\Copy() );
+        $this->registerCommand( 'fs.remove', new Command\FileSystem\Remove() );
+        $this->registerCommand( 'system.exec', new Command\System\Exec() );
+    }
 
     /**
      * Register new command
@@ -59,26 +60,21 @@ class CommandRegistry
      * @param string $class
      * @return void
      */
-    public function registerCommand( $command, $class )
+    public function registerCommand( $command, Command $command )
     {
         $this->commands[$command] = $class;
     }
 
     /**
-     * Factory command
+     * Get command
      *
-     * Return a command object from the command specified by its name and its
-     * configuration. The additionally passed logger will be used to log
-     * command creation and will be passed to the command object for logging.
-     *
-     * Returns the created Command object, or false on failure.
+     * Returns the Command object, or false on failure.
      *
      * @param string $command
-     * @param XML\Node $configuration
      * @param Logger $logger
      * @return Command
      */
-    public function factory( $command, XML\Node $configuration, Logger $logger )
+    public function get( $command, Logger $logger )
     {
         if ( !isset( $this->commands[$command] ) )
         {
@@ -89,20 +85,7 @@ class CommandRegistry
             return false;
         }
 
-        if ( !class_exists( $class = $this->commands[$command] ) )
-        {
-            $logger->log(
-                "Implementation '$class' for command '$command' could not be found.",
-                Logger::ERROR
-            );
-            return false;
-        }
-
-        $logger->log(
-            "Create command '$command'.",
-            Logger::INFO
-        );
-        return new $class( $configuration, $logger );
+        return $this->commands[$command];
     }
 }
 
