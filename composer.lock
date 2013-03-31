@@ -1,13 +1,19 @@
 {
-    "hash": "28e85b37dfe1c569df33ba4a59127d20",
+    "hash": "2f6256db7576d2e91b9762c8434195bc",
     "packages": [
         {
             "name": "arbit/xml",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Arbitracker/XML",
-                "reference": "148f4b3e98dea820404aec4216d1e863aac8d730"
+                "url": "https://github.com/Arbitracker/XML.git",
+                "reference": "dd4935b629a543cb90651117ec99fd968ef21d98"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Arbitracker/XML/zipball/dd4935b629a543cb90651117ec99fd968ef21d98",
+                "reference": "dd4935b629a543cb90651117ec99fd968ef21d98",
+                "shasum": ""
             },
             "type": "library",
             "autoload": {
@@ -15,8 +21,9 @@
                     "Arbit\\Xml": "src/php/"
                 }
             },
+            "notification-url": "http://packagist.org/downloads/",
             "description": "XML reader with a SimpleXML like API.",
-            "time": "2013-03-31 10:08:14"
+            "time": "2013-03-31 10:28:29"
         }
     ],
     "packages-dev": [
@@ -25,10 +32,10 @@
     "aliases": [
 
     ],
-    "minimum-stability": "dev",
-    "stability-flags": [
-
-    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "arbit/xml": 20
+    },
     "platform": [
 
     ],
