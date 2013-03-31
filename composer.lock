@@ -1,18 +1,18 @@
 {
-    "hash": "2f6256db7576d2e91b9762c8434195bc",
+    "hash": "446cdbd18b61f8151e41e165acf8c2be",
     "packages": [
         {
             "name": "arbit/xml",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Arbitracker/XML.git",
-                "reference": "dd4935b629a543cb90651117ec99fd968ef21d98"
+                "reference": "1.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Arbitracker/XML/zipball/dd4935b629a543cb90651117ec99fd968ef21d98",
-                "reference": "dd4935b629a543cb90651117ec99fd968ef21d98",
+                "url": "https://api.github.com/repos/Arbitracker/XML/zipball/1.0.1",
+                "reference": "1.0.1",
                 "shasum": ""
             },
             "type": "library",
@@ -33,9 +33,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "arbit/xml": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": [
 
     ],
